@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -48,6 +49,7 @@ final class CreativePipeTests {
         tests.test("the_menu_shows_the_fluid_as_its_bucket", 20, CreativePipeTests::showsBucket);
         tests.test("a_click_with_an_empty_cursor_clears_a_creative_pipe", 20, CreativePipeTests::clears);
         tests.test("a_creative_pipe_set_by_a_viewers_drop_takes_the_same_path_as_a_click", 20, CreativePipeTests::dropsLikeClicks);
+        tests.test("a_flowing_fluid_sets_a_creative_pipe_to_its_source", 20, CreativePipeTests::flowingIsSource);
         tests.test("a_bucket_of_lava_is_refused_by_a_creative_pipe_whose_segment_holds_water", 20, CreativePipeTests::refusesLava);
         tests.test("a_creative_pipe_set_to_water_refuses_lava_until_it_is_cleared", 20, CreativePipeTests::refusesOtherThanSet);
         tests.test("a_creative_pipe_refuses_a_fluid_another_in_its_drained_segment_sources", 20, CreativePipeTests::refusesOtherSource);
@@ -224,6 +226,17 @@ final class CreativePipeTests {
         menu.setFluid(Fluids.EMPTY);
         if (FluidSegments.get(helper.getLevel()).sourceAt(helper.absolutePos(at(0))) != null) {
             helper.fail("a dropped empty fluid did not clear the creative pipe", at(0));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void flowingIsSource(GameTestHelper helper) {
+        creativePipe(helper);
+        menuAt(helper, 0, ItemStack.EMPTY).setFluid(Fluids.FLOWING_WATER);
+        Fluid set = FluidSegments.get(helper.getLevel()).sourceAt(helper.absolutePos(at(0)));
+        if (set != Fluids.WATER) {
+            helper.fail("flowing water set the creative pipe to " + set + ", not water", at(0));
             return;
         }
         helper.succeed();

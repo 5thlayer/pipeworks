@@ -24,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -241,7 +242,8 @@ public final class FluidSegments extends SavedData {
         if (!joined(node)) {
             return false;
         }
-        String key = key(fluid);
+        // A flowing fluid is its source's: a segment holds water, never flowing water.
+        String key = key(fluid instanceof FlowingFluid flowing ? flowing.getSource() : fluid);
         String contained = graph.contents(node).fluid();
         if (contained != null && !contained.equals(key)) {
             return false;

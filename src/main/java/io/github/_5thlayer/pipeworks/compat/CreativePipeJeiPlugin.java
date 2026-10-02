@@ -4,6 +4,7 @@
 package io.github._5thlayer.pipeworks.compat;
 
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.block.CreativePipeMenu;
@@ -62,7 +63,7 @@ public class CreativePipeJeiPlugin implements IModPlugin {
     };
 
     /** The fluid of a fluid ingredient, or of an item that holds one. Null for any other ingredient. */
-    private static <I> Fluid fluidOf(ITypedIngredient<I> ingredient) {
+    private static <I> @Nullable Fluid fluidOf(ITypedIngredient<I> ingredient) {
         var fluidStack = ingredient.getIngredient(NeoForgeTypes.FLUID_STACK);
         if (fluidStack.isPresent() && !fluidStack.get().isEmpty()) {
             return fluidStack.get().getFluid();

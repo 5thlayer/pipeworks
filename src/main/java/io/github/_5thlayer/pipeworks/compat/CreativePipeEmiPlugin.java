@@ -15,6 +15,7 @@ import io.github._5thlayer.pipeworks.client.CreativePipeScreen;
 import io.github._5thlayer.pipeworks.network.CreativePipeFluidPayload;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Lets a fluid, or an item holding one, be dragged from EMI's list onto the slot of a creative
@@ -42,7 +43,7 @@ public class CreativePipeEmiPlugin implements EmiPlugin {
     }
 
     /** The fluid of a fluid stack, or of an item stack that holds one. Null for any other ingredient. */
-    private static Fluid fluidOf(EmiIngredient ingredient) {
+    private static @Nullable Fluid fluidOf(EmiIngredient ingredient) {
         for (EmiStack stack : ingredient.getEmiStacks()) {
             Fluid fluid = stack.getKeyOfType(Fluid.class);
             if (fluid == null) {

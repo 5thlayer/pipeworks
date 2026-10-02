@@ -61,10 +61,6 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
         refresh();
     }
 
-    public BlockPos pipe() {
-        return pipe;
-    }
-
     /** The fluid the pipe is set to as its bucket, or empty for none, or for one with no bucket. */
     public ItemStack shown() {
         return shown.getItem(0);
@@ -78,8 +74,8 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
         if (stack.getItem() instanceof BucketItem bucket && bucket.content != Fluids.EMPTY) {
             return bucket.content;
         }
-        ResourceHandler<FluidResource> handler = stack.copyWithCount(1).getCapability(Capabilities.Fluid.ITEM,
-                ItemAccess.forStack(stack.copyWithCount(1)));
+        ItemStack one = stack.copyWithCount(1);
+        ResourceHandler<FluidResource> handler = one.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forStack(one));
         if (handler != null) {
             for (int i = 0; i < handler.size(); i++) {
                 FluidResource resource = handler.getResource(i);
@@ -151,9 +147,9 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
         if (carried.isEmpty()) {
             setFluid(Fluids.EMPTY);
         } else {
-            Fluid held = fluidIn(carried);
-            if (held != null) {
-                setFluid(held);
+            Fluid carriedFluid = fluidIn(carried);
+            if (carriedFluid != null) {
+                setFluid(carriedFluid);
             }
         }
     }

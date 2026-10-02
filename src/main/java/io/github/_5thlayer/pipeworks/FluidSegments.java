@@ -22,6 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -96,7 +97,9 @@ public final class FluidSegments extends SavedData {
     private final Map<Long, String> sources = new HashMap<>();
     private final Map<Integer, Journal> journals = new HashMap<>();
     /** What the storage tanks show of their segments (ADR 0003). */
-    private final TankLevels levels = new TankLevels();
+    private final TankSteps steps = new TankSteps();
+    /** Every node by its chunk, so a chunk sent to a player is answered without a scan of the level. */
+    private final Map<Long, Set<Long>> byChunk = new HashMap<>();
 
     private FluidSegments() {
         this.graph = new SegmentGraph();
@@ -105,6 +108,7 @@ public final class FluidSegments extends SavedData {
     private FluidSegments(List<NodeRecord> nodes, List<ContentsRecord> contents, List<SourceRecord> sourceRecords) {
         for (NodeRecord node : nodes) {
             specs.put(node.node(), new Spec(node.capacity(), node.mask()));
+            index(node.node());
             if (node.waiting()) {
                 waiting.add(node.node());
             }
@@ -151,7 +155,7 @@ public final class FluidSegments extends SavedData {
             if (segments != null) {
                 segments.settle(level);
                 segments.refill();
-                segments.levels.update(level, segments.graph);
+                segments.steps.update(level, segments.graph);
             }
         }
     }
@@ -161,7 +165,7 @@ public final class FluidSegments extends SavedData {
         ServerLevel level = event.getLevel();
         FluidSegments segments = level.getDataStorage().get(TYPE);
         if (segments != null) {
-            segments.levels.chunkSent(level, segments.graph, segments.specs.keySet(), event.getPlayer(), event.getPos());
+            segments.steps.chunkSent(level, segments.graph, segments.nodesIn(event.getPos()), event.getPlayer());
         }
     }
 
@@ -208,6 +212,7 @@ public final class FluidSegments extends SavedData {
     public boolean join(ServerLevel level, BlockPos pos, long capacity, int mask) {
         long node = pos.asLong();
         if (specs.putIfAbsent(node, new Spec(capacity, mask)) == null) {
+            index(node);
             waiting.add(node);
             setDirty();
             settle(level);
@@ -220,6 +225,7 @@ public final class FluidSegments extends SavedData {
         if (specs.remove(node) == null) {
             return;
         }
+        unindex(node);
         sources.remove(node);
         setDirty();
         if (!waiting.remove(node)) {
@@ -338,7 +344,7 @@ public final class FluidSegments extends SavedData {
             long node = source.getKey();
             if (joined(node) && graph.insert(node, source.getValue(), Long.MAX_VALUE, false) > 0) {
                 setDirty();
-                levels.touch(graph.segmentOf(node));
+                steps.touch(graph.segmentOf(node));
             }
         }
     }
@@ -346,21 +352,38 @@ public final class FluidSegments extends SavedData {
     private void changed(ServerLevel level, long node) {
         journals.clear();
         setDirty();
-        levels.forgetAll();
-        touchLevels(node);
+        steps.forgetAll();
+        touchSteps(node);
         BlockPos pos = BlockPos.of(node);
         level.invalidateCapabilities(pos);
         redraw(level, pos);
         for (Direction face : Direction.values()) {
             redraw(level, pos.relative(face));
-            touchLevels(pos.relative(face).asLong());
+            touchSteps(pos.relative(face).asLong());
         }
     }
 
     /** Marks the segment of {@code node}, if it is in one, for its tanks to show its fill. */
-    private void touchLevels(long node) {
+    /** The nodes in a chunk, joined or waiting. */
+    Set<Long> nodesIn(ChunkPos chunk) {
+        return byChunk.getOrDefault(chunk.pack(), Set.of());
+    }
+
+    private void index(long node) {
+        byChunk.computeIfAbsent(ChunkPos.containing(BlockPos.of(node)).pack(), chunk -> new HashSet<>()).add(node);
+    }
+
+    private void unindex(long node) {
+        long chunk = ChunkPos.containing(BlockPos.of(node)).pack();
+        Set<Long> nodes = byChunk.get(chunk);
+        if (nodes != null && nodes.remove(node) && nodes.isEmpty()) {
+            byChunk.remove(chunk);
+        }
+    }
+
+    private void touchSteps(long node) {
         if (graph.contains(node)) {
-            levels.touch(graph.segmentOf(node));
+            steps.touch(graph.segmentOf(node));
         }
     }
 
@@ -443,7 +466,7 @@ public final class FluidSegments extends SavedData {
         protected void revertToSnapshot(SegmentGraph.Contents snapshot) {
             graph.setContents(segment, snapshot.fluid(), snapshot.amount());
             setDirty();
-            levels.touch(segment);
+            steps.touch(segment);
         }
     }
 
@@ -517,7 +540,7 @@ public final class FluidSegments extends SavedData {
                 journals.computeIfAbsent(graph.segmentOf(node), Journal::new).updateSnapshots(transaction);
                 move.apply(node, fluid, moved, false);
                 setDirty();
-                levels.touch(graph.segmentOf(node));
+                steps.touch(graph.segmentOf(node));
             }
             return (int) moved;
         }

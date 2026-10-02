@@ -4,6 +4,8 @@
 package io.github._5thlayer.pipeworks.client;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
 import io.github._5thlayer.pipeworks.TankFluids;
@@ -27,9 +29,12 @@ import net.neoforged.neoforge.event.level.LevelEvent;
  * Colours the fluid in a storage tank's glass (ADR 0003): the tank's model draws it white, at the
  * height its level says, and this tints it with the fluid the server last said the tank holds.
  *
- * <p>Called only on the client, from {@code Pipeworks}.
+ * <p>Called only on the client, from {@code PipeworksClient}.
  */
 public final class TankTint {
+
+    /** Each fluid's colour, read on every rebuild of a section holding a tank. */
+    private static final Map<Fluid, Integer> COLOURS = new ConcurrentHashMap<>();
 
     private static final BlockTintSource FLUID = new BlockTintSource() {
         @Override
@@ -60,6 +65,7 @@ public final class TankTint {
     private static void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel().isClientSide()) {
             TankFluids.clear();
+            COLOURS.clear();
         }
     }
 
@@ -68,6 +74,10 @@ public final class TankTint {
      * texture, so lava is orange though its model asks for no tint. The fluid layer is a white texture.
      */
     private static int colorOf(Fluid fluid) {
+        return COLOURS.computeIfAbsent(fluid, TankTint::computeColor);
+    }
+
+    private static int computeColor(Fluid fluid) {
         FluidState state = fluid.defaultFluidState();
         FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
         FluidTintSource tint = model.fluidTintSource();

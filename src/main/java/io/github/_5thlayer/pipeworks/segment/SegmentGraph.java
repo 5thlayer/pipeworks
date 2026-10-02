@@ -199,6 +199,11 @@ public final class SegmentGraph {
         return view(segment);
     }
 
+    /** Whether a segment of this id exists, as a merge or a split retires ids. */
+    public boolean exists(int id) {
+        return segments.containsKey(id);
+    }
+
     /** The nodes of a segment, or none for a segment that no longer exists, as a merge or a split retires ids. */
     public List<Long> nodesOf(int id) {
         Segment segment = segments.get(id);

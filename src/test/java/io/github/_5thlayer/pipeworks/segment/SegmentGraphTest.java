@@ -374,4 +374,15 @@ class SegmentGraphTest {
         assertFalse(graph.nodesOf(id).contains(1L));
         assertEquals(List.of(), graph.nodesOf(9999));
     }
+
+    @Test
+    void aSegmentIdExistsUntilItsLastNodeLeaves() {
+        SegmentGraph graph = line(2);
+        int id = graph.segmentOf(0);
+        assertTrue(graph.exists(id));
+        graph.remove(0);
+        graph.remove(1);
+        assertFalse(graph.exists(id));
+        assertFalse(graph.exists(9999));
+    }
 }

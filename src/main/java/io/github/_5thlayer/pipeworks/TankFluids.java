@@ -3,8 +3,8 @@
 
 package io.github._5thlayer.pipeworks;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +22,8 @@ import org.jspecify.annotations.Nullable;
  */
 public final class TankFluids {
 
-    private static final Map<Long, Fluid> FLUIDS = new HashMap<>();
+    // Written on the main thread and read by the chunk-section builders, which run off it.
+    private static final Map<Long, Fluid> FLUIDS = new ConcurrentHashMap<>();
 
     private TankFluids() {
     }
@@ -30,10 +31,10 @@ public final class TankFluids {
     static void accept(Level level, BlockPos pos, String fluid) {
         Identifier id = Identifier.tryParse(fluid);
         Fluid known = id == null ? null : BuiltInRegistries.FLUID.getOptional(id).orElse(null);
-        if (known == null || known == Fluids.EMPTY) {
-            FLUIDS.remove(pos.asLong());
-        } else {
-            FLUIDS.put(pos.asLong(), known);
+        Fluid after = known == Fluids.EMPTY ? null : known;
+        Fluid before = after == null ? FLUIDS.remove(pos.asLong()) : FLUIDS.put(pos.asLong(), after);
+        if (before == after) {
+            return;
         }
         // The colour is part of the chunk's mesh, which a new blockstate rebuilds but a new fluid at the same step does not.
         BlockState state = level.getBlockState(pos);

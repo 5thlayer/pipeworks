@@ -49,14 +49,14 @@ runs and the broken node's share, and it cannot be taken back exactly.
 **A tank shows its segment's fill as a blockstate.** The client has no segments, so what a player
 sees of one is what the server tells it. The storage tank has a `level` property, 0 to 15, which the
 server sets when the fill fraction of the tank's segment crosses a step (`SegmentGraph.step`: 0 for
-none, 15 for full, rounded down in between and never below 1 while any is held). The way `redraw`
+none, 15 for full, rounded down in between and never below 1 while it holds any). The way `redraw`
 sets a pipe's arms, it does so on the level tick for the segments whose fill changed since, and only
 when the step or the fluid did, so a busy segment costs at most one change a tick and a flow inside
 a step none. A waiting tank is in no segment and shows 0. The model draws a fluid layer in the
 glass at the height of the step, in a white texture. Its colour is the fluid's, which a blockstate
-cannot hold: the server sends the tank's fluid id to the clients tracking it, and to a player when a
-chunk reaches them, and a block colour handler tints the layer with it. That is all that is sent,
-not the amount. Only tanks show a level; a pipe is too thin to show one and Jade, which reads the
+cannot hold: the server sends the tank's fluid id to the clients tracking it when it changes, and
+to a player when a chunk reaches them, found through an index of the nodes by chunk, and a block colour handler tints the layer with it. That is all that is sent,
+not the amount. Only tanks show their fill; a pipe is too thin to show it and Jade, which reads the
 server's segment, covers every node. Considered: a block entity with a renderer, which draws the
 fluid's own texture and an exact height, but it gives up the plain block: every tank would carry a
 block entity holding only what its segment already knows.

@@ -56,7 +56,11 @@ public class PipeworksJadePlugin implements IWailaPlugin {
             if (!(accessor.getLevel() instanceof ServerLevel level)) {
                 return;
             }
-            FluidSegments segments = FluidSegments.get(level);
+            // Read without creating the level's segments or settling them, as a HUD query should.
+            FluidSegments segments = level.getDataStorage().get(FluidSegments.TYPE);
+            if (segments == null) {
+                return;
+            }
             SegmentGraph.Contents contents = segments.contentsAt(accessor.getPosition());
             if (contents != null) {
                 if (contents.fluid() != null) {

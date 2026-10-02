@@ -3,13 +3,12 @@
   "block.pipeworks.pipe": "Pipe",
   "block.pipeworks.storage_tank": "Storage Tank",
   "config.jade.plugin_pipeworks.segment": "Fluid segment",
+  "config.jade.plugin_pipeworks.waiting": "Waiting fluid node",
   "item.pipeworks.creative_pipe": "Creative Pipe",
   "item.pipeworks.pipe": "Pipe",
   "item.pipeworks.storage_tank": "Storage Tank",
   "itemGroup.pipeworks.items": "Pipeworks",
   "message.pipeworks.mixed_fluids": "Those pipes hold different fluids",
   "screen.pipeworks.creative_pipe.fluid": "Click with a bucket to set the fluid, or with an empty cursor to clear it",
-  "tooltip.pipeworks.jade.contents": "%s: %s / %s mB",
-  "tooltip.pipeworks.jade.empty": "Empty: %s / %s mB",
   "tooltip.pipeworks.jade.waiting": "Waiting: it would mix two fluids"
 }

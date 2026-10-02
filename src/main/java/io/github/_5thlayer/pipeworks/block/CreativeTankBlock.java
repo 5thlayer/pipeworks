@@ -49,18 +49,19 @@ public class CreativeTankBlock extends StorageTankBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
-        boolean empty = stack.is(Items.BUCKET);
-        if (!empty && !(stack.getItem() instanceof BucketItem bucket && bucket.content != Fluids.EMPTY)) {
+        boolean emptyBucket = stack.is(Items.BUCKET);
+        Fluid poured = stack.getItem() instanceof BucketItem bucket ? bucket.content : Fluids.EMPTY;
+        if (!emptyBucket && poured == Fluids.EMPTY) {
             return super.useItemOn(stack, state, level, pos, player, hand, hit);
         }
         if (!(level instanceof ServerLevel server)) {
             return InteractionResult.SUCCESS;
         }
         FluidSegments segments = FluidSegments.get(server);
-        if (empty) {
+        if (emptyBucket) {
             return fill(segments.sourceAt(pos), stack, player, hand);
         }
-        if (!segments.source(pos, ((BucketItem) stack.getItem()).content)) {
+        if (!segments.source(pos, poured)) {
             if (player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendOverlayMessage(Component.translatable("message.pipeworks.mixed_fluids"));
             }

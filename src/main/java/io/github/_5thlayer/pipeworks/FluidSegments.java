@@ -98,7 +98,7 @@ public final class FluidSegments extends SavedData {
         this.graph = new SegmentGraph();
     }
 
-    private FluidSegments(List<NodeRecord> nodes, List<ContentsRecord> contents, List<SourceRecord> sourced) {
+    private FluidSegments(List<NodeRecord> nodes, List<ContentsRecord> contents, List<SourceRecord> sourceRecords) {
         for (NodeRecord node : nodes) {
             specs.put(node.node(), new Spec(node.capacity(), node.mask()));
             if (node.waiting()) {
@@ -121,10 +121,16 @@ public final class FluidSegments extends SavedData {
             LOGGER.warn("Emptied the fluid segments holding fluids this game does not have: {}", unknown);
         }
         this.graph = SegmentGraph.restore(joined, known);
-        for (SourceRecord record : sourced) {
-            if (specs.containsKey(record.node()) && fluid(record.fluid()) != null) {
+        Set<String> unknownSources = new HashSet<>();
+        for (SourceRecord record : sourceRecords) {
+            if (fluid(record.fluid()) == null) {
+                unknownSources.add(record.fluid());
+            } else if (specs.containsKey(record.node())) {
                 sources.put(record.node(), record.fluid());
             }
+        }
+        if (!unknownSources.isEmpty()) {
+            LOGGER.warn("Cleared the creative tanks set to fluids this game does not have: {}", unknownSources);
         }
     }
 
@@ -208,16 +214,25 @@ public final class FluidSegments extends SavedData {
         }
     }
 
-    /** The fluid the creative tank at {@code pos} keeps its segment full of, or null if it has none set. */
+    /**
+     * The fluid the creative tank at {@code pos} keeps its segment full of, or null if it has none set
+     * or its segment holds another fluid.
+     */
     public @Nullable Fluid sourceAt(BlockPos pos) {
-        String key = sources.get(pos.asLong());
-        return key == null ? null : fluid(key);
+        long node = pos.asLong();
+        String key = sources.get(node);
+        if (key == null) {
+            return null;
+        }
+        String contained = joined(node) ? graph.contents(node).fluid() : null;
+        return contained != null && !contained.equals(key) ? null : fluid(key);
     }
 
     /**
      * Sets the fluid the creative tank at {@code pos} keeps its segment full of, and fills the segment
-     * with it. Refused for a tank in no segment, for one already set to another fluid and for a
-     * segment holding another fluid: clearing a tank is breaking it.
+     * with it. Refused for a tank in no segment, for one already set to another fluid, and for a
+     * segment that holds another fluid or has another creative tank set to one: clearing a tank is
+     * breaking it.
      *
      * @return whether the tank now sources {@code fluid}
      */
@@ -227,10 +242,15 @@ public final class FluidSegments extends SavedData {
             return false;
         }
         String key = key(fluid);
-        String set = sources.get(node);
-        String held = graph.contents(node).fluid();
-        if ((set != null && !set.equals(key)) || (held != null && !held.equals(key))) {
+        String contained = graph.contents(node).fluid();
+        if (contained != null && !contained.equals(key)) {
             return false;
+        }
+        int segment = graph.segmentOf(node);
+        for (Map.Entry<Long, String> other : sources.entrySet()) {
+            if (!other.getValue().equals(key) && joined(other.getKey()) && graph.segmentOf(other.getKey()) == segment) {
+                return false;
+            }
         }
         if (sources.put(node, key) == null) {
             setDirty();

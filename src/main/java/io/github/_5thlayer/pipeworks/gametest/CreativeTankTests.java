@@ -40,6 +40,7 @@ final class CreativeTankTests {
         tests.test("a_bucket_of_water_on_a_creative_tank_fills_its_segment_every_tick", 20, CreativeTankTests::fillsSegment);
         tests.test("a_bucket_of_lava_is_refused_by_a_creative_tank_whose_segment_holds_water", 20, CreativeTankTests::refusesLava);
         tests.test("a_creative_tank_set_to_water_refuses_lava", 20, CreativeTankTests::refusesOtherThanSet);
+        tests.test("a_creative_tank_refuses_a_fluid_another_in_its_drained_segment_sources", 20, CreativeTankTests::refusesOtherSource);
         tests.test("an_empty_bucket_fills_from_a_creative_tank_any_number_of_times", 20, CreativeTankTests::fillsBuckets);
         tests.test("a_creative_tanks_fluid_survives_a_save_and_load", 20, CreativeTankTests::survivesSaving);
         tests.test("breaking_a_creative_tank_stops_it_sourcing", 20, CreativeTankTests::breakingClears);
@@ -142,6 +143,20 @@ final class CreativeTankTests {
         }).thenSucceed();
     }
 
+    private static void refusesOtherSource(GameTestHelper helper) {
+        creativeTank(helper);
+        helper.setBlock(at(1), PipeworksRegistries.PIPE.get().defaultBlockState());
+        helper.setBlock(at(2), PipeworksRegistries.CREATIVE_TANK.get().defaultBlockState());
+        helper.useBlock(at(0), holding(helper, new ItemStack(Items.WATER_BUCKET)));
+        extract(faceAt(helper, 1), FluidResource.of(Fluids.WATER), Integer.MAX_VALUE);
+        helper.useBlock(at(2), holding(helper, new ItemStack(Items.LAVA_BUCKET)));
+        if (FluidSegments.get(helper.getLevel()).sourceAt(helper.absolutePos(at(2))) != null) {
+            helper.fail("a creative tank took lava while another in its drained segment sources water", at(2));
+            return;
+        }
+        helper.succeed();
+    }
+
     private static void fillsBuckets(GameTestHelper helper) {
         creativeTank(helper);
         Player player = holding(helper, new ItemStack(Items.BUCKET));
@@ -175,6 +190,11 @@ final class CreativeTankTests {
         var loaded = FluidSegments.CODEC.parse(NbtOps.INSTANCE, saved).getOrThrow();
         if (loaded.sourceAt(helper.absolutePos(at(0))) != Fluids.WATER) {
             helper.fail("the saved creative tank came back sourcing " + loaded.sourceAt(helper.absolutePos(at(0))), at(0));
+            return;
+        }
+        var contents = loaded.contentsAt(helper.absolutePos(at(0)));
+        if (contents == null || !"minecraft:water".equals(contents.fluid()) || contents.amount() != Pipeworks.TANK_CAPACITY) {
+            helper.fail("the saved creative tank's segment came back as " + contents, at(0));
             return;
         }
         helper.succeed();

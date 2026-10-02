@@ -27,6 +27,10 @@ _Avoid_: part, pipe (a pipe is one kind of node)
 A Consumer's block entity that joins a segment through the `FluidPort` API, so a machine fills and drains pipes. It adds no capacity unless it says so.
 _Avoid_: connector, fluid face (a face is NeoForge's capability on one side of a block)
 
+**Creative tank**:
+A storage tank that keeps its segment full of the fluid a bucket set it to, with no recipe. A segment has at most one fluid among its creative tanks.
+_Avoid_: infinite tank, source block (collides with the game's fluid source blocks)
+
 **Mixing**:
 Joining two segments that hold different fluids. A player's placement that would is refused.
 _Avoid_: contamination

@@ -8,6 +8,7 @@ A 5thlayer Library: a mod the FactoryWorks Pack consumes as a pinned local jar. 
 
 - A pipe holds 100 mB and a storage tank 25,000 mB, Factorio's volumes. Placing a block that would join two segments holding different fluids is refused.
 - The creative pipe (`pipeworks:creative_pipe`, creative tab and `/give`, no recipe) is a pipe that keeps its segment full of the fluid its screen sets, so a pipe run can be tried with nothing else installed. Right-click opens the screen: click its slot with a bucket, or any item holding a fluid, to set the fluid, and with an empty cursor to clear it. With JEI or EMI installed, a fluid can be dragged onto the slot. Breaking it stops the refill.
+- A storage tank shows how full its segment is, in fifteen steps, as fluid of the right colour in its glass. With [Jade](https://www.curseforge.com/minecraft/mc-mods/jade) installed, looking at a pipe, a tank or a port shows its segment's fluid, amount and capacity, or that it waits.
 - Breaking a pipe, tank or port splits its segment by capacity; the broken block takes its share of the fluid. Segments are saved with the level and keep their fluid through chunk unloading.
 - A mod's block entity joins a segment by implementing `FluidPort` (`io.github._5thlayer.pipeworks.api`). It calls `FluidPorts.join(this)` from `onLoad`, its block calls `FluidPorts.leave(level, pos)` when removed, and it fills and drains the segment through `FluidPorts.segment(level, pos)`, a NeoForge `ResourceHandler<FluidResource>`. A pipe or tank also exposes that handler as `Capabilities.Fluid.BLOCK`.
 

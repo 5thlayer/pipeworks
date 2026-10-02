@@ -10,12 +10,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-/** The Library's client side: the creative pipe's screen. */
+/** The Library's client side: the creative pipe's screen and the tanks' fluid tint. */
 @Mod(value = Pipeworks.MOD_ID, dist = Dist.CLIENT)
 public final class PipeworksClient {
 
     public PipeworksClient(IEventBus modBus) {
         modBus.addListener(PipeworksClient::registerScreens);
+        TankTint.register(modBus);
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {

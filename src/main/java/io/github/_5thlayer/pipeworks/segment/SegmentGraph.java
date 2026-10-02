@@ -199,6 +199,26 @@ public final class SegmentGraph {
         return view(segment);
     }
 
+    /** The nodes of a segment, or none for a segment that no longer exists, as a merge or a split retires ids. */
+    public List<Long> nodesOf(int id) {
+        Segment segment = segments.get(id);
+        return segment == null ? List.of() : List.copyOf(segment.nodes);
+    }
+
+    /**
+     * Which of {@code steps} a segment's fill shows as: 0 for none, then rounded down but never below
+     * 1 while it holds any, so only a full segment reaches the top. A tank's level property is this.
+     */
+    public static int step(long amount, long capacity, int steps) {
+        if (amount <= 0 || capacity <= 0) {
+            return 0;
+        }
+        if (amount >= capacity) {
+            return steps;
+        }
+        return Math.max(1, (int) (amount * steps / capacity));
+    }
+
     /** Puts in what fits and returns it; a segment holding another fluid takes none. */
     public long insert(long node, String fluid, long amount, boolean simulate) {
         Segment segment = require(node).segment;

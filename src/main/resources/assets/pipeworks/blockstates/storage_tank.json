@@ -1,7 +1,129 @@
 {
-  "variants": {
-    "": {
-      "model": "pipeworks:block/storage_tank"
+  "multipart": [
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank"
+      }
+    },
+    {
+      "when": {
+        "level": "1"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1"
+      }
+    },
+    {
+      "when": {
+        "level": "2"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2"
+      }
+    },
+    {
+      "when": {
+        "level": "3"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3"
+      }
+    },
+    {
+      "when": {
+        "level": "4"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4"
+      }
+    },
+    {
+      "when": {
+        "level": "5"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5"
+      }
+    },
+    {
+      "when": {
+        "level": "6"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6"
+      }
+    },
+    {
+      "when": {
+        "level": "7"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7"
+      }
+    },
+    {
+      "when": {
+        "level": "8"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8"
+      }
+    },
+    {
+      "when": {
+        "level": "9"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9"
+      }
+    },
+    {
+      "when": {
+        "level": "10"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10"
+      }
+    },
+    {
+      "when": {
+        "level": "11"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11"
+      }
+    },
+    {
+      "when": {
+        "level": "12"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12"
+      }
+    },
+    {
+      "when": {
+        "level": "13"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13"
+      }
+    },
+    {
+      "when": {
+        "level": "14"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14"
+      }
+    },
+    {
+      "when": {
+        "level": "15"
+      },
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15"
+      }
     }
-  }
+  ]
 }

@@ -112,6 +112,9 @@ dependencies {
     clientMods "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
     compileOnly "mezz.jei:jei-26.1.2-neoforge-api:$jeiVersion"
     clientMods "mezz.jei:jei-26.1.2-neoforge:$jeiVersion"
+    // Jade finds the HUD plugin by its annotation, so the Library runs without it.
+    compileOnly 'curse.maven:jade-324717:8651070'
+    clientMods 'curse.maven:jade-324717:8651070'
 
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'

@@ -326,4 +326,52 @@ class SegmentGraphTest {
         graph.setContents(segment, null, 0);
         assertNull(graph.contents(1).fluid());
     }
+
+    @Test
+    void anEmptySegmentIsStepZero() {
+        assertEquals(0, SegmentGraph.step(0, TANK, 15));
+    }
+
+    @Test
+    void aFullSegmentIsTheTopStep() {
+        assertEquals(15, SegmentGraph.step(TANK, TANK, 15));
+    }
+
+    @Test
+    void aHalfFullSegmentRoundsDownToTheStepBelow() {
+        assertEquals(7, SegmentGraph.step(TANK / 2, TANK, 15));
+    }
+
+    @Test
+    void anyFluidAtAllIsAtLeastStepOneAndOnlyAFullSegmentIsStepFifteen() {
+        assertEquals(1, SegmentGraph.step(1, TANK, 15));
+        assertEquals(14, SegmentGraph.step(TANK - 1, TANK, 15));
+    }
+
+    @Test
+    void aStepRisesAtEachFifteenthOfTheCapacity() {
+        for (int step = 1; step <= 15; step++) {
+            assertEquals(step, SegmentGraph.step((TANK * step + 14) / 15, TANK, 15));
+        }
+    }
+
+    @Test
+    void anAmountBeyondTheCapacityIsTheTopStep() {
+        assertEquals(15, SegmentGraph.step(TANK * 2, TANK, 15));
+    }
+
+    @Test
+    void aSegmentWithNoCapacityIsStepZero() {
+        assertEquals(0, SegmentGraph.step(5, 0, 15));
+    }
+
+    @Test
+    void aSegmentListsItsNodesAndAnIdThatIsGoneHasNone() {
+        SegmentGraph graph = line(3);
+        int id = graph.segmentOf(0);
+        assertEquals(Set.of(0L, 1L, 2L), Set.copyOf(graph.nodesOf(id)));
+        graph.remove(1);
+        assertFalse(graph.nodesOf(id).contains(1L));
+        assertEquals(List.of(), graph.nodesOf(9999));
+    }
 }

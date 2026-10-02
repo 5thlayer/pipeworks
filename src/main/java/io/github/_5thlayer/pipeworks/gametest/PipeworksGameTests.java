@@ -63,6 +63,7 @@ public final class PipeworksGameTests {
         LoadTests.register(tests);
         SegmentTests.register(tests);
         CreativePipeTests.register(tests);
+        TankLevelTests.register(tests);
     }
 
     private static Identifier id(String path) {

@@ -29,6 +29,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -94,6 +95,8 @@ public final class FluidSegments extends SavedData {
     /** The fluid each creative pipe keeps its segment full of, by node. */
     private final Map<Long, String> sources = new HashMap<>();
     private final Map<Integer, Journal> journals = new HashMap<>();
+    /** What the storage tanks show of their segments (ADR 0003). */
+    private final TankLevels levels = new TankLevels();
 
     private FluidSegments() {
         this.graph = new SegmentGraph();
@@ -148,7 +151,17 @@ public final class FluidSegments extends SavedData {
             if (segments != null) {
                 segments.settle(level);
                 segments.refill();
+                segments.levels.update(level, segments.graph);
             }
+        }
+    }
+
+    /** A client was just sent a chunk: tell it the fluid of the tanks in it, and set any that fell behind. */
+    static void onChunkSent(ChunkWatchEvent.Sent event) {
+        ServerLevel level = event.getLevel();
+        FluidSegments segments = level.getDataStorage().get(TYPE);
+        if (segments != null) {
+            segments.levels.chunkSent(level, segments.graph, segments.specs.keySet(), event.getPlayer(), event.getPos());
         }
     }
 
@@ -281,6 +294,11 @@ public final class FluidSegments extends SavedData {
         return joined(pos.asLong()) ? graph.contents(pos.asLong()) : null;
     }
 
+    /** Whether {@code pos} is a node that waits outside every segment (ADR 0003). */
+    public boolean waits(BlockPos pos) {
+        return waiting.contains(pos.asLong());
+    }
+
     private boolean joined(long node) {
         return specs.containsKey(node) && !waiting.contains(node);
     }
@@ -320,6 +338,7 @@ public final class FluidSegments extends SavedData {
             long node = source.getKey();
             if (joined(node) && graph.insert(node, source.getValue(), Long.MAX_VALUE, false) > 0) {
                 setDirty();
+                levels.touch(graph.segmentOf(node));
             }
         }
     }
@@ -327,11 +346,21 @@ public final class FluidSegments extends SavedData {
     private void changed(ServerLevel level, long node) {
         journals.clear();
         setDirty();
+        levels.forgetAll();
+        touchLevels(node);
         BlockPos pos = BlockPos.of(node);
         level.invalidateCapabilities(pos);
         redraw(level, pos);
         for (Direction face : Direction.values()) {
             redraw(level, pos.relative(face));
+            touchLevels(pos.relative(face).asLong());
+        }
+    }
+
+    /** Marks the segment of {@code node}, if it is in one, for its tanks to show its fill. */
+    private void touchLevels(long node) {
+        if (graph.contains(node)) {
+            levels.touch(graph.segmentOf(node));
         }
     }
 
@@ -414,6 +443,7 @@ public final class FluidSegments extends SavedData {
         protected void revertToSnapshot(SegmentGraph.Contents snapshot) {
             graph.setContents(segment, snapshot.fluid(), snapshot.amount());
             setDirty();
+            levels.touch(segment);
         }
     }
 
@@ -487,6 +517,7 @@ public final class FluidSegments extends SavedData {
                 journals.computeIfAbsent(graph.segmentOf(node), Journal::new).updateSnapshots(transaction);
                 move.apply(node, fluid, moved, false);
                 setDirty();
+                levels.touch(graph.segmentOf(node));
             }
             return (int) moved;
         }

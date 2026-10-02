@@ -40,6 +40,11 @@ neoForge {
     version = neoforge_version
 
     runs {
+        // EMI's 26.1 port still carries @OnlyIn, and a dev run halts on a warning screen over it that
+        // production never shows.
+        configureEach {
+            systemProperty 'neoforge.warnings.onlyin.hide', 'true'
+        }
         // The same player every launch, so a dev save keeps its inventory and position.
         client {
             client()

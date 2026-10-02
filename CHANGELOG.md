@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.1.1
+
 - `FluidPipes.wouldLink(level, pos, side)` reads whether a pipe placed at a position would link on a side, for a Consumer that plans pipes: on the server as placement would, so not to a waiting node and nowhere for a pipe that would join two fluids; on the client, whether the block beside opens towards it (#5).
 
 ## 0.1.0

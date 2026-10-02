@@ -43,6 +43,8 @@ neoForge {
             type = 'gameTestServer'
             gameDirectory = project.file('run/gametest')
             programArguments.addAll '--tests', "${mod_id}:*", '--report', gameTestReport.absolutePath
+            // Marks this run as the Library's own, which is when it registers its test port block.
+            systemProperty 'pipeworks.gametest', 'true'
         }
     }
 
@@ -86,8 +88,8 @@ test {
     useJUnitPlatform()
 }
 
-// The jar is what players are handed, so it carries the MIT licence the Library is under.
-def jarLicensing = ['LICENSE', 'LICENSES/MIT.txt']
+// The jar is what players are handed, so it carries the MIT licence the Library is under and the CC0 one of the Oritech art in it.
+def jarLicensing = ['LICENSE', 'LICENSES/MIT.txt', 'LICENSES/CC0-1.0.txt']
 tasks.named('jar', Jar) {
     from(rootDir) { include jarLicensing }
 }

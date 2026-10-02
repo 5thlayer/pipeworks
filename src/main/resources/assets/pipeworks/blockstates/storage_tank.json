@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "pipeworks:block/storage_tank"
+    }
+  }
+}

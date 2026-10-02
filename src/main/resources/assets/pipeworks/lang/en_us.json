@@ -1,0 +1,8 @@
+{
+  "block.pipeworks.pipe": "Pipe",
+  "block.pipeworks.storage_tank": "Storage Tank",
+  "item.pipeworks.pipe": "Pipe",
+  "item.pipeworks.storage_tank": "Storage Tank",
+  "itemGroup.pipeworks.items": "Pipeworks",
+  "message.pipeworks.mixed_fluids": "Those pipes hold different fluids"
+}

@@ -18,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
@@ -29,6 +30,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class PipeworksGameTests {
 
     private static final Identifier PLATFORM = id("gametest/platform");
+
+    /**
+     * Set by the Library's own {@code gameTestServer} run. A Consumer's game test server also has
+     * game tests enabled, and there the Library's test port block has no business existing.
+     */
+    private static final String OWN_RUN = "pipeworks.gametest";
 
     private static final DeferredRegister<MapCodec<? extends GameTestInstance>> TEST_TYPES =
             DeferredRegister.create(Registries.TEST_INSTANCE_TYPE, Pipeworks.MOD_ID);
@@ -42,7 +49,10 @@ public final class PipeworksGameTests {
 
     public static void register(IEventBus modBus) {
         TEST_TYPES.register(modBus);
-        // Posted only when game tests are enabled, so a production server never registers the tests.
+        if (!GameTestHooks.isGametestEnabled() || !Boolean.getBoolean(OWN_RUN)) {
+            return;
+        }
+        TestPort.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
     }
 
@@ -51,6 +61,7 @@ public final class PipeworksGameTests {
         var environment = event.registerEnvironment(id("default"), new TestEnvironmentDefinition.AllOf(List.of()));
         var tests = new Registrar(event, environment);
         LoadTests.register(tests);
+        SegmentTests.register(tests);
     }
 
     private static Identifier id(String path) {

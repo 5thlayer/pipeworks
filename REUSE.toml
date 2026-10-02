@@ -26,3 +26,19 @@ path = ["gradlew", "gradlew.bat", "gradle/wrapper/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "Gradle"
 SPDX-License-Identifier = "Apache-2.0"
+
+# Vendored from Oritech v1.2.12 (https://github.com/Rearth/Oritech), which is CC0 1.0: its fluid
+# pipe and small tank models and textures, renamed and retextured to this Library's ids. None of it
+# is from the ArtOfTecharium or unused-textures sets its README lists as CC BY-NC and CC BY.
+[[annotations]]
+path = [
+    "src/main/resources/assets/pipeworks/models/block/pipe_core.json",
+    "src/main/resources/assets/pipeworks/models/block/pipe_arm.json",
+    "src/main/resources/assets/pipeworks/models/block/pipe_straight.json",
+    "src/main/resources/assets/pipeworks/models/block/storage_tank.json",
+    "src/main/resources/assets/pipeworks/textures/block/pipe.png",
+    "src/main/resources/assets/pipeworks/textures/block/storage_tank.png",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Rearth"
+SPDX-License-Identifier = "CC0-1.0"

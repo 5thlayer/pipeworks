@@ -8,8 +8,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 /**
- * The Library's entry point. It registers the game tests, which exist only when game tests are
- * enabled, and nothing else yet.
+ * Pipes, a storage tank and the fluid-port API that join machines to them, on Factorio 2.0's fluid
+ * segments (ADR-0110). The Library registers no fluid: it carries whatever a Consumer puts in.
  */
 @Mod(Pipeworks.MOD_ID)
 public final class Pipeworks {
@@ -17,7 +17,14 @@ public final class Pipeworks {
     /** The mod id, which gradle.properties' {@code mod_id} must match. */
     public static final String MOD_ID = "pipeworks";
 
+    /** Factorio's pipe volume, in millibuckets. */
+    public static final long PIPE_CAPACITY = 100;
+
+    /** Factorio's storage tank volume, in millibuckets. */
+    public static final long TANK_CAPACITY = 25_000;
+
     public Pipeworks(IEventBus modBus) {
+        PipeworksRegistries.register(modBus);
         PipeworksGameTests.register(modBus);
     }
 }

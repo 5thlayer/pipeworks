@@ -9,7 +9,6 @@ import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.api.FluidPort;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -49,7 +48,7 @@ public class PipeworksJadePlugin implements IWailaPlugin {
     private static final Identifier SEGMENT = Identifier.fromNamespaceAndPath(Pipeworks.MOD_ID, "segment");
     private static final Identifier WAITING = Identifier.fromNamespaceAndPath(Pipeworks.MOD_ID, "waiting");
 
-    private static final String WAITS = "SegmentWaiting";
+    private static final String WAITING_KEY = "SegmentWaiting";
 
     /** Only a node has a segment, and the client can tell a node's block from another's, if not whether it waits. */
     private static boolean mayBeNode(Accessor<?> accessor) {
@@ -71,8 +70,7 @@ public class PipeworksJadePlugin implements IWailaPlugin {
             if (contents == null) {
                 return null;
             }
-            Identifier id = contents.fluid() == null ? null : Identifier.tryParse(contents.fluid());
-            Fluid fluid = id == null ? null : BuiltInRegistries.FLUID.getOptional(id).orElse(null);
+            Fluid fluid = contents.fluid() == null ? null : FluidSegments.fluid(contents.fluid());
             JadeFluidObject shown = fluid == null ? JadeFluidObject.empty() : JadeFluidObject.of(fluid, contents.amount());
             return List.of(new ViewGroup<>(List.of(new FluidView.Data(shown, contents.capacity()))));
         }
@@ -105,7 +103,7 @@ public class PipeworksJadePlugin implements IWailaPlugin {
         public void appendServerData(CompoundTag tag, BlockAccessor accessor) {
             FluidSegments segments = segments(accessor);
             if (segments != null && segments.waits(accessor.getPosition())) {
-                tag.putBoolean(WAITS, true);
+                tag.putBoolean(WAITING_KEY, true);
             }
         }
 
@@ -123,7 +121,7 @@ public class PipeworksJadePlugin implements IWailaPlugin {
     private static final IBlockComponentProvider WAITING_LINE = new IBlockComponentProvider() {
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-            if (accessor.getServerData().getBooleanOr(WAITS, false)) {
+            if (accessor.getServerData().getBooleanOr(WAITING_KEY, false)) {
                 tooltip.add(Component.translatable("tooltip.pipeworks.jade.waiting"));
             }
         }

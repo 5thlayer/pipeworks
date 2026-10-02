@@ -439,7 +439,7 @@ public final class FluidSegments extends SavedData {
     }
 
     /** The registered fluid of this id, or null for an id that is malformed, unregistered or empty. */
-    private static @Nullable Fluid fluid(String key) {
+    public static @Nullable Fluid fluid(String key) {
         Identifier id = Identifier.tryParse(key);
         Fluid fluid = id == null ? null : BuiltInRegistries.FLUID.getOptional(id).orElse(null);
         return fluid == Fluids.EMPTY ? null : fluid;

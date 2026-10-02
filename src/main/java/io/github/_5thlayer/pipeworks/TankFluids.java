@@ -7,12 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -29,9 +27,7 @@ public final class TankFluids {
     }
 
     static void accept(Level level, BlockPos pos, String fluid) {
-        Identifier id = Identifier.tryParse(fluid);
-        Fluid known = id == null ? null : BuiltInRegistries.FLUID.getOptional(id).orElse(null);
-        Fluid after = known == Fluids.EMPTY ? null : known;
+        Fluid after = FluidSegments.fluid(fluid);
         Fluid before = after == null ? FLUIDS.remove(pos.asLong()) : FLUIDS.put(pos.asLong(), after);
         if (before == after) {
             return;

@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- `FluidPipes.wouldLink(level, pos, side)` reads whether a pipe placed at a position would link on a side, for a Consumer that plans pipes: on the server as placement would, so not to a waiting node and nowhere for a pipe that would join two fluids; on the client, whether the block beside opens towards it.
+
 ## 0.1.0
 
 - The pipe (100 mB) and the storage tank (25,000 mB), Factorio's volumes, join into fluid segments: a connected run is one fluid box holding one fluid, its capacity the sum of its parts and its flow instant. A pipe or tank that would join two fluids is not placed.

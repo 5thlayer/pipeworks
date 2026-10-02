@@ -6,6 +6,7 @@ package io.github._5thlayer.pipeworks.gametest;
 import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
 import io.github._5thlayer.pipeworks.Pipeworks;
+import io.github._5thlayer.pipeworks.api.FluidPipes;
 import io.github._5thlayer.pipeworks.api.FluidPorts;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
@@ -45,6 +46,9 @@ final class SegmentTests {
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("water_put_in_at_a_port_comes_out_of_a_tank", 20, SegmentTests::portToTank);
         tests.test("a_pipe_reports_the_sides_its_segment_links", 20, SegmentTests::reportsLinks);
+        tests.test("a_planned_pipe_would_link_to_the_nodes_beside_it", 20, SegmentTests::linksBeside);
+        tests.test("a_planned_pipe_would_not_link_to_a_waiting_pipe", 20, SegmentTests::wouldNotLinkToWaiting);
+        tests.test("a_planned_pipe_between_two_fluids_would_link_nowhere", 20, SegmentTests::wouldNotLinkMixing);
         tests.test("breaking_a_pipe_splits_the_fluid_by_capacity", 20, SegmentTests::splitByCapacity);
         tests.test("a_pipe_between_two_fluids_is_refused", 20, SegmentTests::refusesMixing);
         tests.test("fluid_survives_a_save_and_load", 20, SegmentTests::survivesSaving);
@@ -141,6 +145,56 @@ final class SegmentTests {
         helper.succeed();
     }
 
+    private static boolean wouldLink(GameTestHelper helper, int x, Direction side) {
+        return FluidPipes.wouldLink(level(helper), helper.absolutePos(at(x)), side);
+    }
+
+    private static void linksBeside(GameTestHelper helper) {
+        row(helper, 0, 0);
+        helper.setBlock(at(2), PipeworksRegistries.STORAGE_TANK.get().defaultBlockState());
+        helper.setBlock(at(4), TestPort.BLOCK.get().defaultBlockState());
+        helper.setBlock(at(5), Blocks.STONE);
+        helper.startSequence().thenIdle(PORT_JOINS).thenExecute(() -> {
+            if (!wouldLink(helper, 1, Direction.WEST) || !wouldLink(helper, 1, Direction.EAST) || !wouldLink(helper, 3, Direction.EAST)) {
+                helper.fail("a planned pipe would not link to the pipe, tank or port beside it", at(1));
+            }
+            if (wouldLink(helper, 1, Direction.UP)) {
+                helper.fail("a planned pipe would link to air", at(1));
+            }
+            if (wouldLink(helper, 6, Direction.WEST)) {
+                helper.fail("a planned pipe would link to stone", at(6));
+            }
+        }).thenSucceed();
+    }
+
+    private static void wouldNotLinkToWaiting(GameTestHelper helper) {
+        waterAndLava(helper);
+        row(helper, 1, 1);
+        if (contentsAt(helper, 1) != null) {
+            helper.fail("the pipe set between water and lava joined a segment instead of waiting", at(1));
+            return;
+        }
+        BlockPos above = helper.absolutePos(at(1)).above();
+        if (FluidPipes.wouldLink(level(helper), above, Direction.DOWN)) {
+            helper.fail("a planned pipe would link to the waiting pipe below it", at(1));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void wouldNotLinkMixing(GameTestHelper helper) {
+        waterAndLava(helper);
+        if (wouldLink(helper, 1, Direction.WEST) || wouldLink(helper, 1, Direction.EAST)) {
+            helper.fail("a planned pipe between water and lava would link, where placing it is refused", at(1));
+            return;
+        }
+        if (!wouldLink(helper, 3, Direction.WEST)) {
+            helper.fail("a planned pipe beside one fluid would not link", at(3));
+            return;
+        }
+        helper.succeed();
+    }
+
     private static void splitByCapacity(GameTestHelper helper) {
         helper.setBlock(at(0), TestPort.BLOCK.get().defaultBlockState());
         row(helper, 1, 4);
@@ -160,10 +214,7 @@ final class SegmentTests {
     }
 
     private static void refusesMixing(GameTestHelper helper) {
-        row(helper, 0, 0);
-        row(helper, 2, 2);
-        insert(pipeSegment(helper, 0), water(), 50);
-        insert(pipeSegment(helper, 2), FluidResource.of(Fluids.LAVA), 50);
+        waterAndLava(helper);
 
         var segments = FluidSegments.get(level(helper));
         if (segments.canJoin(helper.absolutePos(at(1)), FluidSegments.ALL_FACES)) {
@@ -171,6 +222,14 @@ final class SegmentTests {
             return;
         }
         helper.succeed();
+    }
+
+    /** A pipe of 50 mB of water at x 0 and one of 50 mB of lava at x 2, with nothing between. */
+    private static void waterAndLava(GameTestHelper helper) {
+        row(helper, 0, 0);
+        row(helper, 2, 2);
+        insert(pipeSegment(helper, 0), water(), 50);
+        insert(pipeSegment(helper, 2), FluidResource.of(Fluids.LAVA), 50);
     }
 
     private static ResourceHandler<FluidResource> pipeSegment(GameTestHelper helper, int x) {
@@ -245,10 +304,7 @@ final class SegmentTests {
     }
 
     private static void portWaits(GameTestHelper helper) {
-        row(helper, 0, 0);
-        row(helper, 2, 2);
-        insert(pipeSegment(helper, 0), water(), 50);
-        insert(pipeSegment(helper, 2), FluidResource.of(Fluids.LAVA), 50);
+        waterAndLava(helper);
         helper.setBlock(at(1), TestPort.BLOCK.get().defaultBlockState());
         helper.startSequence().thenIdle(PORT_JOINS).thenExecute(() -> {
             if (portSegment(helper, 1) != null) {
@@ -270,10 +326,7 @@ final class SegmentTests {
     }
 
     private static void pipeWaits(GameTestHelper helper) {
-        row(helper, 0, 0);
-        row(helper, 2, 2);
-        insert(pipeSegment(helper, 0), water(), 50);
-        insert(pipeSegment(helper, 2), FluidResource.of(Fluids.LAVA), 50);
+        waterAndLava(helper);
         row(helper, 1, 1);
         if (contentsAt(helper, 1) != null || pipeSegment(helper, 1) != null) {
             helper.fail("a pipe set between water and lava joined a segment", at(1));

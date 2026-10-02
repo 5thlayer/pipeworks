@@ -156,6 +156,14 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
+     * Whether a node opening every face at {@code pos} would link to the node on {@code side}: it would
+     * join without mixing, and that node is in a segment and opens the face between them.
+     */
+    public boolean wouldLink(BlockPos pos, Direction side) {
+        return neighbours(pos, bit(side)).length > 0 && canJoin(pos, ALL_FACES);
+    }
+
+    /**
      * Places a node at {@code pos}, or does nothing if one is there. A node that would mix two fluids
      * waits in no segment and joins once it no longer would (ADR 0003).
      *

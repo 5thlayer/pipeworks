@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.1.0
+
 - The pipe (100 mB) and the storage tank (25,000 mB), Factorio's volumes, join into fluid segments: a connected run is one fluid box holding one fluid, its capacity the sum of its parts and its flow instant. A pipe or tank that would join two fluids is not placed.
 - The `FluidPort` API (`io.github._5thlayer.pipeworks.api`): a block entity that implements it and calls `FluidPorts.join` from `onLoad` joins the segments beside it, and moves fluid through `FluidPorts.segment`. Its block calls `FluidPorts.leave` when removed.
 - Pipes and tanks expose `Capabilities.Fluid.BLOCK`, a segment as one fluid slot.

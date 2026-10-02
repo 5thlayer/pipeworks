@@ -24,7 +24,8 @@ public final class FluidPorts {
     /**
      * Joins the segments of the pipes and tanks beside the port, on the faces both open. Safe to call
      * on every load: a port already in a segment stays where it is, so a world's fluid survives
-     * a reload. A port that would have joined two fluids stays out of every segment.
+     * a reload. A port that would have joined two fluids stays out of every segment, and joins once
+     * it no longer would.
      *
      * @return whether the port is in a segment
      */
@@ -32,12 +33,12 @@ public final class FluidPorts {
         if (!(port.getLevel() instanceof ServerLevel level)) {
             return false;
         }
-        return FluidSegments.get(level).join(port.getBlockPos(), port.capacity(), maskOf(port::connectsOn));
+        return FluidSegments.get(level).join(level, port.getBlockPos(), port.capacity(), maskOf(port::connectsOn));
     }
 
     /** Takes the port out of its segment. Call it when the block is removed, never when its chunk unloads. */
     public static void leave(ServerLevel level, BlockPos pos) {
-        FluidSegments.get(level).leave(pos);
+        FluidSegments.get(level).leave(level, pos);
     }
 
     /**

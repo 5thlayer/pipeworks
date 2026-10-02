@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ class SegmentGraphTest {
     }
 
     private static long totalHeld(SegmentGraph graph, long... nodes) {
-        return java.util.Arrays.stream(nodes).mapToInt(graph::segmentOf).distinct()
+        return Arrays.stream(nodes).mapToInt(graph::segmentOf).distinct()
                 .mapToLong(id -> graph.segment(id).amount()).sum();
     }
 
@@ -42,7 +43,7 @@ class SegmentGraphTest {
     void aLoneNodeIsASegmentOfItsOwnCapacity() {
         SegmentGraph graph = new SegmentGraph();
         graph.add(1, PIPE);
-        assertEquals(new SegmentGraph.Held(graph.segmentOf(1), null, 0, PIPE, 1), graph.held(1));
+        assertEquals(new SegmentGraph.Contents(graph.segmentOf(1), null, 0, PIPE, 1), graph.contents(1));
     }
 
     @Test
@@ -50,8 +51,8 @@ class SegmentGraphTest {
         SegmentGraph graph = line(5);
         graph.add(5, TANK, 4);
         assertEquals(1, graph.segmentCount());
-        assertEquals(5 * PIPE + TANK, graph.held(0).capacity());
-        assertEquals(6, graph.held(3).nodes());
+        assertEquals(5 * PIPE + TANK, graph.contents(0).capacity());
+        assertEquals(6, graph.contents(3).nodes());
         assertEquals(graph.segmentOf(0), graph.segmentOf(5));
     }
 
@@ -64,7 +65,7 @@ class SegmentGraphTest {
         graph.insert(2, WATER, 30, false);
         graph.add(1, PIPE, 0, 2);
         assertEquals(1, graph.segmentCount());
-        assertEquals(new SegmentGraph.Held(graph.segmentOf(1), WATER, 90, 3 * PIPE, 3), graph.held(1));
+        assertEquals(new SegmentGraph.Contents(graph.segmentOf(1), WATER, 90, 3 * PIPE, 3), graph.contents(1));
     }
 
     @Test
@@ -72,7 +73,7 @@ class SegmentGraphTest {
         SegmentGraph graph = line(50);
         assertEquals(500, graph.insert(0, WATER, 500, false));
         assertEquals(500, graph.extract(49, WATER, 500, false));
-        assertNull(graph.held(0).fluid());
+        assertNull(graph.contents(0).fluid());
     }
 
     @Test
@@ -80,17 +81,17 @@ class SegmentGraphTest {
         SegmentGraph graph = line(3);
         assertEquals(300, graph.insert(0, WATER, 1000, false));
         assertEquals(0, graph.insert(2, WATER, 1, false));
-        assertEquals(300, graph.held(1).amount());
+        assertEquals(300, graph.contents(1).amount());
     }
 
     @Test
     void aSimulatedInsertOrExtractChangesNothing() {
         SegmentGraph graph = line(2);
         assertEquals(150, graph.insert(0, WATER, 150, true));
-        assertEquals(0, graph.held(0).amount());
+        assertEquals(0, graph.contents(0).amount());
         graph.insert(0, WATER, 150, false);
         assertEquals(40, graph.extract(1, null, 40, true));
-        assertEquals(150, graph.held(0).amount());
+        assertEquals(150, graph.contents(0).amount());
     }
 
     @Test
@@ -99,7 +100,7 @@ class SegmentGraphTest {
         graph.insert(0, WATER, 10, false);
         assertEquals(0, graph.insert(1, OIL, 10, false));
         assertEquals(0, graph.extract(1, OIL, 10, false));
-        assertEquals(10, graph.held(0).amount());
+        assertEquals(10, graph.contents(0).amount());
     }
 
     @Test
@@ -108,7 +109,7 @@ class SegmentGraphTest {
         graph.insert(0, WATER, 10, false);
         graph.extract(0, null, 10, false);
         assertEquals(10, graph.insert(0, OIL, 10, false));
-        assertEquals(OIL, graph.held(1).fluid());
+        assertEquals(OIL, graph.contents(1).fluid());
     }
 
     @Test
@@ -124,8 +125,8 @@ class SegmentGraphTest {
         assertEquals(new Placement.Refused(Set.of(WATER, OIL)), refused);
         assertFalse(graph.contains(1));
         assertEquals(2, graph.segmentCount());
-        assertEquals(10, graph.held(0).amount());
-        assertEquals(10, graph.held(2).amount());
+        assertEquals(10, graph.contents(0).amount());
+        assertEquals(10, graph.contents(2).amount());
     }
 
     @Test
@@ -147,7 +148,7 @@ class SegmentGraphTest {
         graph.add(2, PIPE);
         graph.insert(0, WATER, 10, false);
         assertInstanceOf(Placement.Accepted.class, graph.add(1, PIPE, 0, 2));
-        assertEquals(10, graph.held(2).amount());
+        assertEquals(10, graph.contents(2).amount());
     }
 
     @Test
@@ -158,7 +159,7 @@ class SegmentGraphTest {
         graph.insert(0, WATER, 10, false);
         graph.insert(2, WATER, 20, false);
         assertInstanceOf(Placement.Accepted.class, graph.add(1, PIPE, 0, 2));
-        assertEquals(30, graph.held(1).amount());
+        assertEquals(30, graph.contents(1).amount());
     }
 
     @Test
@@ -167,26 +168,26 @@ class SegmentGraphTest {
         graph.add(3, TANK, 2);
         graph.insert(0, WATER, 25_300, false);
 
-        SegmentGraph.Removal removal = graph.remove(1);
+        graph.remove(1);
 
-        assertEquals(2, removal.segments().size());
+        assertEquals(2, graph.segmentCount());
         assertNotEquals(graph.segmentOf(0), graph.segmentOf(2));
-        long pipeEnd = graph.held(0).amount();
-        long tankEnd = graph.held(2).amount();
-        // 25,300 over 100 (pipe) + 100 (broken pipe) + 25,100 (pipe and tank): 100, 100 and 25,100.
-        assertEquals(100, pipeEnd);
-        assertEquals(25_100, tankEnd);
-        assertEquals(100, removal.lost());
+        // The broken pipe's 100 mB of capacity takes 100 of the 25,300.
+        assertEquals(100, graph.contents(0).amount());
+        assertEquals(25_100, graph.contents(2).amount());
     }
 
     @Test
     void aSplitConservesEveryUnit() {
         for (long amount = 0; amount <= 1000; amount += 7) {
-            SegmentGraph graph = line(10);
-            graph.add(10, TANK, 9);
+            SegmentGraph graph = line(4);
+            graph.add(4, 0, 3);
+            graph.add(5, PIPE, 4);
+            graph.add(6, TANK, 5);
             graph.insert(0, WATER, amount, false);
-            SegmentGraph.Removal removal = graph.remove(4);
-            assertEquals(amount, totalHeld(graph, 0, 5) + removal.lost(), "amount " + amount);
+            // A port of no capacity takes no share, so every unit stays in the two runs.
+            graph.remove(4);
+            assertEquals(amount, totalHeld(graph, 0, 5), "amount " + amount);
         }
     }
 
@@ -196,20 +197,20 @@ class SegmentGraphTest {
         graph.insert(0, WATER, 700, false);
         graph.remove(2);
         for (int node : new int[] {0, 3}) {
-            SegmentGraph.Held held = graph.held(node);
-            assertTrue(held.amount() <= held.capacity(), held.toString());
+            SegmentGraph.Contents contents = graph.contents(node);
+            assertTrue(contents.amount() <= contents.capacity(), contents.toString());
         }
-        assertEquals(200, graph.held(0).amount());
-        assertEquals(400, graph.held(3).amount());
+        assertEquals(200, graph.contents(0).amount());
+        assertEquals(400, graph.contents(3).amount());
     }
 
     @Test
     void roundingGoesToTheLargestRemainder() {
         // 1 unit over three equal weights: one share gets it, the total stays 1.
         long[] shares = SegmentGraph.proportionally(1, new long[] {100, 100, 100});
-        assertEquals(1, java.util.Arrays.stream(shares).sum());
+        assertEquals(1, Arrays.stream(shares).sum());
         // 10 over 100 + 200: 3.33 and 6.67 round to 3 and 7.
-        assertEquals(List.of(3L, 7L), java.util.Arrays.stream(SegmentGraph.proportionally(10, new long[] {100, 200}))
+        assertEquals(List.of(3L, 7L), Arrays.stream(SegmentGraph.proportionally(10, new long[] {100, 200}))
                 .boxed().toList());
     }
 
@@ -218,10 +219,9 @@ class SegmentGraphTest {
         SegmentGraph graph = line(3);
         graph.insert(0, WATER, 100, false);
         graph.remove(0);
-        // 100 over three pipes' capacity: the two left share 66 or 67 and the broken pipe takes 33.
-        assertEquals(WATER, graph.held(1).fluid());
-        graph.extract(1, null, graph.held(1).amount(), false);
-        assertNull(graph.held(1).fluid());
+        assertEquals(WATER, graph.contents(1).fluid());
+        graph.extract(1, null, graph.contents(1).amount(), false);
+        assertNull(graph.contents(1).fluid());
         assertEquals(200, graph.insert(1, OIL, 500, false));
     }
 
@@ -230,20 +230,18 @@ class SegmentGraphTest {
         SegmentGraph graph = new SegmentGraph();
         graph.add(0, PIPE);
         graph.insert(0, WATER, 80, false);
-        SegmentGraph.Removal removal = graph.remove(0);
-        assertEquals(80, removal.lost());
-        assertEquals(List.of(), removal.segments());
+        graph.remove(0);
         assertEquals(0, graph.segmentCount());
+        assertFalse(graph.contains(0));
     }
 
     @Test
     void removingAnEndKeepsOneRun() {
         SegmentGraph graph = line(4);
         graph.insert(0, WATER, 400, false);
-        SegmentGraph.Removal removal = graph.remove(3);
-        assertEquals(1, removal.segments().size());
-        assertEquals(300, graph.held(0).amount());
-        assertEquals(100, removal.lost());
+        graph.remove(3);
+        assertEquals(1, graph.segmentCount());
+        assertEquals(300, graph.contents(0).amount());
     }
 
     @Test
@@ -256,14 +254,14 @@ class SegmentGraphTest {
         graph.insert(0, WATER, 400, false);
         graph.remove(2);
         assertEquals(1, graph.segmentCount());
-        assertEquals(300, graph.held(0).amount());
+        assertEquals(300, graph.contents(0).amount());
     }
 
     @Test
     void aPortOfNoCapacityJoinsARunWithoutAddingToIt() {
         SegmentGraph graph = line(2);
         graph.add(2, 0, 1);
-        assertEquals(2 * PIPE, graph.held(2).capacity());
+        assertEquals(2 * PIPE, graph.contents(2).capacity());
         assertEquals(200, graph.insert(2, WATER, 500, false));
         assertEquals(200, graph.extract(0, WATER, 500, false));
     }
@@ -273,8 +271,8 @@ class SegmentGraphTest {
         SegmentGraph graph = line(2);
         graph.add(2, 0, 1);
         graph.insert(2, WATER, 200, false);
-        assertEquals(0, graph.remove(2).lost());
-        assertEquals(200, graph.held(0).amount());
+        graph.remove(2);
+        assertEquals(200, graph.contents(0).amount());
     }
 
     @Test
@@ -289,13 +287,26 @@ class SegmentGraphTest {
 
         assertEquals(graph.size(), restored.size());
         assertEquals(2, restored.segmentCount());
-        assertEquals(1234, restored.held(2).amount());
-        assertEquals(WATER, restored.held(4).fluid());
-        assertEquals(4 * PIPE + TANK, restored.held(0).capacity());
-        assertEquals(OIL, restored.held(10).fluid());
-        // The restored graph splits as the original would.
-        assertEquals(graph.remove(1).lost(), restored.remove(1).lost());
-        assertEquals(graph.held(3).amount(), restored.held(3).amount());
+        assertEquals(1234, restored.contents(2).amount());
+        assertEquals(WATER, restored.contents(4).fluid());
+        assertEquals(4 * PIPE + TANK, restored.contents(0).capacity());
+        assertEquals(OIL, restored.contents(10).fluid());
+        graph.remove(1);
+        restored.remove(1);
+        assertEquals(graph.contents(0).amount(), restored.contents(0).amount());
+        assertEquals(graph.contents(3).amount(), restored.contents(3).amount());
+    }
+
+    @Test
+    void linksAreBetweenNodesThatJoinedEachOther() {
+        SegmentGraph graph = line(2);
+        graph.add(5, PIPE);
+        assertTrue(graph.linked(0, 1));
+        assertTrue(graph.linked(1, 0));
+        assertFalse(graph.linked(1, 5));
+        graph.remove(1);
+        assertFalse(graph.linked(0, 1));
+        assertFalse(graph.linked(1, 0));
     }
 
     @Test
@@ -305,14 +316,14 @@ class SegmentGraphTest {
     }
 
     @Test
-    void setHeldRestoresWhatATransactionChanged() {
+    void setContentsRestoresWhatATransactionChanged() {
         SegmentGraph graph = line(2);
         graph.insert(0, WATER, 50, false);
         int segment = graph.segmentOf(0);
         graph.insert(0, WATER, 100, false);
-        graph.setHeld(segment, WATER, 50);
-        assertEquals(50, graph.held(1).amount());
-        graph.setHeld(segment, null, 0);
-        assertNull(graph.held(1).fluid());
+        graph.setContents(segment, WATER, 50);
+        assertEquals(50, graph.contents(1).amount());
+        graph.setContents(segment, null, 0);
+        assertNull(graph.contents(1).fluid());
     }
 }

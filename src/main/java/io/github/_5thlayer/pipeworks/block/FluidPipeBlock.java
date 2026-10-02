@@ -5,6 +5,7 @@ package io.github._5thlayer.pipeworks.block;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.mojang.serialization.MapCodec;
 import io.github._5thlayer.pipeworks.FluidSegments;
@@ -12,12 +13,9 @@ import io.github._5thlayer.pipeworks.Pipeworks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -29,9 +27,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A pipe: a node of 100 millibuckets that joins every pipe, tank and port beside it (ADR-0110).
- * Its arms only draw what the segment already joins, so the blockstate carries no fluid and
- * no flow.
+ * A pipe: a node of 100 millibuckets that joins every pipe, tank and port beside it (ADR 0002).
+ * Its arms draw the links its segment holds and no more, so a pipe waiting outside every segment
+ * draws none (ADR 0003).
  */
 public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock {
 
@@ -80,21 +78,13 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        return SegmentBlocks.refuses(level, pos, context.getPlayer()) ? null : withArms(defaultBlockState(), level, pos);
+        return SegmentBlocks.refuses(context.getLevel(), context.getClickedPos(), context.getPlayer()) ? null : defaultBlockState();
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
-            Direction toNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        return state.setValue(ARMS.get(toNeighbour), FluidSegments.opensOn(level, neighbourPos, toNeighbour.getOpposite()));
-    }
-
-    private static BlockState withArms(BlockState state, BlockGetter level, BlockPos pos) {
+    public BlockState withLinks(BlockState state, Predicate<Direction> linked) {
         for (Map.Entry<Direction, BooleanProperty> arm : ARMS.entrySet()) {
-            Direction face = arm.getKey();
-            state = state.setValue(arm.getValue(), FluidSegments.opensOn(level, pos.relative(face), face.getOpposite()));
+            state = state.setValue(arm.getValue(), linked.test(arm.getKey()));
         }
         return state;
     }

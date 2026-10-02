@@ -7,6 +7,7 @@ import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +61,7 @@ public final class PipeworksRegistries {
     /** The pipe and the tank are fluid faces, so a Consumer's machine reaches a segment as it would any tank. */
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(Capabilities.Fluid.BLOCK,
-                (level, pos, state, entity, side) -> level instanceof net.minecraft.server.level.ServerLevel server
+                (level, pos, state, entity, side) -> level instanceof ServerLevel server
                         ? FluidSegments.get(server).handlerAt(pos) : null,
                 PIPE.get(), STORAGE_TANK.get());
     }

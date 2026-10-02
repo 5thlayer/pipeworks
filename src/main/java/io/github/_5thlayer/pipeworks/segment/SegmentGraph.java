@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Factorio 2.0's fluid model (ADR-0110): a connected run of nodes is one segment holding one
+ * Factorio 2.0's fluid model (ADR 0002): a connected run of nodes is one segment holding one
  * fluid, its capacity the sum of its nodes' and its flow instant. The graph knows nothing of
  * Minecraft: a node is a {@code long} (a packed position), a fluid a string (a registry id), an
  * amount whole millibuckets. Who is adjacent to whom is the caller's to say.
@@ -24,8 +24,7 @@ public final class SegmentGraph {
 
     /** What {@link #check} and {@link #add} say of a node joining. */
     public sealed interface Placement {
-        /** The node joined the segment with this id. */
-        record Accepted(int segment) implements Placement {
+        record Accepted() implements Placement {
         }
 
         /** The node would have joined segments holding these different fluids. */
@@ -33,12 +32,8 @@ public final class SegmentGraph {
         }
     }
 
-    /** What is left after {@link #remove}: the removed node's share of the fluid, and the segments it left. */
-    public record Removal(long lost, List<Integer> segments) {
-    }
-
-    /** A segment as the caller reads it. {@code fluid} is null when it holds none. */
-    public record Held(int segment, String fluid, long amount, long capacity, int nodes) {
+    /** What a segment holds, as the caller reads it. {@code fluid} is null when it holds none. */
+    public record Contents(int segment, String fluid, long amount, long capacity, int nodes) {
     }
 
     /** A node and its links, for saving. */
@@ -105,7 +100,7 @@ public final class SegmentGraph {
         if (fluids.size() > 1) {
             return new Placement.Refused(fluids);
         }
-        return new Placement.Accepted(seen.isEmpty() ? 0 : seen.iterator().next());
+        return new Placement.Accepted();
     }
 
     /**
@@ -141,18 +136,18 @@ public final class SegmentGraph {
                 survivor = merge(survivor, other.segment);
             }
         }
-        return new Placement.Accepted(survivor.id);
+        return new Placement.Accepted();
     }
 
     /**
      * Removes a node. Its segment splits into the runs it was holding together, each taking a share
-     * of the fluid in proportion to its capacity, and the node takes its own share with it: the
-     * fluid in a broken pipe is lost, as in Factorio.
+     * of the fluid in proportion to its capacity, and the node's own share is lost with it, as a
+     * broken pipe's is in Factorio (ADR 0003).
      */
-    public Removal remove(long node) {
+    public void remove(long node) {
         Node gone = nodes.remove(node);
         if (gone == null) {
-            return new Removal(0, List.of());
+            return;
         }
         Segment old = gone.segment;
         old.nodes.remove(node);
@@ -171,30 +166,32 @@ public final class SegmentGraph {
         weights[runs.size()] = gone.capacity;
         long[] shares = proportionally(old.amount, weights);
 
-        String fluid = old.fluid;
-        List<Integer> ids = new ArrayList<>();
         for (int i = 0; i < runs.size(); i++) {
             Segment run = newSegment();
             run.nodes.addAll(runs.get(i));
             run.capacity = weights[i];
-            run.set(fluid, shares[i]);
+            run.set(old.fluid, shares[i]);
             for (long member : run.nodes) {
                 nodes.get(member).segment = run;
             }
-            ids.add(run.id);
         }
-        return new Removal(shares[runs.size()], ids);
     }
 
     public int segmentOf(long node) {
         return require(node).segment.id;
     }
 
-    public Held held(long node) {
+    /** Whether both nodes are in the graph and linked to each other. */
+    public boolean linked(long a, long b) {
+        Node found = nodes.get(a);
+        return found != null && found.links.contains(b);
+    }
+
+    public Contents contents(long node) {
         return view(require(node).segment);
     }
 
-    public Held segment(int id) {
+    public Contents segment(int id) {
         Segment segment = segments.get(id);
         if (segment == null) {
             throw new IllegalArgumentException("no segment " + id);
@@ -229,7 +226,7 @@ public final class SegmentGraph {
     }
 
     /** Sets what a segment holds, for a caller undoing an aborted transaction. */
-    public void setHeld(int id, String fluid, long amount) {
+    public void setContents(int id, String fluid, long amount) {
         Segment segment = segments.get(id);
         if (segment == null || amount < 0 || amount > segment.capacity) {
             throw new IllegalArgumentException("segment " + id + " cannot hold " + amount);
@@ -279,10 +276,10 @@ public final class SegmentGraph {
                 unassigned.remove(member);
             }
         }
-        for (SegmentData held : segmentData) {
-            Node node = graph.nodes.get(held.node());
+        for (SegmentData contents : segmentData) {
+            Node node = graph.nodes.get(contents.node());
             if (node != null) {
-                node.segment.set(held.fluid(), Math.min(held.amount(), node.segment.capacity));
+                node.segment.set(contents.fluid(), Math.min(contents.amount(), node.segment.capacity));
             }
         }
         return graph;
@@ -302,8 +299,8 @@ public final class SegmentGraph {
         return segment;
     }
 
-    private static Held view(Segment segment) {
-        return new Held(segment.id, segment.fluid, segment.amount, segment.capacity, segment.nodes.size());
+    private static Contents view(Segment segment) {
+        return new Contents(segment.id, segment.fluid, segment.amount, segment.capacity, segment.nodes.size());
     }
 
     /** Folds the smaller into the larger, so a long run joined by one pipe is not walked again. */

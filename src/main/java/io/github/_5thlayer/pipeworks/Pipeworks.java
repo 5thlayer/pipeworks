@@ -6,10 +6,11 @@ package io.github._5thlayer.pipeworks;
 import io.github._5thlayer.pipeworks.gametest.PipeworksGameTests;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Pipes, a storage tank and the fluid-port API that join machines to them, on Factorio 2.0's fluid
- * segments (ADR-0110). The Library registers no fluid: it carries whatever a Consumer puts in.
+ * segments (ADR 0002). The Library registers no fluid: it carries whatever a Consumer puts in.
  */
 @Mod(Pipeworks.MOD_ID)
 public final class Pipeworks {
@@ -26,5 +27,6 @@ public final class Pipeworks {
     public Pipeworks(IEventBus modBus) {
         PipeworksRegistries.register(modBus);
         PipeworksGameTests.register(modBus);
+        NeoForge.EVENT_BUS.addListener(FluidSegments::onLevelTick);
     }
 }

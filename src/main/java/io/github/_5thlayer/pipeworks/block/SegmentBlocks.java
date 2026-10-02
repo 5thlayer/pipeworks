@@ -31,11 +31,11 @@ final class SegmentBlocks {
 
     static void onPlace(Level level, BlockPos pos, BlockState state, BlockState oldState, long capacity) {
         if (level instanceof ServerLevel server && !oldState.is(state.getBlock())) {
-            FluidSegments.get(server).join(pos, capacity, FluidSegments.ALL_FACES);
+            FluidSegments.get(server).join(server, pos, capacity, FluidSegments.ALL_FACES);
         }
     }
 
     static void onRemoval(ServerLevel level, BlockPos pos) {
-        FluidSegments.get(level).leave(pos);
+        FluidSegments.get(level).leave(level, pos);
     }
 }

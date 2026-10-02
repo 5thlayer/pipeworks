@@ -81,6 +81,11 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
         return SegmentBlocks.refuses(context.getLevel(), context.getClickedPos(), context.getPlayer()) ? null : defaultBlockState();
     }
 
+    /** Whether {@code state} is a pipe linked to the node on {@code side}: the arm it draws (ADR 0003). */
+    public static boolean isLinked(BlockState state, Direction side) {
+        return state.getBlock() instanceof FluidPipeBlock && state.getValue(ARMS.get(side));
+    }
+
     @Override
     public BlockState withLinks(BlockState state, Predicate<Direction> linked) {
         for (Map.Entry<Direction, BooleanProperty> arm : ARMS.entrySet()) {

@@ -10,5 +10,6 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 - A port, or a pipe or tank set by something other than a player, that would join two fluids waits in no segment, drawing no pipe arms, and joins once it no longer would.
 - A node placed or removed while a transaction is open joins or leaves once it closes, so an aborted transaction puts its fluid back before a segment splits or merges.
 - Breaking a node splits its segment by capacity and the node takes its share. Segments are saved with the level and keep their fluid while chunks are unloaded; a saved fluid the game no longer has empties its segment.
+- `FluidPipeBlock.isLinked(state, side)` reads whether a pipe's segment links it on a side, the arm it draws.
 - Registers no fluid.
 - The pipe and tank models and textures are Oritech's, CC0.

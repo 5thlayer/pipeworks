@@ -7,6 +7,7 @@ import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.api.FluidPorts;
+import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -42,6 +44,7 @@ final class SegmentTests {
 
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("water_put_in_at_a_port_comes_out_of_a_tank", 20, SegmentTests::portToTank);
+        tests.test("a_pipe_reports_the_sides_its_segment_links", 20, SegmentTests::reportsLinks);
         tests.test("breaking_a_pipe_splits_the_fluid_by_capacity", 20, SegmentTests::splitByCapacity);
         tests.test("a_pipe_between_two_fluids_is_refused", 20, SegmentTests::refusesMixing);
         tests.test("fluid_survives_a_save_and_load", 20, SegmentTests::survivesSaving);
@@ -119,6 +122,23 @@ final class SegmentTests {
         if (taken != 1000) {
             helper.fail("the tank gave " + taken + " mB of the 1000 put in at the port", at(8));
         }
+    }
+
+    private static void reportsLinks(GameTestHelper helper) {
+        row(helper, 1, 3);
+        BlockState middle = helper.getBlockState(at(2));
+        for (Direction side : Direction.values()) {
+            boolean along = side.getAxis() == Direction.Axis.X;
+            if (FluidPipeBlock.isLinked(middle, side) != along) {
+                helper.fail("the middle pipe " + (along ? "does not report" : "reports") + " a link " + side, at(2));
+                return;
+            }
+        }
+        if (FluidPipeBlock.isLinked(helper.getBlockState(at(0)), Direction.EAST) || FluidPipeBlock.isLinked(Blocks.STONE.defaultBlockState(), Direction.EAST)) {
+            helper.fail("a node that is no linked pipe reports a link", at(0));
+            return;
+        }
+        helper.succeed();
     }
 
     private static void splitByCapacity(GameTestHelper helper) {

@@ -15,6 +15,10 @@ The Library's terms, each with what it is and the words to avoid. `/domain-model
 A connected run of nodes, which holds one fluid in one fluid box. Its capacity is the sum of its nodes' and flow inside it is instant.
 _Avoid_: network, pipeline, fluid box (that is what a segment holds, not what it is)
 
+**Contents**:
+What a segment holds: one fluid and its amount, or nothing.
+_Avoid_: held (collides with the Pack's Held recipe), level
+
 **Node**:
 A pipe, a storage tank or a port: one position in a segment, with a capacity and the faces it opens.
 _Avoid_: part, pipe (a pipe is one kind of node)
@@ -24,8 +28,12 @@ A Consumer's block entity that joins a segment through the `FluidPort` API, so a
 _Avoid_: connector, fluid face (a face is NeoForge's capability on one side of a block)
 
 **Mixing**:
-Joining two segments that hold different fluids. A placement that would is refused.
+Joining two segments that hold different fluids. A player's placement that would is refused.
 _Avoid_: contamination
+
+**Waiting node**:
+A node that would mix two fluids if it joined, so it is in no segment and has no fluid slot. It joins once it no longer would.
+_Avoid_: orphan, isolated node
 
 ### Parties
 

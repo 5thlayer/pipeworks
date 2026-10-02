@@ -1,6 +1,8 @@
 {
+  "block.pipeworks.creative_tank": "Creative Tank",
   "block.pipeworks.pipe": "Pipe",
   "block.pipeworks.storage_tank": "Storage Tank",
+  "item.pipeworks.creative_tank": "Creative Tank",
   "item.pipeworks.pipe": "Pipe",
   "item.pipeworks.storage_tank": "Storage Tank",
   "itemGroup.pipeworks.items": "Pipeworks",

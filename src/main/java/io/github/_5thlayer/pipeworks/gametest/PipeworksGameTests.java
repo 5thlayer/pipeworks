@@ -62,6 +62,7 @@ public final class PipeworksGameTests {
         var tests = new Registrar(event, environment);
         LoadTests.register(tests);
         SegmentTests.register(tests);
+        CreativeTankTests.register(tests);
     }
 
     private static Identifier id(String path) {

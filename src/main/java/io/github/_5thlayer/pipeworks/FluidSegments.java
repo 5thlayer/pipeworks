@@ -65,9 +65,17 @@ public final class FluidSegments extends SavedData {
         ).apply(i, ContentsRecord::new));
     }
 
+    private record SourceRecord(long node, String fluid) {
+        static final Codec<SourceRecord> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.LONG.fieldOf("pos").forGetter(SourceRecord::node),
+                Codec.STRING.fieldOf("fluid").forGetter(SourceRecord::fluid)
+        ).apply(i, SourceRecord::new));
+    }
+
     public static final Codec<FluidSegments> CODEC = RecordCodecBuilder.create(i -> i.group(
             NodeRecord.CODEC.listOf().fieldOf("nodes").forGetter(FluidSegments::nodeRecords),
-            ContentsRecord.CODEC.listOf().fieldOf("contents").forGetter(FluidSegments::contentsRecords)
+            ContentsRecord.CODEC.listOf().fieldOf("contents").forGetter(FluidSegments::contentsRecords),
+            SourceRecord.CODEC.listOf().optionalFieldOf("sources", List.of()).forGetter(FluidSegments::sourceRecords)
     ).apply(i, FluidSegments::new));
 
     public static final SavedDataType<FluidSegments> TYPE = new SavedDataType<>(
@@ -82,13 +90,15 @@ public final class FluidSegments extends SavedData {
     private final Set<Long> waiting = new LinkedHashSet<>();
     /** Removed from the level while a transaction was open, so still in the graph (ADR 0003). */
     private final Set<Long> leaving = new LinkedHashSet<>();
+    /** The fluid each creative tank keeps its segment full of, by node. */
+    private final Map<Long, String> sources = new HashMap<>();
     private final Map<Integer, Journal> journals = new HashMap<>();
 
     private FluidSegments() {
         this.graph = new SegmentGraph();
     }
 
-    private FluidSegments(List<NodeRecord> nodes, List<ContentsRecord> contents) {
+    private FluidSegments(List<NodeRecord> nodes, List<ContentsRecord> contents, List<SourceRecord> sourced) {
         for (NodeRecord node : nodes) {
             specs.put(node.node(), new Spec(node.capacity(), node.mask()));
             if (node.waiting()) {
@@ -111,6 +121,11 @@ public final class FluidSegments extends SavedData {
             LOGGER.warn("Emptied the fluid segments holding fluids this game does not have: {}", unknown);
         }
         this.graph = SegmentGraph.restore(joined, known);
+        for (SourceRecord record : sourced) {
+            if (specs.containsKey(record.node()) && fluid(record.fluid()) != null) {
+                sources.put(record.node(), record.fluid());
+            }
+        }
     }
 
     /** The level's segments, with what an open transaction held back now applied (ADR 0003). */
@@ -125,6 +140,7 @@ public final class FluidSegments extends SavedData {
             FluidSegments segments = level.getDataStorage().get(TYPE);
             if (segments != null) {
                 segments.settle(level);
+                segments.refill();
             }
         }
     }
@@ -184,11 +200,43 @@ public final class FluidSegments extends SavedData {
         if (specs.remove(node) == null) {
             return;
         }
+        sources.remove(node);
         setDirty();
         if (!waiting.remove(node)) {
             leaving.add(node);
             settle(level);
         }
+    }
+
+    /** The fluid the creative tank at {@code pos} keeps its segment full of, or null if it has none set. */
+    public @Nullable Fluid sourceAt(BlockPos pos) {
+        String key = sources.get(pos.asLong());
+        return key == null ? null : fluid(key);
+    }
+
+    /**
+     * Sets the fluid the creative tank at {@code pos} keeps its segment full of, and fills the segment
+     * with it. Refused for a tank in no segment, for one already set to another fluid and for a
+     * segment holding another fluid: clearing a tank is breaking it.
+     *
+     * @return whether the tank now sources {@code fluid}
+     */
+    public boolean source(BlockPos pos, Fluid fluid) {
+        long node = pos.asLong();
+        if (!joined(node)) {
+            return false;
+        }
+        String key = key(fluid);
+        String set = sources.get(node);
+        String held = graph.contents(node).fluid();
+        if ((set != null && !set.equals(key)) || (held != null && !held.equals(key))) {
+            return false;
+        }
+        if (sources.put(node, key) == null) {
+            setDirty();
+        }
+        refill();
+        return true;
     }
 
     /** The segment holding {@code pos} as one fluid slot, or null if the position is in none. */
@@ -224,6 +272,22 @@ public final class FluidSegments extends SavedData {
                     instanceof SegmentGraph.Placement.Accepted) {
                 waiting.remove(node);
                 changed(level, node);
+            }
+        }
+    }
+
+    /**
+     * Fills each creative tank's segment with its fluid. Like {@link #settle} it changes nothing while
+     * a transaction is open, since an abort restores the segment from a snapshot taken before.
+     */
+    private void refill() {
+        if (Transaction.getLifecycle() != Transaction.Lifecycle.NONE) {
+            return;
+        }
+        for (Map.Entry<Long, String> source : sources.entrySet()) {
+            long node = source.getKey();
+            if (joined(node) && graph.insert(node, source.getValue(), Long.MAX_VALUE, false) > 0) {
+                setDirty();
             }
         }
     }
@@ -277,6 +341,13 @@ public final class FluidSegments extends SavedData {
 
     private List<ContentsRecord> contentsRecords() {
         return graph.segmentData().stream().map(s -> new ContentsRecord(s.node(), s.fluid(), s.amount())).toList();
+    }
+
+    private List<SourceRecord> sourceRecords() {
+        return sources.entrySet().stream()
+                .map(e -> new SourceRecord(e.getKey(), e.getValue()))
+                .sorted(Comparator.comparingLong(SourceRecord::node))
+                .toList();
     }
 
     private static String key(Fluid fluid) {

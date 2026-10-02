@@ -3,6 +3,7 @@
 
 package io.github._5thlayer.pipeworks;
 
+import io.github._5thlayer.pipeworks.block.CreativeTankBlock;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
 import net.minecraft.core.registries.Registries;
@@ -21,7 +22,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** The pipe and the tank, their items and the creative tab. No fluid is registered here. */
+/** The pipe, the storage tank and the creative tank, their items and the creative tab. No fluid is registered here. */
 public final class PipeworksRegistries {
 
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Pipeworks.MOD_ID);
@@ -33,9 +34,13 @@ public final class PipeworksRegistries {
             props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
     public static final DeferredBlock<StorageTankBlock> STORAGE_TANK = BLOCKS.registerBlock("storage_tank", StorageTankBlock::new,
             props -> props.strength(2.0F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
+    /** Has no recipe, which keeps it out of survival: it is in the creative tab and {@code /give}. */
+    public static final DeferredBlock<CreativeTankBlock> CREATIVE_TANK = BLOCKS.registerBlock("creative_tank", CreativeTankBlock::new,
+            props -> props.strength(2.0F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
 
     public static final DeferredItem<?> PIPE_ITEM = ITEMS.registerSimpleBlockItem("pipe", PIPE);
     public static final DeferredItem<?> STORAGE_TANK_ITEM = ITEMS.registerSimpleBlockItem("storage_tank", STORAGE_TANK);
+    public static final DeferredItem<?> CREATIVE_TANK_ITEM = ITEMS.registerSimpleBlockItem("creative_tank", CREATIVE_TANK);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB =
             CREATIVE_TABS.register("items", () -> CreativeModeTab.builder()
@@ -44,6 +49,7 @@ public final class PipeworksRegistries {
                     .displayItems((parameters, output) -> {
                         output.accept(PIPE_ITEM.get());
                         output.accept(STORAGE_TANK_ITEM.get());
+                        output.accept(CREATIVE_TANK_ITEM.get());
                     })
                     .build());
 
@@ -63,7 +69,7 @@ public final class PipeworksRegistries {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, entity, side) -> level instanceof ServerLevel server
                         ? FluidSegments.get(server).handlerAt(pos) : null,
-                PIPE.get(), STORAGE_TANK.get());
+                PIPE.get(), STORAGE_TANK.get(), CREATIVE_TANK.get());
     }
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {

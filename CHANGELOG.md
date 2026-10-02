@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- `pipeworks:creative_tank`, in the creative tab and `/give` with no recipe: a node of 25,000 mB that keeps its segment full of the fluid a bucket sets, so the Library can be played alone. Using a fluid bucket on it sets its fluid and the bucket stays full; a bucket of another fluid is refused with the mixed-fluids message; an empty bucket fills with its fluid. Breaking it clears it. The fluid is saved with the level (#6).
+
 ## 0.1.1
 
 - `FluidPipes.wouldLink(level, pos, side)` reads whether a pipe placed at a position would link on a side, for a Consumer that plans pipes: on the server as placement would, so not to a waiting node and nowhere for a pipe that would join two fluids; on the client, whether the block beside opens towards it (#5).

@@ -1,29 +1,21 @@
-# libworks
+# Pipeworks
 
-The GitHub template every 5thlayer Library starts from (FactoryWorks ADR-0090). A Library is a 5thlayer mod the FactoryWorks Pack consumes as a pinned local jar.
+Pipes and a storage tank for Minecraft 26.1.2 on NeoForge, on Factorio 2.0's model of fluid: a connected run of pipes, tanks and machine ports is one segment holding one fluid, its capacity the sum of its parts and its flow instant. Pipeworks registers no fluid; it carries whatever a mod puts in, as Beltworks carries any item.
 
-libworks holds no runtime code, and no Library depends on it. What it holds is copied: a NeoForge mod named `pipeworks` that builds, passes its own tests, and does nothing else.
+A 5thlayer Library: a mod the FactoryWorks Pack consumes as a pinned local jar. See `CONTEXT.md` for the domain glossary.
 
-## What a Library gets
+## What it does
 
-- A ModDevGradle build on Java 25 and NeoForge 26.1.2, published to `~/.m2` only.
-- A GameTest harness: `runGameTestServer` runs the Library's game tests headless and fails if it ran none. `scripts/build-gametest-structures.py` writes the stone platform they stand on.
-- JUnit tests on a plain JVM, with no Minecraft.
-- `scripts/release.sh`, which releases a version to `~/.m2` and tags it; a published version never changes. The `skillworks:quicklaunch` skill opens the dev client into the most recent save in `run/saves`, one client per checkout.
-- CI on every push: the build, the JUnit tests, the game tests, and a REUSE lint. It never publishes.
-- MIT under REUSE, `CLAUDE.md`, a `CONTEXT.md` stub, `docs/agents/`, conventional commits.
-- ADR 0001, the versioning rule every Library inherits: below 1.0 an addition bumps the patch.
+- A pipe holds 100 mB and a storage tank 25,000 mB, Factorio's volumes. Placing a block that would join two segments holding different fluids is refused.
+- Breaking a pipe, tank or port splits its segment by capacity; the broken block takes its share of the fluid. Segments are saved with the level and keep their fluid through chunk unloading.
+- A mod's block entity joins a segment by implementing `FluidPort` (`io.github._5thlayer.pipeworks.api`). It calls `FluidPorts.join(this)` from `onLoad`, its block calls `FluidPorts.leave(level, pos)` when removed, and it fills and drains the segment through `FluidPorts.segment(level, pos)`, a NeoForge `ResourceHandler<FluidResource>`. A pipe or tank also exposes that handler as `Capabilities.Fluid.BLOCK`.
 
-## Starting a Library
+Not yet: the in-line pump, pipe-to-ground, pipe drag-laying and Dismantle, and a 3 by 3 tank.
 
-1. Create the repo from this template: `gh repo create 5thlayer/<mod_id> --template 5thlayer/libworks --public --clone`.
-2. Fill the placeholders: `scripts/fill-template.sh <mod_id> <ClassName> "<Display Name>" "<description>"`. It renames the package and every `pipeworks`, `Pipeworks` and `Pipeworks`, and deletes itself.
-3. Replace this README with the Library's own, write `CONTEXT.md`'s first terms, and run `sh ./gradlew build runGameTestServer`.
+## Art
 
-## Adopting it in an existing Library
+The pipe and tank models and textures are from [Oritech](https://github.com/Rearth/Oritech) v1.2.12 by Rearth, CC0 1.0. They are renamed and retextured to this Library's ids; none is from the ArtOfTecharium or unused-textures sets Oritech credits under other licences. `REUSE.toml` records each file.
 
-A Library that predates the template is not regenerated. Diff it against the template and take the template's version of each shared piece: `build.gradle`, the game test harness (`CodeGameTest` and the `*GameTests` registrar), the scripts, `REUSE.toml`, `docs/agents/`, `.github/workflows/`. Its own versioning ADR becomes a pointer to libworks' ADR 0001.
+## Developing
 
-## Changing the template
-
-A change here reaches no Library by itself: each adopts it by diff. If one tool keeps drifting between Libraries, it is promoted to a build-time Gradle artifact published from here, never a runtime jar.
+`sh ./gradlew build` runs the JUnit tests on a plain JVM, and `sh ./gradlew runGameTestServer` the game tests headless. The segment rules are `segment/SegmentGraph`, with no Minecraft types, so they are tested without a world.

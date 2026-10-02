@@ -19,7 +19,7 @@ from standin import StandIn
 
 SCRIPT = Path(__file__).resolve().parents[1] / "upload.py"
 SECRETS = {"MODRINTH_TOKEN": "mrp_standin-secret-token", "CURSEFORGE_TOKEN": "cf-upload-secret-token"}
-MODRINTH_PROJECT = "examplelib-standin"
+MODRINTH_PROJECT = "pipeworks-standin"
 CF_PROJECT = "123456"
 NOTES = "- A Consumer can read the thing.\n- The other thing is faster."
 
@@ -39,12 +39,12 @@ CHANGELOG = """# Changelog
 - Older.
 """
 
-PROPERTIES = """mod_name = Example Library
+PROPERTIES = """mod_name = Pipeworks
 mod_version = 0.3.9
 maven_group = io.github.5thlayer
-archives_name = examplelib
+archives_name = pipeworks
 minecraft_version = 26.1.2
-modrinth_project_id = examplelib-properties
+modrinth_project_id = pipeworks-properties
 curseforge_project_id = 654321
 modrinth_dependencies = fRiHVvU7, P7dR8mSH
 curseforge_dependencies = emi,fabric-api
@@ -54,7 +54,7 @@ upload_release_type =
 
 def jar(**overrides):
     entries = {"LICENSE": "MIT", "LICENSES/MIT.txt": "MIT",
-               "io/github/_5thlayer/examplelib/ExampleLib.class": b"\xca\xfe\xba\xbe", **overrides}
+               "io/github/_5thlayer/pipeworks/Pipeworks.class": b"\xca\xfe\xba\xbe", **overrides}
     out = io.BytesIO()
     with zipfile.ZipFile(out, "w") as z:
         for name, data in entries.items():
@@ -81,10 +81,10 @@ class Upload(unittest.TestCase):
                     "CURSEFORGE_API_URL": self.site.url + "/cf-site"}
 
     def publish(self, version, data=None):
-        folder = self.maven / "io/github/5thlayer/examplelib" / version
+        folder = self.maven / "io/github/5thlayer/pipeworks" / version
         folder.mkdir(parents=True)
         data = jar() if data is None else data
-        (folder / f"examplelib-{version}.jar").write_bytes(data)
+        (folder / f"pipeworks-{version}.jar").write_bytes(data)
         return data
 
     def upload(self, *args, **env):
@@ -118,7 +118,7 @@ class Upload(unittest.TestCase):
         result = self.upload("0.3.9")
         self.assertEqual(result.returncode, 0, result.stderr)
         for post in [self.modrinth_post(), self.curseforge_post()]:
-            self.assertEqual(post.parts()["file"], (data, "examplelib-0.3.9.jar"))
+            self.assertEqual(post.parts()["file"], (data, "pipeworks-0.3.9.jar"))
 
     def test_the_maven_repository_defaults_to_the_home_one(self):
         home = self.root / "home"
@@ -190,7 +190,7 @@ exec "$@"
         self.publish("0.3.9")
         result = self.upload("--dry-run", "0.3.9", MODRINTH_PROJECT_ID=None, CURSEFORGE_PROJECT_ID=None)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("/modrinth/project/examplelib-properties/version", result.stdout)
+        self.assertIn("/modrinth/project/pipeworks-properties/version", result.stdout)
         self.assertIn("/cf-upload/api/projects/654321/upload-file", result.stdout)
 
     def test_refuses_when_no_project_is_set(self):
@@ -275,7 +275,7 @@ exec "$@"
                      f"GET {self.site.url}/cf-upload/api/game/versions",
                      f"POST {self.site.url}/cf-upload/api/projects/{CF_PROJECT}/upload-file",
                      "X-Api-Token: <redacted>",
-                     "examplelib-0.3.9.jar", '"version_type": "beta"', '"releaseType": "beta"']:
+                     "pipeworks-0.3.9.jar", '"version_type": "beta"', '"releaseType": "beta"']:
             self.assertIn(line, result.stdout)
 
     # Modrinth
@@ -373,7 +373,7 @@ exec "$@"
         metadata = json.loads(self.curseforge_post().parts()["metadata"][0])
         self.assertEqual(metadata["changelog"], NOTES)
         self.assertEqual(metadata["changelogType"], "markdown")
-        self.assertEqual(metadata["displayName"], "Example Library 0.3.9")
+        self.assertEqual(metadata["displayName"], "Pipeworks 0.3.9")
         # 26.1.2 the Minecraft version, not the Bukkit one, NeoForge the loader, and both environments.
         self.assertEqual(sorted(metadata["gameVersions"]), [101, 301, 401, 402])
         self.assertEqual(metadata["releaseType"], "beta")
@@ -383,7 +383,7 @@ exec "$@"
     def test_refuses_a_version_curseforge_already_has(self):
         self.publish("0.3.9")
         # Past the first page of the listing.
-        self.site.curseforge[CF_PROJECT] = ["examplelib-0.3.6.jar", "examplelib-0.3.7.jar", "examplelib-0.3.9.jar"]
+        self.site.curseforge[CF_PROJECT] = ["pipeworks-0.3.6.jar", "pipeworks-0.3.7.jar", "pipeworks-0.3.9.jar"]
         result = self.upload("--site", "curseforge", "0.3.9")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("CurseForge already has 0.3.9", result.stderr)
@@ -391,14 +391,14 @@ exec "$@"
 
     def test_refuses_a_version_curseforge_has_under_another_file_name(self):
         self.publish("0.3.9")
-        self.site.curseforge[CF_PROJECT] = ["Example Library 0.3.9"]
+        self.site.curseforge[CF_PROJECT] = ["Pipeworks 0.3.9"]
         result = self.upload("--site", "curseforge", "0.3.9")
         self.assertIn("CurseForge already has 0.3.9", result.stderr)
         self.assertEqual(self.site.sent("POST", "/cf-upload/"), [])
 
     def test_uploads_a_version_curseforge_lacks_among_others(self):
         self.publish("0.3.9")
-        self.site.curseforge[CF_PROJECT] = ["examplelib-0.3.6.jar", "examplelib-0.3.7.jar", "examplelib-0.3.8.jar"]
+        self.site.curseforge[CF_PROJECT] = ["pipeworks-0.3.6.jar", "pipeworks-0.3.7.jar", "pipeworks-0.3.8.jar"]
         self.assertEqual(self.upload("--site", "curseforge", "0.3.9").returncode, 0)
         self.curseforge_post()
 

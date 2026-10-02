@@ -2,7 +2,7 @@
 
 The GitHub template every 5thlayer Library starts from (FactoryWorks ADR-0090). A Library is a 5thlayer mod the FactoryWorks Pack consumes as a pinned local jar.
 
-libworks holds no runtime code, and no Library depends on it. What it holds is copied: a NeoForge mod named `examplelib` that builds, passes its own tests, and does nothing else.
+libworks holds no runtime code, and no Library depends on it. What it holds is copied: a NeoForge mod named `pipeworks` that builds, passes its own tests, and does nothing else.
 
 ## What a Library gets
 
@@ -17,7 +17,7 @@ libworks holds no runtime code, and no Library depends on it. What it holds is c
 ## Starting a Library
 
 1. Create the repo from this template: `gh repo create 5thlayer/<mod_id> --template 5thlayer/libworks --public --clone`.
-2. Fill the placeholders: `scripts/fill-template.sh <mod_id> <ClassName> "<Display Name>" "<description>"`. It renames the package and every `examplelib`, `ExampleLib` and `Example Library`, and deletes itself.
+2. Fill the placeholders: `scripts/fill-template.sh <mod_id> <ClassName> "<Display Name>" "<description>"`. It renames the package and every `pipeworks`, `Pipeworks` and `Pipeworks`, and deletes itself.
 3. Replace this README with the Library's own, write `CONTEXT.md`'s first terms, and run `sh ./gradlew build runGameTestServer`.
 
 ## Adopting it in an existing Library

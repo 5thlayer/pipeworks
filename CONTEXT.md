@@ -1,4 +1,4 @@
-# Example Library
+# Pipeworks
 
 One paragraph: the mechanic this Library gives, and which Consumers use it.
 
@@ -8,7 +8,7 @@ The Library's terms, each with what it is and the words to avoid. `/domain-model
 
 ### Parties
 
-**Example Library**:
+**Pipeworks**:
 This Library.
 
 **Consumer**:

@@ -18,7 +18,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 // The Minecraft version goes in the jar's name and not in the Library's version:
-// examplelib-26.1.2-0.1.0.jar.
+// pipeworks-26.1.2-0.1.0.jar.
 tasks.withType(Jar).configureEach {
     archiveVersion = "$minecraft_version-$mod_version"
 }

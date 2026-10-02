@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 5thlayer
 // SPDX-License-Identifier: MIT
 
-package io.github._5thlayer.examplelib.gametest;
+package io.github._5thlayer.pipeworks.gametest;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github._5thlayer.examplelib.ExampleLib;
+import io.github._5thlayer.pipeworks.Pipeworks;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInstance;
@@ -66,6 +66,6 @@ final class CodeGameTest extends GameTestInstance {
 
     @Override
     protected MutableComponent typeDescription() {
-        return Component.literal(ExampleLib.MOD_ID + " code");
+        return Component.literal(Pipeworks.MOD_ID + " code");
     }
 }

@@ -29,7 +29,7 @@ upload_now=1
 if [[ "${1:-}" == --no-upload ]]; then upload_now=; shift; fi
 version="${1:-}"
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "usage: scripts/release.sh [--no-upload] <major.minor.patch>"
-tag="v$version"
+tag="pipeworks-v$version"
 repo="${MAVEN_REPO_LOCAL:-$HOME/.m2/repository}"
 published="$repo/${group//.//}/$artifact/$version"
 

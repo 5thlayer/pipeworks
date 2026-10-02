@@ -23,6 +23,17 @@ tasks.withType(Jar).configureEach {
     archiveVersion = "$minecraft_version-$mod_version"
 }
 
+repositories {
+    exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
+        forRepository { maven { url = 'https://cursemaven.com' } }
+        filter { includeGroup 'curse.maven' }
+    }
+    exclusiveContent { // JEI
+        forRepository { maven { url = 'https://maven.blamejared.com' } }
+        filter { includeGroup 'mezz.jei' }
+    }
+}
+
 def gameTestReport = layout.buildDirectory.file('reports/gametest.xml').get().asFile
 
 neoForge {
@@ -75,7 +86,33 @@ tasks.named('runGameTestServer') {
     }
 }
 
+// Mods the dev client loads alongside the Library, to check its integrations by hand. 26.1 has no
+// per-run classpath, so they go into the client's mods folder, which holds only what is listed here.
+configurations {
+    clientMods { transitive = false }
+}
+
+def syncClientMods = tasks.register('syncClientMods', Sync) {
+    from configurations.clientMods
+    into layout.projectDirectory.dir('run/mods')
+}
+
+tasks.named('runClient') { dependsOn syncClientMods }
+
+// The last JEI for 26.1.2 that loads on gradle.properties' neoforge_version; later ones need 26.1.2.81 or more.
+def jeiVersion = '29.20.0.53'
+
+// The CurseForge file of the unofficial EMI 1.1.24 port for 26.1.2.
+def emiFile = '8630349'
+
 dependencies {
+    // JEI finds the creative pipe screen's drop target by its annotation, so the Library loads without it.
+    // EMI finds its plugin by annotation too. It has no official 26.1.2 build: this is an unofficial port.
+    compileOnly "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
+    clientMods "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
+    compileOnly "mezz.jei:jei-26.1.2-neoforge-api:$jeiVersion"
+    clientMods "mezz.jei:jei-26.1.2-neoforge:$jeiVersion"
+
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

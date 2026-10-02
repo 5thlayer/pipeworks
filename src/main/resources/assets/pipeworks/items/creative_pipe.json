@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "pipeworks:item/creative_tank"
+    "model": "pipeworks:item/creative_pipe"
   }
 }

@@ -2,6 +2,6 @@
   "values": [
     "pipeworks:pipe",
     "pipeworks:storage_tank",
-    "pipeworks:creative_tank"
+    "pipeworks:creative_pipe"
   ]
 }

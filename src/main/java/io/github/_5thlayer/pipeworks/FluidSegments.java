@@ -90,7 +90,7 @@ public final class FluidSegments extends SavedData {
     private final Set<Long> waiting = new LinkedHashSet<>();
     /** Removed from the level while a transaction was open, so still in the graph (ADR 0003). */
     private final Set<Long> leaving = new LinkedHashSet<>();
-    /** The fluid each creative tank keeps its segment full of, by node. */
+    /** The fluid each creative pipe keeps its segment full of, by node. */
     private final Map<Long, String> sources = new HashMap<>();
     private final Map<Integer, Journal> journals = new HashMap<>();
 
@@ -130,7 +130,7 @@ public final class FluidSegments extends SavedData {
             }
         }
         if (!unknownSources.isEmpty()) {
-            LOGGER.warn("Cleared the creative tanks set to fluids this game does not have: {}", unknownSources);
+            LOGGER.warn("Cleared the creative pipes set to fluids this game does not have: {}", unknownSources);
         }
     }
 
@@ -215,7 +215,7 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
-     * The fluid the creative tank at {@code pos} keeps its segment full of, or null if it has none set
+     * The fluid the creative pipe at {@code pos} keeps its segment full of, or null if it has none set
      * or its segment holds another fluid.
      */
     public @Nullable Fluid sourceAt(BlockPos pos) {
@@ -229,12 +229,12 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
-     * Sets the fluid the creative tank at {@code pos} keeps its segment full of, and fills the segment
-     * with it. Refused for a tank in no segment, for one already set to another fluid, and for a
-     * segment that holds another fluid or has another creative tank set to one: clearing a tank is
-     * breaking it.
+     * Sets the fluid the creative pipe at {@code pos} keeps its segment full of, and fills the segment
+     * with it. Refused for a pipe in no segment, for one already set to another fluid, and for a
+     * segment that holds another fluid or has another creative pipe set to one: a pipe set to a fluid
+     * is changed by clearing it first.
      *
-     * @return whether the tank now sources {@code fluid}
+     * @return whether the pipe now sources {@code fluid}
      */
     public boolean source(BlockPos pos, Fluid fluid) {
         long node = pos.asLong();
@@ -257,6 +257,16 @@ public final class FluidSegments extends SavedData {
         }
         refill();
         return true;
+    }
+
+    /**
+     * Stops the creative pipe at {@code pos} keeping its segment full: what the segment holds stays
+     * and drains as any fluid does. Does nothing for a pipe that has no fluid set.
+     */
+    public void clear(BlockPos pos) {
+        if (sources.remove(pos.asLong()) != null) {
+            setDirty();
+        }
     }
 
     /** The segment holding {@code pos} as one fluid slot, or null if the position is in none. */
@@ -297,7 +307,7 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
-     * Fills each creative tank's segment with its fluid. Like {@link #settle} it changes nothing while
+     * Fills each creative pipe's segment with its fluid. Like {@link #settle} it changes nothing while
      * a transaction is open, since an abort restores the segment from a snapshot taken before.
      */
     private void refill() {

@@ -14,10 +14,10 @@ full tank hand its 25,000 mB to a 100 mB pipe's neighbours; there is nowhere for
 
 **The graph is the level's, not the blocks'.** The segments are one `SavedData` per level: each node's
 position, capacity, open faces and whether it waits (below), what each segment holds, and the fluid
-each creative tank is set to, which keeps its segment full (#6). Links are
+each creative pipe is set to, which keeps its segment full (#6). Links are
 not saved, since two joined neighbours are linked exactly where both open the face between them. A
 saved fluid the game no longer has, or a malformed id, empties its segment on load with one warning
-in the log: an amount of no fluid could never be drained. A creative tank set to such a fluid is
+in the log: an amount of no fluid could never be drained. A creative pipe set to such a fluid is
 cleared the same way. A segment therefore keeps
 its fluid while its chunks are unloaded, a pipe or tank is a plain block with no block entity, and
 joining and leaving are driven by `onPlace` and `affectNeighborsAfterRemoval`, never by a chunk

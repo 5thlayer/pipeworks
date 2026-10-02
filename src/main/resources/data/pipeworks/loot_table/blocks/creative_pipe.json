@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "pipeworks:creative_tank"
+          "name": "pipeworks:creative_pipe"
         }
       ],
       "conditions": [

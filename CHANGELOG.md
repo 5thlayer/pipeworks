@@ -4,7 +4,7 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
-- `pipeworks:creative_tank`, in the creative tab and `/give` with no recipe: a node of 25,000 mB that keeps its segment full of the fluid a bucket sets, so the Library can be played alone. Using a fluid bucket on it sets its fluid and the bucket stays full; a bucket of another fluid is refused with the mixed-fluids message; an empty bucket fills with its fluid. Breaking it clears it. The fluid is saved with the level (#6).
+- `pipeworks:creative_pipe`, in the creative tab and `/give` with no recipe: a pipe (100 mB, the same shape, arms and linking) that keeps its segment full of the fluid its screen sets, so the Library can be played alone. Right-click opens the screen; clicking its slot with a bucket, or any item holding a fluid, sets the fluid, and an empty hand clears it. A fluid of another kind than the segment holds, or than another creative pipe in it is set to, is refused with the mixed-fluids message. With JEI or EMI installed, a fluid can be dragged onto the slot. Breaking it stops the refill. The fluid is saved with the level (#6, #8).
 
 ## 0.1.1
 

@@ -1,0 +1,7 @@
+{
+  "parent": "pipeworks:block/pipe_straight",
+  "textures": {
+    "0": "pipeworks:block/creative_pipe",
+    "particle": "pipeworks:block/creative_pipe"
+  }
+}

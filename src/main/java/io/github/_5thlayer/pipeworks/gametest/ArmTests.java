@@ -10,6 +10,8 @@ import io.github._5thlayer.pipeworks.api.FluidPipes;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -45,6 +47,8 @@ final class ArmTests {
         tests.test("a_waiting_pipe_draws_no_arm_toward_an_inventory", 20, ArmTests::waitingDrawsNone);
         tests.test("a_pipe_draws_no_arm_toward_a_waiting_pipe", 20, ArmTests::noArmTowardWaiting);
         tests.test("a_fluid_inventory_does_not_join_the_segment", 20, ArmTests::doesNotJoin);
+        tests.test("an_arm_toward_a_chunk_that_stops_being_loaded_stays_and_is_still_drawn_when_it_loads_again", 400, ArmTests::unloadedNeighbour);
+        tests.test("an_arm_toward_a_chunk_that_stops_being_loaded_goes_once_it_loads_again_without_the_handler", 400, ArmTests::unloadedNeighbourLosesHandler);
         tests.test("a_planned_pipe_would_draw_an_arm_toward_an_inventory", 20, ArmTests::wouldDrawArm);
     }
 
@@ -215,6 +219,112 @@ final class ArmTests {
             } else if (!FluidPipes.wouldDrawArm(level, helper.absolutePos(at(4)), Direction.WEST)) {
                 helper.fail("a planned pipe would draw no arm toward the pipe beside it", at(4));
             }
+        }).thenSucceed();
+    }
+
+    /** Chunks of their own, far from the structures, one pair per test: the pipe in the first, the inventory in the second. */
+    private static final int CHUNK_X = 60;
+    private static final int BORDER_Y = 64;
+
+    /** The pipe at the east edge of chunk (CHUNK_X, chunkZ) and the inventory in the chunk east of it. */
+    private static BlockPos borderPipe(int chunkZ) {
+        return new BlockPos(ChunkPos.containing(new BlockPos(CHUNK_X * 16, 0, 0)).getMaxBlockX(), BORDER_Y, chunkZ * 16 + 8);
+    }
+
+    private static void hold(ServerLevel level, int chunkX, int chunkZ) {
+        level.getChunkSource().addTicketWithRadius(TicketType.PLAYER_LOADING, new ChunkPos(chunkX, chunkZ), 0);
+    }
+
+    private static void release(ServerLevel level, int chunkX, int chunkZ) {
+        level.getChunkSource().removeTicketWithRadius(TicketType.PLAYER_LOADING, new ChunkPos(chunkX, chunkZ), 0);
+    }
+
+    private static boolean armAt(ServerLevel level, BlockPos pos) {
+        return FluidPipeBlock.drawsArm(level.getBlockState(pos), Direction.EAST);
+    }
+
+    /**
+     * The chunk beside the pipe's stops being loaded: the pipe holds its own chunk, the inventory's
+     * is held by a loading ticket that the test drops, and {@code isLoaded} turns false. It is not
+     * evicted from memory, since a loaded neighbour keeps it one level short of full, so its block
+     * entity is not read back from disk and NeoForge fires no capability invalidation for it.
+     * What the test covers is the pipe's rule for a neighbour that is not loaded: it keeps its arm.
+     */
+    private static void unloadedNeighbour(GameTestHelper helper) {
+        unloadSequence(helper, 0, false);
+    }
+
+    /**
+     * The same, but the handler goes while the chunk is not loaded: the pipe hears of it and keeps
+     * its arm, as the handler it reads from an unloaded chunk is unknown. NeoForge fires no
+     * invalidation when this kind of unload ends, so the test marks the pipe's sides for a recheck
+     * itself, where the chunk's loading would, and the arm goes once the chunk is loaded.
+     */
+    private static void unloadedNeighbourLosesHandler(GameTestHelper helper) {
+        unloadSequence(helper, 1, true);
+    }
+
+    private static void unloadSequence(GameTestHelper helper, int chunkZ, boolean losesHandler) {
+        ServerLevel level = level(helper);
+        BlockPos pipe = borderPipe(chunkZ);
+        BlockPos inventory = pipe.east();
+        int pipeChunkX = pipe.getX() >> 4;
+        int inventoryChunkX = inventory.getX() >> 4;
+        int chunkZPos = pipe.getZ() >> 4;
+        // Each test's own chunks, held by a loading ticket of radius 0. A forced chunk would keep
+        // its neighbours at a level that is still full, and the test needs one that is not.
+        hold(level, pipeChunkX, chunkZPos);
+        hold(level, inventoryChunkX, chunkZPos);
+        level.getChunk(pipeChunkX, chunkZPos);
+        level.getChunk(inventoryChunkX, chunkZPos);
+        level.setBlock(pipe, PipeworksRegistries.PIPE.get().defaultBlockState(), 3);
+        level.setBlock(inventory, TestInventory.BLOCK.get().defaultBlockState(), 3);
+        if (!(level.getBlockEntity(inventory) instanceof TestInventory.InventoryEntity placed)) {
+            helper.fail("no test inventory at " + inventory);
+            return;
+        }
+        placed.expose(Direction.WEST);
+        FluidSegments segments = FluidSegments.get(level);
+        helper.startSequence().thenIdle(RECHECK).thenExecute(() -> {
+            if (!armAt(level, pipe)) {
+                helper.fail("the pipe at the chunk border draws no arm toward the inventory in the next chunk");
+                return;
+            }
+            release(level, inventoryChunkX, chunkZPos);
+        }).thenWaitUntil(() -> {
+            if (level.isLoaded(inventory)) {
+                helper.fail("the inventory's chunk is still loaded");
+            }
+        }).thenIdle(RECHECK).thenExecute(() -> {
+            if (!level.isLoaded(pipe)) {
+                helper.fail("the pipe's chunk stopped being loaded with its neighbour's");
+            } else if (!armAt(level, pipe)) {
+                helper.fail("the pipe lost its arm when the chunk beside it stopped being loaded");
+            } else if (losesHandler) {
+                placed.expose(null);
+            }
+        }).thenIdle(RECHECK).thenExecute(() -> {
+            if (!armAt(level, pipe)) {
+                helper.fail("the pipe lost its arm on a recheck that found no handler in a chunk that is not loaded");
+                return;
+            }
+            hold(level, inventoryChunkX, chunkZPos);
+        }).thenWaitUntil(() -> {
+            if (!level.isLoaded(inventory)) {
+                helper.fail("the inventory's chunk is not loaded again");
+            }
+        }).thenExecute(() -> {
+            if (losesHandler) {
+                segments.recheckArms(pipe);
+            }
+        }).thenIdle(RECHECK).thenExecute(() -> {
+            if (losesHandler ? armAt(level, pipe) : !armAt(level, pipe)) {
+                helper.fail(losesHandler
+                        ? "the arm stayed when the chunk was loaded again without the handler"
+                        : "the arm is gone after the chunk was loaded again with the inventory still there");
+            }
+            release(level, pipeChunkX, chunkZPos);
+            release(level, inventoryChunkX, chunkZPos);
         }).thenSucceed();
     }
 }

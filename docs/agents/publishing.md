@@ -10,7 +10,7 @@ Most answers are in the repo. Keep them the same on both sites and in the repo: 
 
 | Field | Where it comes from |
 |---|---|
-| Name | `mod_name` in `gradle.properties`, and nothing else: no version, no "mod", no game name |
+| Name | `mod_name` in `gradle.properties`, and nothing else: no version, no "mod", no game name. On CurseForge, where another mod already holds the name Pipeworks, it is "5thlayer Pipeworks" |
 | Summary | `mod_description` in `gradle.properties`: one sentence on what the Library does |
 | Description | `README.md`'s pitch, rewritten for players and pack authors: what it adds, and what they need to know before downloading |
 | Licence | MIT (`LICENSE`), SPDX id `MIT`; a Library that carries other licences (Beltworks' CC-BY-4.0 assets) names them in the description |

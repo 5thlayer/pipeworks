@@ -34,8 +34,9 @@ repositories {
     }
 }
 
-// Data only the Library's own game test run loads: a datapack that fills the tags a Consumer fills
-// (src/gametest/resources), so a test can use an item the shipped tags leave out. It is no part of the jar.
+// Data only the Library's own runs load (src/gametest/resources): datapacks that fill the tags a
+// Consumer fills, so a game test or the dev client can use an item the shipped tags leave out. It is
+// no part of the jar.
 sourceSets {
     gametest
 }
@@ -57,6 +58,8 @@ neoForge {
             programArguments.addAll '--username', 'Developer', '--uuid', '123456781234123412341234567890ab'
             // -PquickPlay=<save> opens that save straight from launch (the skillworks:quicklaunch skill).
             programArguments.addAll providers.gradleProperty('quickPlay').map { ['--quickPlaySingleplayer', it] }.orElse([])
+            // A stick in pipeworks:closes_sides, to try closed sides by hand: dev_pack/, which only this run turns on.
+            systemProperty 'pipeworks.devPack', 'true'
         }
         // Runs the Library's game tests headless and exits, non-zero if any fails. 26.1 has no
         // namespace property, so the selector is what keeps vanilla's tests out.

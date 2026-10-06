@@ -47,8 +47,9 @@ precedence = "override"
 SPDX-FileCopyrightText = "Rearth"
 SPDX-License-Identifier = "CC0-1.0"
 
-# The cover and icon are drawn by publish/make-cover.py from the pipe and tank textures above.
+# The cover and icon are drawn by publish/make-cover.py from the pipe and tank textures above
+# and Minecraft's fluid textures, which stay Mojang's; see LICENSES/LicenseRef-Mojang.txt.
 [[annotations]]
 path = ["publish/*.png"]
-SPDX-FileCopyrightText = ["Rearth", "2026 5thlayer"]
-SPDX-License-Identifier = "CC0-1.0 AND MIT"
+SPDX-FileCopyrightText = ["Mojang AB", "Rearth", "2026 5thlayer"]
+SPDX-License-Identifier = "LicenseRef-Mojang AND CC0-1.0 AND MIT"

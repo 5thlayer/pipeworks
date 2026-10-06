@@ -3,10 +3,13 @@
 
 package io.github._5thlayer.pipeworks.gametest;
 
+import java.util.EnumSet;
+
 import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
 import io.github._5thlayer.pipeworks.api.FluidPipes;
+import io.github._5thlayer.pipeworks.api.FluidPorts;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
 import net.minecraft.core.BlockPos;
@@ -56,6 +59,8 @@ final class ClosedSideTests {
         tests.test("closing_a_side_toward_a_fluid_inventory_removes_the_arm_and_the_capability", 20, ClosedSideTests::closesTowardInventory);
         tests.test("a_closed_side_tells_a_capability_cache_of_another_mod", 20, ClosedSideTests::tellsCaches);
         tests.test("opening_a_side_that_would_mix_two_fluids_is_refused_and_changes_nothing", 20, ClosedSideTests::refusesMixing);
+        tests.test("opening_a_side_toward_a_port_that_would_mix_is_refused_and_changes_nothing", 20, ClosedSideTests::refusesMixingTowardPort);
+        tests.test("one_click_opens_a_face_closed_before_the_pipe_beside_it_was_placed", 20, ClosedSideTests::opensInOneClick);
         tests.test("an_item_outside_the_tag_and_a_sneak_click_toggle_nothing", 20, ClosedSideTests::ignoresOtherClicks);
         tests.test("a_click_with_the_item_leaves_the_creative_pipes_screen_to_the_other_clicks", 20, ClosedSideTests::creativePipeClicks);
         tests.test("a_closed_side_survives_a_save_and_load", 20, ClosedSideTests::survivesSaving);
@@ -295,6 +300,62 @@ final class ClosedSideTests {
         }
     }
 
+    private static void refusesMixingTowardPort(GameTestHelper helper) {
+        // A port adds no capacity, so the lava is in the pipe on its far side, in the port's segment.
+        row(helper, 1, 1);
+        helper.setBlock(at(2), TestPort.BLOCK.get().defaultBlockState());
+        row(helper, 3, 3);
+        // A port joins on the tick after it is placed.
+        helper.startSequence().thenIdle(RECHECK).thenExecute(() -> {
+            ServerLevel level = level(helper);
+            FluidPipes.close(level, abs(helper, 1), Direction.EAST);
+            insert(segment(helper, 1), FluidResource.of(Fluids.WATER), 50);
+            insert(FluidPorts.segment(level, abs(helper, 2)), FluidResource.of(Fluids.LAVA), 50);
+            if (!sameSegment(helper, 2, 3) || sameSegment(helper, 1, 2)) {
+                helper.fail("the port is not in the segment of the pipe beside it alone", at(2));
+                return;
+            }
+            toggleCore(helper, 1, Direction.EAST);
+            if (!closed(helper, 1, Direction.EAST)) {
+                helper.fail("a click opened a side toward a port that would mix water and lava", at(1));
+            } else if (FluidPipes.open(level, abs(helper, 1), Direction.EAST)) {
+                helper.fail("the API opened a side toward a port that would mix water and lava", at(1));
+            }
+        }).thenIdle(RECHECK).thenExecute(() -> {
+            ServerLevel level = level(helper);
+            var port = FluidSegments.get(level).contentsAt(abs(helper, 2));
+            if (!closed(helper, 1, Direction.EAST) || arm(helper, 1, Direction.EAST)) {
+                helper.fail("the refused side is open, or draws an arm, after the tick", at(1));
+            } else if (port == null || port.segment() == contents(helper, 1).segment()) {
+                helper.fail("the pipe and the port are in one segment after a refused opening", at(1));
+            } else if (amount(helper, 1) != 50 || port.amount() != 50
+                    || !FluidSegments.get(level).closedSides(abs(helper, 1)).equals(EnumSet.of(Direction.EAST))) {
+                helper.fail("a refused opening changed the contents or the mask: " + amount(helper, 1) + ", " + port.amount(), at(1));
+            }
+        }).thenSucceed();
+    }
+
+    private static void opensInOneClick(GameTestHelper helper) {
+        row(helper, 1, 1);
+        FluidPipes.close(level(helper), abs(helper, 1), Direction.EAST);
+        row(helper, 2, 2);
+        helper.startSequence().thenIdle(RECHECK).thenExecute(() -> {
+            if (sameSegment(helper, 1, 2) || !closed(helper, 1, Direction.EAST) || closed(helper, 2, Direction.WEST)) {
+                helper.fail("the setup is not a closed side beside a pipe that is open toward it", at(2));
+                return;
+            }
+            toggleCore(helper, 2, Direction.WEST);
+        }).thenIdle(RECHECK).thenExecute(() -> {
+            if (closed(helper, 1, Direction.EAST) || closed(helper, 2, Direction.WEST)) {
+                helper.fail("one click did not open the face on both pipes", at(2));
+            } else if (!sameSegment(helper, 1, 2) || !arm(helper, 1, Direction.EAST) || !arm(helper, 2, Direction.WEST)) {
+                helper.fail("the pipes did not join, or draw no arm, after the click", at(2));
+            } else if (!FluidSegments.get(level(helper)).closedSides(abs(helper, 1)).isEmpty()) {
+                helper.fail("the pipe still lists a closed side", at(1));
+            }
+        }).thenSucceed();
+    }
+
     private static void ignoresOtherClicks(GameTestHelper helper) {
         waterRun(helper);
         click(helper, 1, new ItemStack(Items.STONE), Direction.EAST, true, false);
@@ -389,7 +450,7 @@ final class ClosedSideTests {
                 return;
             }
             FluidPipes.close(level, abs(helper, 1), Direction.WEST);
-            if (!closed(helper, 1, Direction.WEST) || FluidSegments.get(level).closedSides(abs(helper, 0)) != 0) {
+            if (!closed(helper, 1, Direction.WEST) || !FluidSegments.get(level).closedSides(abs(helper, 0)).isEmpty()) {
                 helper.fail("closing a side toward a port changed the port's faces", at(0));
                 return;
             }

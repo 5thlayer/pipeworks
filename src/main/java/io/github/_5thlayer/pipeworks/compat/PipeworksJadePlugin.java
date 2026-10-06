@@ -5,6 +5,8 @@ package io.github._5thlayer.pipeworks.compat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.Pipeworks;
@@ -143,9 +145,9 @@ public class PipeworksJadePlugin implements IWailaPlugin {
         @Override
         public void appendServerData(CompoundTag tag, BlockAccessor accessor) {
             FluidSegments segments = segments(accessor);
-            int closed = segments == null ? 0 : segments.closedSides(accessor.getPosition());
-            if (closed != 0) {
-                tag.putInt(CLOSED_KEY, closed);
+            Set<Direction> closed = segments == null ? Set.of() : segments.closedSides(accessor.getPosition());
+            if (!closed.isEmpty()) {
+                tag.putString(CLOSED_KEY, closed.stream().map(Direction::getName).collect(Collectors.joining(",")));
             }
         }
 
@@ -163,10 +165,10 @@ public class PipeworksJadePlugin implements IWailaPlugin {
     private static final IBlockComponentProvider CLOSED_LINE = new IBlockComponentProvider() {
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-            int closed = accessor.getServerData().getIntOr(CLOSED_KEY, 0);
             List<Component> sides = new ArrayList<>();
-            for (Direction side : Direction.values()) {
-                if ((closed & FluidSegments.bit(side)) != 0) {
+            for (String name : accessor.getServerData().getStringOr(CLOSED_KEY, "").split(",")) {
+                Direction side = Direction.byName(name);
+                if (side != null) {
                     sides.add(Component.translatable("tooltip.pipeworks.jade.side." + side.getName()));
                 }
             }

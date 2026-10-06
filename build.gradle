@@ -34,6 +34,12 @@ repositories {
     }
 }
 
+// Data only the Library's own game test run loads: a datapack that fills the tags a Consumer fills
+// (src/gametest/resources), so a test can use an item the shipped tags leave out. It is no part of the jar.
+sourceSets {
+    gametest
+}
+
 def gameTestReport = layout.buildDirectory.file('reports/gametest.xml').get().asFile
 
 neoForge {
@@ -67,6 +73,7 @@ neoForge {
     mods {
         "$mod_id" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
         }
     }
 }

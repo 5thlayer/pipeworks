@@ -177,6 +177,72 @@ public final class SegmentGraph {
         }
     }
 
+    /** Whether {@link #link} would link these two nodes without mixing two fluids. Nodes already linked, or in one segment, would. */
+    public boolean canLink(long a, long b) {
+        Segment first = require(a).segment;
+        Segment second = require(b).segment;
+        return first == second || first.fluid == null || second.fluid == null || first.fluid.equals(second.fluid);
+    }
+
+    /**
+     * Links two nodes already in the graph, merging their segments. A link that would mix two
+     * fluids changes nothing and is refused.
+     */
+    public Placement link(long a, long b) {
+        Node first = require(a);
+        Node second = require(b);
+        if (a == b || first.links.contains(b)) {
+            return new Placement.Accepted();
+        }
+        if (!canLink(a, b)) {
+            return new Placement.Refused(Set.of(first.segment.fluid, second.segment.fluid));
+        }
+        first.links.add(b);
+        second.links.add(a);
+        if (first.segment != second.segment) {
+            merge(first.segment, second.segment);
+        }
+        return new Placement.Accepted();
+    }
+
+    /**
+     * Cuts the link between two nodes. If that leaves two runs, the segment splits into them, each
+     * taking a share of the fluid in proportion to its capacity. No node leaves, so unlike
+     * {@link #remove} all of the fluid is kept.
+     */
+    public void unlink(long a, long b) {
+        Node first = require(a);
+        Node second = require(b);
+        if (!first.links.remove(b)) {
+            return;
+        }
+        second.links.remove(a);
+        Set<Long> run = run(a);
+        if (run.contains(b)) {
+            return;
+        }
+        Segment old = first.segment;
+        Set<Long> other = run(b);
+        segments.remove(old.id);
+        List<Set<Long>> runs = List.of(run, other);
+        long[] weights = new long[runs.size()];
+        for (int i = 0; i < runs.size(); i++) {
+            for (long member : runs.get(i)) {
+                weights[i] += nodes.get(member).capacity;
+            }
+        }
+        long[] shares = proportionally(old.amount, weights);
+        for (int i = 0; i < runs.size(); i++) {
+            Segment part = newSegment();
+            part.nodes.addAll(runs.get(i));
+            part.capacity = weights[i];
+            part.set(old.fluid, shares[i]);
+            for (long member : part.nodes) {
+                nodes.get(member).segment = part;
+            }
+        }
+    }
+
     public int segmentOf(long node) {
         return require(node).segment.id;
     }

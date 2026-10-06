@@ -10,9 +10,14 @@ import java.util.function.Predicate;
 import com.mojang.serialization.MapCodec;
 import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.Pipeworks;
+import io.github._5thlayer.pipeworks.api.FluidPipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,6 +27,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -30,7 +37,12 @@ import org.jspecify.annotations.Nullable;
 /**
  * A pipe: a node of 100 millibuckets that joins every pipe, tank and port beside it (ADR 0002).
  * It draws an arm towards each side where fluid can move: a node its segment links it to, or a
- * fluid inventory beside it. A pipe waiting outside every segment draws none (ADR 0003).
+ * fluid inventory beside it. A pipe waiting outside every segment draws none (ADR 0003), nor does
+ * a closed side, which is drawn as an empty one (ADR 0004).
+ *
+ * <p>An item in {@link FluidPipes#CLOSES_SIDES} closes and opens a side when used on the pipe, unless
+ * the player sneaks: the arm hit picks its side, and a hit on the core picks the face clicked, which
+ * is how a closed side, with no arm to hit, is opened again.
  */
 public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock {
 
@@ -44,6 +56,8 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
             Direction.UP, BlockStateProperties.UP,
             Direction.DOWN, BlockStateProperties.DOWN));
 
+    private static final double CORE_MIN = 5 / 16.0;
+    private static final double CORE_MAX = 11 / 16.0;
     private static final VoxelShape CORE = Block.box(5, 5, 5, 11, 11, 11);
     private static final Map<Direction, VoxelShape> ARM_SHAPES = new EnumMap<>(Map.of(
             Direction.NORTH, Block.box(5, 5, 0, 11, 11, 5),
@@ -107,6 +121,29 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
             state = state.setValue(property.getValue(), arm.test(property.getKey()));
         }
         return state;
+    }
+
+    /** The side a click hit: that of the arm, or of the core's face where the hit is on the core. */
+    static Direction sideHit(BlockPos pos, BlockHitResult hit) {
+        Vec3 local = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+        for (Direction side : Direction.values()) {
+            double along = local.get(side.getAxis());
+            if (side.getAxisDirection() == Direction.AxisDirection.POSITIVE ? along > CORE_MAX : along < CORE_MIN) {
+                return side;
+            }
+        }
+        return hit.getDirection();
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!stack.is(FluidPipes.CLOSES_SIDES) || player.isSecondaryUseActive()) {
+            return super.useItemOn(stack, state, level, pos, player, hand, hit);
+        }
+        if (level instanceof ServerLevel server) {
+            SegmentBlocks.toggleSide(server, pos, sideHit(pos, hit), player);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

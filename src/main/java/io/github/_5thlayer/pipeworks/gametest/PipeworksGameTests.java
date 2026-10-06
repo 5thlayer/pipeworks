@@ -14,9 +14,14 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -55,6 +60,13 @@ public final class PipeworksGameTests {
         TestPort.register(modBus);
         TestInventory.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
+        modBus.addListener(PipeworksGameTests::addTestPack);
+    }
+
+    /** The datapack in {@code src/gametest/resources}, which puts a stick in {@code pipeworks:closes_sides} for the tests. */
+    private static void addTestPack(AddPackFindersEvent event) {
+        event.addPackFinders(id("gametest_pack"), PackType.SERVER_DATA, Component.literal("Pipeworks game tests"),
+                PackSource.BUILT_IN, true, Pack.Position.TOP);
     }
 
     private static void registerTests(RegisterGameTestsEvent event) {
@@ -66,6 +78,7 @@ public final class PipeworksGameTests {
         CreativePipeTests.register(tests);
         TankLevelTests.register(tests);
         ArmTests.register(tests);
+        ClosedSideTests.register(tests);
     }
 
     private static Identifier id(String path) {

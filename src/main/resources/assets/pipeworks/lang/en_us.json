@@ -9,5 +9,12 @@
   "itemGroup.pipeworks.items": "Pipeworks",
   "message.pipeworks.mixed_fluids": "Those pipes hold different fluids",
   "screen.pipeworks.creative_pipe.fluid": "Click with a bucket to set the fluid, or with an empty cursor to clear it",
+  "tooltip.pipeworks.jade.closed": "Closed: %s",
+  "tooltip.pipeworks.jade.side.down": "down",
+  "tooltip.pipeworks.jade.side.east": "east",
+  "tooltip.pipeworks.jade.side.north": "north",
+  "tooltip.pipeworks.jade.side.south": "south",
+  "tooltip.pipeworks.jade.side.up": "up",
+  "tooltip.pipeworks.jade.side.west": "west",
   "tooltip.pipeworks.jade.waiting": "Waiting: it would mix two fluids"
 }

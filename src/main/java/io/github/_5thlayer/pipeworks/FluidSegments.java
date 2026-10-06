@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 /**
  * One level's fluid segments (ADR 0002), saved with the level (ADR 0003). A node's mask holds the
  * faces it opens, and two joined neighbours are linked where both open the face between them, so
- * the links are not saved. The arms a pipe draws are not saved either: they are in its blockstate,
+ * the links are not saved, and a pipe's closed sides are the faces its mask lacks (ADR 0004). The arms a pipe draws are not saved either: they are in its blockstate,
  * and the capability caches that follow the fluid inventories beside it are rebuilt as its chunk loads.
  */
 public final class FluidSegments extends SavedData {
@@ -100,6 +100,8 @@ public final class FluidSegments extends SavedData {
     private final Set<Long> waiting = new LinkedHashSet<>();
     /** Removed from the level while a transaction was open, so still in the graph (ADR 0003). */
     private final Set<Long> leaving = new LinkedHashSet<>();
+    /** Joined nodes whose mask changed, so their links in the graph may not match it yet: applied once no transaction is open. */
+    private final Set<Long> remasked = new LinkedHashSet<>();
     /** The fluid each creative pipe keeps its segment full of, by node. */
     private final Map<Long, String> sources = new HashMap<>();
     private final Map<Integer, Journal> journals = new HashMap<>();
@@ -272,6 +274,75 @@ public final class FluidSegments extends SavedData {
         }
     }
 
+    /** What {@link #setSide} did. */
+    public enum SideChange {
+        /** The side now is as asked. */
+        CHANGED,
+        /** Nothing changed: there is no pipe there, or the side already was as asked. */
+        UNCHANGED,
+        /** Nothing changed: opening the side would mix two fluids. */
+        MIXES
+    }
+
+    /** Whether the node at {@code pos} has closed {@code side}. False for a position that is no node. */
+    public boolean closed(BlockPos pos, Direction side) {
+        Spec spec = specs.get(pos.asLong());
+        return spec != null && (spec.mask() & bit(side)) == 0;
+    }
+
+    /** The sides the node at {@code pos} has closed, as a mask. */
+    public int closedSides(BlockPos pos) {
+        Spec spec = specs.get(pos.asLong());
+        return spec == null ? 0 : ~spec.mask() & ALL_FACES;
+    }
+
+    /** Closes the side of the pipe at {@code pos} if it is open, and opens it if it is closed. */
+    public SideChange toggleSide(ServerLevel level, BlockPos pos, Direction side) {
+        return setSide(level, pos, side, closed(pos, side));
+    }
+
+    /**
+     * Opens or closes {@code side} of the pipe at {@code pos}, which re-masks it: it leaves and
+     * rejoins with the new mask, splitting or merging its segment by ADR 0003's rules, held back while
+     * a transaction is open. A side can be closed with nothing beside it. Where a tank or pipe is
+     * beside it, that node's face toward the pipe changes with it, so one call undoes the other from
+     * either side; a port's faces are never changed, nor those of a neighbour in an unloaded chunk.
+     * Closing splits a segment as a removal does but no node leaves, so no fluid is lost. Opening a
+     * side that would join two fluids is refused, as a player's placement is.
+     */
+    public SideChange setSide(ServerLevel level, BlockPos pos, Direction side, boolean open) {
+        long node = pos.asLong();
+        Spec spec = specs.get(node);
+        if (spec == null || !(level.getBlockState(pos).getBlock() instanceof SegmentBlock block && block.hasArms())
+                || ((spec.mask() & bit(side)) != 0) == open) {
+            return SideChange.UNCHANGED;
+        }
+        BlockPos beside = pos.relative(side);
+        long other = beside.asLong();
+        Spec neighbour = specs.get(other);
+        boolean mirrored = neighbour != null && level.isLoaded(beside) && level.getBlockState(beside).getBlock() instanceof SegmentBlock;
+        if (open && mirrored && joined(node) && joined(other) && !graph.canLink(node, other)) {
+            return SideChange.MIXES;
+        }
+        specs.put(node, new Spec(spec.capacity(), spec.mask() ^ bit(side)));
+        remasked.add(node);
+        if (mirrored) {
+            int facing = bit(side.getOpposite());
+            specs.put(other, new Spec(neighbour.capacity(), open ? neighbour.mask() | facing : neighbour.mask() & ~facing));
+            remasked.add(other);
+        }
+        setDirty();
+        settle(level);
+        // A plain block tells the level itself, so another mod's cache hears the side go or come.
+        level.invalidateCapabilities(pos);
+        redraw(level, pos);
+        if (mirrored) {
+            level.invalidateCapabilities(beside);
+            redraw(level, beside);
+        }
+        return SideChange.CHANGED;
+    }
+
     /**
      * Places a node at {@code pos}, or does nothing if one is there. A node that would mix two fluids
      * waits in no segment and joins once it no longer would (ADR 0003).
@@ -296,6 +367,7 @@ public final class FluidSegments extends SavedData {
         }
         unindex(node);
         sources.remove(node);
+        remasked.remove(node);
         caches.remove(node);
         dirty.remove(node);
         setDirty();
@@ -366,6 +438,11 @@ public final class FluidSegments extends SavedData {
         return joined(pos.asLong()) ? new Handler(pos.asLong()) : null;
     }
 
+    /** As {@link #handlerAt(BlockPos)}, but null on a side the node has closed. A null side is no face and gets the handler. */
+    public @Nullable ResourceHandler<FluidResource> handlerAt(BlockPos pos, @Nullable Direction side) {
+        return side != null && closed(pos, side) ? null : handlerAt(pos);
+    }
+
     /** What the segment holding {@code pos} holds, or null if the position is in none. */
     public SegmentGraph.@Nullable Contents contentsAt(BlockPos pos) {
         return joined(pos.asLong()) ? graph.contents(pos.asLong()) : null;
@@ -393,6 +470,11 @@ public final class FluidSegments extends SavedData {
             changed(level, node);
         }
         leaving.clear();
+        for (long node : List.copyOf(remasked)) {
+            if (!joined(node) || relink(level, node)) {
+                remasked.remove(node);
+            }
+        }
         for (long node : List.copyOf(waiting)) {
             Spec spec = specs.get(node);
             if (graph.add(node, spec.capacity(), neighbours(BlockPos.of(node), spec.mask()))
@@ -401,6 +483,44 @@ public final class FluidSegments extends SavedData {
                 changed(level, node);
             }
         }
+    }
+
+    /**
+     * Makes the links of a joined node in the graph the ones its mask allows: cuts those it no longer
+     * allows, which splits a segment, then makes those it newly does, which merges two. A link that
+     * would mix two fluids is not made, and the node is tried again at the next settling, as a
+     * waiting node is.
+     *
+     * @return whether the node is linked as its mask says
+     */
+    private boolean relink(ServerLevel level, long node) {
+        BlockPos pos = BlockPos.of(node);
+        Set<Long> wanted = new HashSet<>();
+        for (long link : neighbours(pos, specs.get(node).mask())) {
+            wanted.add(link);
+        }
+        boolean moved = false;
+        boolean complete = true;
+        for (Direction face : Direction.values()) {
+            long other = pos.relative(face).asLong();
+            if (graph.linked(node, other) && !wanted.contains(other)) {
+                graph.unlink(node, other);
+                moved = true;
+            }
+        }
+        for (long other : wanted) {
+            if (!graph.linked(node, other)) {
+                if (graph.link(node, other) instanceof SegmentGraph.Placement.Accepted) {
+                    moved = true;
+                } else {
+                    complete = false;
+                }
+            }
+        }
+        if (moved) {
+            changed(level, node);
+        }
+        return complete;
     }
 
     /**
@@ -478,8 +598,8 @@ public final class FluidSegments extends SavedData {
 
     /**
      * Whether the pipe at {@code pos} draws an arm on {@code face}: it is linked to the node there,
-     * or the block there is a fluid inventory. A waiting pipe draws none, and a neighbour that is a
-     * node is judged only by the link. Where the neighbour is not loaded its handler is unknown, so
+     * or the block there is a fluid inventory. A waiting pipe draws none, nor does a closed side
+     * toward an inventory, and a neighbour that is a node is judged only by the link. Where the neighbour is not loaded its handler is unknown, so
      * the arm stays {@code current}.
      */
     private boolean drawsArm(ServerLevel level, BlockPos pos, Direction face, boolean check, boolean current) {
@@ -493,7 +613,8 @@ public final class FluidSegments extends SavedData {
             return true;
         }
         boolean loaded = level.isLoaded(beside);
-        if (!specs.containsKey(node) || waiting.contains(node) || loaded && isNode(level, beside)) {
+        Spec spec = specs.get(node);
+        if (spec == null || (spec.mask() & bit(face)) == 0 || waiting.contains(node) || loaded && isNode(level, beside)) {
             uncache(node, face);
             return false;
         }

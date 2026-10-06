@@ -73,11 +73,14 @@ public final class PipeworksRegistries {
         modBus.addListener(PipeworksRegistries::addToCreativeTabs);
     }
 
-    /** The pipes and the tank are fluid faces, so a Consumer's machine reaches a segment as it would any tank. */
+    /**
+     * The pipes and the tank are fluid faces, so a Consumer's machine reaches a segment as it would any
+     * tank, except on a side a pipe has closed (ADR 0004), where there is none.
+     */
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, entity, side) -> level instanceof ServerLevel server
-                        ? FluidSegments.get(server).handlerAt(pos) : null,
+                        ? FluidSegments.get(server).handlerAt(pos, side) : null,
                 PIPE.get(), STORAGE_TANK.get(), CREATIVE_PIPE.get());
     }
 

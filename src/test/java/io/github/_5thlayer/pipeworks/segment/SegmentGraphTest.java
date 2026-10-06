@@ -385,4 +385,73 @@ class SegmentGraphTest {
         assertFalse(graph.exists(id));
         assertFalse(graph.exists(9999));
     }
+
+    @Test
+    void cuttingALinkSplitsTheRunAndKeepsEveryUnit() {
+        SegmentGraph graph = line(4);
+        graph.insert(0, WATER, 301, false);
+
+        graph.unlink(1, 2);
+
+        assertEquals(2, graph.segmentCount());
+        assertFalse(graph.linked(1, 2));
+        assertEquals(301, totalHeld(graph, 0, 3));
+        assertEquals(151, graph.contents(0).amount());
+        assertEquals(150, graph.contents(3).amount());
+    }
+
+    @Test
+    void cuttingALinkOfALoopSplitsNothing() {
+        SegmentGraph graph = line(3);
+        graph.add(3, PIPE, 2, 0);
+        graph.insert(0, WATER, 100, false);
+
+        graph.unlink(0, 1);
+
+        assertEquals(1, graph.segmentCount());
+        assertEquals(100, graph.contents(0).amount());
+    }
+
+    @Test
+    void cuttingALinkThatIsNotThereChangesNothing() {
+        SegmentGraph graph = line(3);
+        graph.unlink(0, 2);
+        assertEquals(1, graph.segmentCount());
+    }
+
+    @Test
+    void linkingTwoRunsMergesThemAndTheirFluid() {
+        SegmentGraph graph = line(4);
+        graph.insert(0, WATER, 301, false);
+        graph.unlink(1, 2);
+
+        assertInstanceOf(Placement.Accepted.class, graph.link(1, 2));
+
+        assertEquals(1, graph.segmentCount());
+        assertEquals(301, graph.contents(3).amount());
+    }
+
+    @Test
+    void aLinkThatWouldJoinTwoFluidsIsRefusedAndChangesNothing() {
+        SegmentGraph graph = line(4);
+        graph.unlink(1, 2);
+        graph.insert(0, WATER, 50, false);
+        graph.insert(3, OIL, 50, false);
+
+        assertFalse(graph.canLink(1, 2));
+        assertInstanceOf(Placement.Refused.class, graph.link(1, 2));
+
+        assertEquals(2, graph.segmentCount());
+        assertFalse(graph.linked(1, 2));
+        assertEquals(WATER, graph.contents(0).fluid());
+        assertEquals(OIL, graph.contents(3).fluid());
+    }
+
+    @Test
+    void aLinkBetweenARunAndAnEmptyOneMayBeMade() {
+        SegmentGraph graph = line(4);
+        graph.unlink(1, 2);
+        graph.insert(0, WATER, 50, false);
+        assertTrue(graph.canLink(1, 2));
+    }
 }

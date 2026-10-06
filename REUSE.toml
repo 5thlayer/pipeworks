@@ -16,6 +16,7 @@ path = [
     "src/gametest/resources/**",
     "src/main/resources/**/*.nbt",
     "LICENSE",
+    "publish/summary.txt",
     ".github/**",
 ]
 SPDX-FileCopyrightText = "2026 5thlayer"
@@ -45,3 +46,9 @@ path = [
 precedence = "override"
 SPDX-FileCopyrightText = "Rearth"
 SPDX-License-Identifier = "CC0-1.0"
+
+# The cover and icon are drawn by publish/make-cover.py from the pipe and tank textures above.
+[[annotations]]
+path = ["publish/*.png"]
+SPDX-FileCopyrightText = ["Rearth", "2026 5thlayer"]
+SPDX-License-Identifier = "CC0-1.0 AND MIT"

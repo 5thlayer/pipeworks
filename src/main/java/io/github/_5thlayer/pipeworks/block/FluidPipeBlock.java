@@ -136,7 +136,8 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+            InteractionHand hand, BlockHitResult hit) {
         if (!stack.is(FluidPipes.CLOSES_SIDES) || player.isSecondaryUseActive()) {
             return super.useItemOn(stack, state, level, pos, player, hand, hit);
         }
@@ -162,9 +163,13 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
         SegmentBlocks.onPlace(level, pos, state, oldState, capacity());
     }
 
-    /** A neighbour changed, so a fluid inventory may have come or gone: the segments check the sides again on the next tick. */
+    /**
+     * A neighbour changed, so a fluid inventory may have come or gone: the segments check the sides
+     * again on the next tick.
+     */
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation,
+            boolean movedByPiston) {
         if (level instanceof ServerLevel server) {
             FluidSegments.get(server).recheckArms(pos);
         }

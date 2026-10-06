@@ -13,7 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** What the pipe and the tank share: joining a segment when placed, leaving it when removed, and what the pipe does with a click. */
+/**
+ * What the pipe and the tank share: joining a segment when placed, leaving it when removed, and
+ * what the pipe does with a click.
+ */
 final class SegmentBlocks {
 
     private SegmentBlocks() {
@@ -34,7 +37,10 @@ final class SegmentBlocks {
         }
     }
 
-    /** A player's click on a pipe with an item that closes sides: opens or closes {@code side}, and says why if opening it would mix two fluids. */
+    /**
+     * A player's click on a pipe with an item that closes sides: opens or closes {@code side}, and
+     * says why if opening it would mix two fluids.
+     */
     static void toggleSide(ServerLevel level, BlockPos pos, Direction side, Player player) {
         if (FluidSegments.get(level).toggleSide(level, pos, side) == FluidSegments.SideChange.MIXES) {
             tellMixing(player);

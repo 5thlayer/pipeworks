@@ -88,7 +88,10 @@ final class TestInventory {
             super(TYPE.get(), pos, state);
         }
 
-        /** Exposes the handler on {@code face} only, or on none for null, and tells the level its capability changed. */
+        /**
+         * Exposes the handler on {@code face} only, or on none for null, and tells the level its
+         * capability changed.
+         */
         void expose(@Nullable Direction face) {
             exposedOn = face;
             if (level != null) {

@@ -177,7 +177,10 @@ public final class SegmentGraph {
         }
     }
 
-    /** Whether {@link #link} would link these two nodes without mixing two fluids. Nodes already linked, or in one segment, would. */
+    /**
+     * Whether {@link #link} would link these two nodes without mixing two fluids. Nodes already
+     * linked, or in one segment, would.
+     */
     public boolean canLink(long a, long b) {
         Segment first = require(a).segment;
         Segment second = require(b).segment;

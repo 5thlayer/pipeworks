@@ -173,7 +173,8 @@ public class PipeworksJadePlugin implements IWailaPlugin {
                 }
             }
             if (!sides.isEmpty()) {
-                tooltip.add(Component.translatable("tooltip.pipeworks.jade.closed", ComponentUtils.formatList(sides, Component.literal(", "))));
+                tooltip.add(Component.translatable("tooltip.pipeworks.jade.closed",
+                        ComponentUtils.formatList(sides, Component.literal(", "))));
             }
         }
 

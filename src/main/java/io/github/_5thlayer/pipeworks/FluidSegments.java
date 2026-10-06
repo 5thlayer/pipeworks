@@ -127,7 +127,8 @@ public final class FluidSegments extends SavedData {
      * node. Held here since the level holds a cache weakly, so one stays registered only while it is
      * in this map.
      */
-    private final Map<Long, Map<Direction, BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>>> caches = new HashMap<>();
+    private final Map<Long, Map<Direction, BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>>> caches =
+            new HashMap<>();
     /** The sides of each pipe to check again on the next level tick, as a mask by node. */
     private final Map<Long, Integer> dirty = new HashMap<>();
 
@@ -191,7 +192,10 @@ public final class FluidSegments extends SavedData {
         }
     }
 
-    /** A chunk loaded: its pipes check every side again, since their caches were dropped with it or never built. */
+    /**
+     * A chunk loaded: its pipes check every side again, since their caches were dropped with it or
+     * never built.
+     */
     static void onChunkLoad(ChunkEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel level) {
             FluidSegments segments = level.getDataStorage().get(TYPE);
@@ -232,7 +236,10 @@ public final class FluidSegments extends SavedData {
             return false;
         }
 
-        /** {@code state} with the arms {@code arm} says to draw, for a block that {@linkplain #hasArms has arms}. */
+        /**
+         * {@code state} with the arms {@code arm} says to draw, for a block that {@linkplain
+         * #hasArms has arms}.
+         */
         default BlockState withArms(BlockState state, Predicate<Direction> arm) {
             return state;
         }
@@ -328,9 +335,13 @@ public final class FluidSegments extends SavedData {
         return setSide(level, pos, side, closed);
     }
 
-    /** Whether the node at {@code pos} is a loaded pipe or tank, whose face toward a pipe changes with the pipe's. */
+    /**
+     * Whether the node at {@code pos} is a loaded pipe or tank, whose face toward a pipe changes
+     * with the pipe's.
+     */
     private boolean mirrors(ServerLevel level, BlockPos pos) {
-        return specs.containsKey(pos.asLong()) && level.isLoaded(pos) && level.getBlockState(pos).getBlock() instanceof SegmentBlock;
+        return specs.containsKey(pos.asLong()) && level.isLoaded(pos)
+                && level.getBlockState(pos).getBlock() instanceof SegmentBlock;
     }
 
     /**
@@ -477,7 +488,10 @@ public final class FluidSegments extends SavedData {
         return joined(pos.asLong()) ? new Handler(pos.asLong()) : null;
     }
 
-    /** As {@link #handlerAt(BlockPos)}, but null on a side the node has closed. A null side is no face and gets the handler. */
+    /**
+     * As {@link #handlerAt(BlockPos)}, but null on a side the node has closed. A null side is no
+     * face and gets the handler.
+     */
     public @Nullable ResourceHandler<FluidResource> handlerAt(BlockPos pos, @Nullable Direction side) {
         return side != null && closed(pos, side) ? null : handlerAt(pos);
     }
@@ -621,7 +635,10 @@ public final class FluidSegments extends SavedData {
         redraw(level, pos, ALL_FACES);
     }
 
-    /** Redraws the arms of the pipe at {@code pos} on the sides in {@code sides}, a mask. The rest stay as they are. */
+    /**
+     * Redraws the arms of the pipe at {@code pos} on the sides in {@code sides}, a mask. The rest
+     * stay as they are.
+     */
     private void redraw(ServerLevel level, BlockPos pos, int sides) {
         if (!level.isLoaded(pos)) {
             return;
@@ -661,7 +678,8 @@ public final class FluidSegments extends SavedData {
         return loaded ? handler : current;
     }
 
-    private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> cache(ServerLevel level, long node, Direction face) {
+    private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> cache(ServerLevel level, long node,
+            Direction face) {
         return caches.computeIfAbsent(node, n -> new EnumMap<>(Direction.class)).computeIfAbsent(face,
                 f -> BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, level, BlockPos.of(node).relative(f), f.getOpposite(),
                         () -> caches.containsKey(node),
@@ -676,7 +694,10 @@ public final class FluidSegments extends SavedData {
         }
     }
 
-    /** Redraws the sides marked dirty since the last tick, which queries their caches again and so re-arms them. */
+    /**
+     * Redraws the sides marked dirty since the last tick, which queries their caches again and so
+     * re-arms them.
+     */
     private void redrawDirty(ServerLevel level) {
         if (dirty.isEmpty()) {
             return;

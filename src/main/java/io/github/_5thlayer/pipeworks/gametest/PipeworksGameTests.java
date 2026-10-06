@@ -53,6 +53,7 @@ public final class PipeworksGameTests {
             return;
         }
         TestPort.register(modBus);
+        TestInventory.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
     }
 
@@ -64,6 +65,7 @@ public final class PipeworksGameTests {
         SegmentTests.register(tests);
         CreativePipeTests.register(tests);
         TankLevelTests.register(tests);
+        ArmTests.register(tests);
     }
 
     private static Identifier id(String path) {

@@ -45,7 +45,7 @@ final class SegmentTests {
 
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("water_put_in_at_a_port_comes_out_of_a_tank", 20, SegmentTests::portToTank);
-        tests.test("a_pipe_reports_the_sides_its_segment_links", 20, SegmentTests::reportsLinks);
+        tests.test("a_pipe_draws_an_arm_on_the_sides_its_segment_links", 20, SegmentTests::drawsArms);
         tests.test("a_planned_pipe_would_link_to_the_nodes_beside_it", 20, SegmentTests::linksBeside);
         tests.test("a_planned_pipe_would_not_link_to_a_waiting_pipe", 20, SegmentTests::wouldNotLinkToWaiting);
         tests.test("a_planned_pipe_between_two_fluids_would_link_nowhere", 20, SegmentTests::wouldNotLinkMixing);
@@ -128,18 +128,18 @@ final class SegmentTests {
         }
     }
 
-    private static void reportsLinks(GameTestHelper helper) {
+    private static void drawsArms(GameTestHelper helper) {
         row(helper, 1, 3);
         BlockState middle = helper.getBlockState(at(2));
         for (Direction side : Direction.values()) {
             boolean along = side.getAxis() == Direction.Axis.X;
-            if (FluidPipeBlock.isLinked(middle, side) != along) {
-                helper.fail("the middle pipe " + (along ? "does not report" : "reports") + " a link " + side, at(2));
+            if (FluidPipeBlock.drawsArm(middle, side) != along) {
+                helper.fail("the middle pipe " + (along ? "draws no" : "draws an") + " arm " + side, at(2));
                 return;
             }
         }
-        if (FluidPipeBlock.isLinked(helper.getBlockState(at(0)), Direction.EAST) || FluidPipeBlock.isLinked(Blocks.STONE.defaultBlockState(), Direction.EAST)) {
-            helper.fail("a node that is no linked pipe reports a link", at(0));
+        if (FluidPipeBlock.drawsArm(helper.getBlockState(at(0)), Direction.EAST) || FluidPipeBlock.drawsArm(Blocks.STONE.defaultBlockState(), Direction.EAST)) {
+            helper.fail("a node that is no pipe draws an arm", at(0));
             return;
         }
         helper.succeed();

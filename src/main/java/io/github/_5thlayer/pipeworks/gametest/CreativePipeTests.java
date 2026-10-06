@@ -148,8 +148,8 @@ final class CreativePipeTests {
                 helper.fail("a creative pipe and a pipe hold " + contents + ", not " + capacity + " mB", at(0));
                 return;
             }
-            if (!FluidPipeBlock.isLinked(helper.getBlockState(at(0)), Direction.EAST)
-                    || !FluidPipeBlock.isLinked(helper.getBlockState(at(1)), Direction.WEST)) {
+            if (!FluidPipeBlock.drawsArm(helper.getBlockState(at(0)), Direction.EAST)
+                    || !FluidPipeBlock.drawsArm(helper.getBlockState(at(1)), Direction.WEST)) {
                 helper.fail("a creative pipe and a pipe draw no arm towards each other", at(0));
                 return;
             }

@@ -33,6 +33,7 @@ public final class Pipeworks {
         modBus.addListener(TankFluidPayload::register);
         NeoForge.EVENT_BUS.addListener(FluidSegments::onLevelTick);
         NeoForge.EVENT_BUS.addListener(FluidSegments::onChunkSent);
+        NeoForge.EVENT_BUS.addListener(FluidSegments::onChunkLoad);
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {

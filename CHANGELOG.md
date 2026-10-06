@@ -4,6 +4,10 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- A pipe draws an arm toward a fluid inventory beside it: a block that is no node but exposes a fluid handler on the side facing the pipe. The arm is display only, since the inventory never joins the segment, and it follows the handler as it appears and goes away, with or without a block update, within a tick or two. A Pipeworks node beside a pipe gets an arm only where it is linked, and a waiting pipe draws none toward an inventory (#11).
+- `FluidPipes.wouldDrawArm(level, pos, side)` reads whether a pipe placed at a position would draw an arm on a side, for a Consumer that plans pipes: a link, or a fluid inventory. On the server it answers as placement does; on the client the handler lookup is best-effort. `wouldLink` still answers only whether the pipe would link to a node (#11).
+- `FluidPipeBlock.isLinked(state, side)` is now `drawsArm(state, side)`: the arm is drawn toward a fluid inventory too, so it no longer means a link. Ask the segments, not the blockstate, whether two nodes are linked (#11).
+
 ## 0.1.2
 
 - `pipeworks:creative_pipe`, in the creative tab and `/give` with no recipe: a pipe (100 mB, the same shape, arms and linking) that keeps its segment full of the fluid its screen sets, so the Library can be played alone. Right-click opens the screen; clicking its slot with a bucket, or any item holding a fluid, sets the fluid, and an empty cursor clears it. A fluid of another kind than the segment holds, or than another creative pipe in it is set to, is refused with the mixed-fluids message. With JEI or EMI installed, a fluid can be dragged onto the slot. Breaking it stops the refill. The fluid is saved with the level (#6, #8).

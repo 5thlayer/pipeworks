@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -28,8 +29,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * A pipe: a node of 100 millibuckets that joins every pipe, tank and port beside it (ADR 0002).
- * Its arms draw the links its segment holds and no more, so a pipe waiting outside every segment
- * draws none (ADR 0003).
+ * It draws an arm towards each side where fluid can move: a node its segment links it to, or a
+ * fluid inventory beside it. A pipe waiting outside every segment draws none (ADR 0003).
  */
 public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock {
 
@@ -81,15 +82,29 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
         return SegmentBlocks.refuses(context.getLevel(), context.getClickedPos(), context.getPlayer()) ? null : defaultBlockState();
     }
 
-    /** Whether {@code state} is a pipe linked to the node on {@code side}: the arm it draws (ADR 0003). */
-    public static boolean isLinked(BlockState state, Direction side) {
+    /**
+     * Whether {@code state} is a pipe that draws an arm on {@code side}: it is linked to the node
+     * there, or a fluid inventory is (ADR 0003). Whether two nodes are linked is for the segment
+     * graph to say, not the blockstate.
+     */
+    public static boolean drawsArm(BlockState state, Direction side) {
         return state.getBlock() instanceof FluidPipeBlock && state.getValue(ARMS.get(side));
     }
 
     @Override
-    public BlockState withLinks(BlockState state, Predicate<Direction> linked) {
-        for (Map.Entry<Direction, BooleanProperty> arm : ARMS.entrySet()) {
-            state = state.setValue(arm.getValue(), linked.test(arm.getKey()));
+    public boolean hasArms() {
+        return true;
+    }
+
+    @Override
+    public boolean armOn(BlockState state, Direction side) {
+        return state.getValue(ARMS.get(side));
+    }
+
+    @Override
+    public BlockState withArms(BlockState state, Predicate<Direction> arm) {
+        for (Map.Entry<Direction, BooleanProperty> property : ARMS.entrySet()) {
+            state = state.setValue(property.getValue(), arm.test(property.getKey()));
         }
         return state;
     }
@@ -108,6 +123,14 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         SegmentBlocks.onPlace(level, pos, state, oldState, capacity());
+    }
+
+    /** A neighbour changed, so a fluid inventory may have come or gone: the segments check the sides again on the next tick. */
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (level instanceof ServerLevel server) {
+            FluidSegments.get(server).recheckArms(pos);
+        }
     }
 
     @Override

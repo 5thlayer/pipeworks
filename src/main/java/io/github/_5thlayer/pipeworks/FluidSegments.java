@@ -5,6 +5,7 @@ package io.github._5thlayer.pipeworks;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -16,6 +17,7 @@ import java.util.function.Predicate;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github._5thlayer.pipeworks.api.FluidPort;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -30,6 +33,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -43,7 +49,8 @@ import org.slf4j.Logger;
 /**
  * One level's fluid segments (ADR 0002), saved with the level (ADR 0003). A node's mask holds the
  * faces it opens, and two joined neighbours are linked where both open the face between them, so
- * the links are not saved.
+ * the links are not saved. The arms a pipe draws are not saved either: they are in its blockstate,
+ * and the capability caches that follow the fluid inventories beside it are rebuilt as its chunk loads.
  */
 public final class FluidSegments extends SavedData {
 
@@ -100,6 +107,14 @@ public final class FluidSegments extends SavedData {
     private final TankSteps steps = new TankSteps();
     /** Every node by its chunk, so a chunk sent to a player is answered without a scan of the level. */
     private final Map<Long, Set<Long>> byChunk = new HashMap<>();
+    /**
+     * The fluid handler of the block beside each pipe, one cache per side that is not linked to a
+     * node. Held here since the level holds a cache weakly, so one stays registered only while it is
+     * in this map.
+     */
+    private final Map<Long, Map<Direction, BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>>> caches = new HashMap<>();
+    /** The sides of each pipe to check again on the next level tick, as a mask by node. */
+    private final Map<Long, Integer> dirty = new HashMap<>();
 
     private FluidSegments() {
         this.graph = new SegmentGraph();
@@ -155,7 +170,20 @@ public final class FluidSegments extends SavedData {
             if (segments != null) {
                 segments.settle(level);
                 segments.refill();
+                segments.redrawDirty(level);
                 segments.steps.update(level, segments.graph);
+            }
+        }
+    }
+
+    /** A chunk loaded: its pipes check every side again, since their caches were dropped with it or never built. */
+    static void onChunkLoad(ChunkEvent.Load event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            FluidSegments segments = level.getDataStorage().get(TYPE);
+            if (segments != null) {
+                for (long node : segments.nodesIn(event.getChunk().getPos())) {
+                    segments.dirty.merge(node, ALL_FACES, (a, b) -> a | b);
+                }
             }
         }
     }
@@ -179,8 +207,18 @@ public final class FluidSegments extends SavedData {
         /** The millibuckets this block adds to its segment. */
         long capacity();
 
-        /** This block's state given the faces it is linked on, for a pipe drawing its arms. */
-        default BlockState withLinks(BlockState state, Predicate<Direction> linked) {
+        /** Whether this block draws an arm towards each side where fluid can move, as a pipe does. */
+        default boolean hasArms() {
+            return false;
+        }
+
+        /** Whether {@code state} draws an arm on {@code side}. */
+        default boolean armOn(BlockState state, Direction side) {
+            return false;
+        }
+
+        /** {@code state} with the arms {@code arm} says to draw, for a block that {@linkplain #hasArms has arms}. */
+        default BlockState withArms(BlockState state, Predicate<Direction> arm) {
             return state;
         }
     }
@@ -201,6 +239,37 @@ public final class FluidSegments extends SavedData {
      */
     public boolean wouldLink(BlockPos pos, Direction side) {
         return neighbours(pos, bit(side)).length > 0 && canJoin(pos, ALL_FACES);
+    }
+
+    /**
+     * Whether a pipe placed at {@code pos} would draw an arm on {@code side}: it would join without
+     * mixing, and either links to the node there or has a fluid inventory there. A pipe that would
+     * wait draws none.
+     */
+    public boolean wouldDrawArm(Level level, BlockPos pos, Direction side) {
+        return canJoin(pos, ALL_FACES)
+                && (neighbours(pos, bit(side)).length > 0 || isFluidInventory(level, pos.relative(side), side.getOpposite()));
+    }
+
+    /**
+     * Whether the block at {@code pos} is a fluid inventory on {@code face}: loaded, no node of a
+     * segment, and exposing a fluid handler there. A Pipeworks node or a {@link FluidPort} is
+     * judged as a node and never as one, whatever its block registers. On the client this is a best
+     * effort, since a handler may be exposed only on the server.
+     */
+    public static boolean isFluidInventory(Level level, BlockPos pos, Direction face) {
+        return level.isLoaded(pos) && !isNode(level, pos) && level.getCapability(Capabilities.Fluid.BLOCK, pos, face) != null;
+    }
+
+    private static boolean isNode(Level level, BlockPos pos) {
+        return level.getBlockState(pos).getBlock() instanceof SegmentBlock || level.getBlockEntity(pos) instanceof FluidPort;
+    }
+
+    /** Checks every side of the pipe at {@code pos} again on the next level tick. */
+    public void recheckArms(BlockPos pos) {
+        if (specs.containsKey(pos.asLong())) {
+            dirty.merge(pos.asLong(), ALL_FACES, (a, b) -> a | b);
+        }
     }
 
     /**
@@ -227,6 +296,8 @@ public final class FluidSegments extends SavedData {
         }
         unindex(node);
         sources.remove(node);
+        caches.remove(node);
+        dirty.remove(node);
         setDirty();
         if (!waiting.remove(node)) {
             leaving.add(node);
@@ -388,16 +459,72 @@ public final class FluidSegments extends SavedData {
     }
 
     private void redraw(ServerLevel level, BlockPos pos) {
+        redraw(level, pos, ALL_FACES);
+    }
+
+    /** Redraws the arms of the pipe at {@code pos} on the sides in {@code sides}, a mask. The rest stay as they are. */
+    private void redraw(ServerLevel level, BlockPos pos, int sides) {
         if (!level.isLoaded(pos)) {
             return;
         }
         BlockState state = level.getBlockState(pos);
-        if (state.getBlock() instanceof SegmentBlock block) {
-            BlockState linked = block.withLinks(state, face -> graph.linked(pos.asLong(), pos.relative(face).asLong()));
-            if (linked != state) {
-                level.setBlock(pos, linked, Block.UPDATE_ALL);
+        if (state.getBlock() instanceof SegmentBlock block && block.hasArms()) {
+            BlockState drawn = block.withArms(state, face -> drawsArm(level, pos, face, (sides & bit(face)) != 0, block.armOn(state, face)));
+            if (drawn != state) {
+                level.setBlock(pos, drawn, Block.UPDATE_ALL);
             }
         }
+    }
+
+    /**
+     * Whether the pipe at {@code pos} draws an arm on {@code face}: it is linked to the node there,
+     * or the block there is a fluid inventory. A waiting pipe draws none, and a neighbour that is a
+     * node is judged only by the link. Where the neighbour is not loaded its handler is unknown, so
+     * the arm stays {@code current}.
+     */
+    private boolean drawsArm(ServerLevel level, BlockPos pos, Direction face, boolean check, boolean current) {
+        if (!check) {
+            return current;
+        }
+        long node = pos.asLong();
+        BlockPos beside = pos.relative(face);
+        if (graph.linked(node, beside.asLong())) {
+            uncache(node, face);
+            return true;
+        }
+        boolean loaded = level.isLoaded(beside);
+        if (!specs.containsKey(node) || waiting.contains(node) || loaded && isNode(level, beside)) {
+            uncache(node, face);
+            return false;
+        }
+        // Queried even where the neighbour is not loaded: a cache notifies only once queried.
+        boolean handler = cache(level, node, face).getCapability() != null;
+        return loaded ? handler : current;
+    }
+
+    private BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> cache(ServerLevel level, long node, Direction face) {
+        return caches.computeIfAbsent(node, n -> new EnumMap<>(Direction.class)).computeIfAbsent(face,
+                f -> BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, level, BlockPos.of(node).relative(f), f.getOpposite(),
+                        () -> caches.containsKey(node),
+                        // Only marks the side: a listener may not query the cache or touch the level.
+                        () -> dirty.merge(node, bit(f), (a, b) -> a | b)));
+    }
+
+    private void uncache(long node, Direction face) {
+        Map<Direction, ?> sides = caches.get(node);
+        if (sides != null && sides.remove(face) != null && sides.isEmpty()) {
+            caches.remove(node);
+        }
+    }
+
+    /** Redraws the sides marked dirty since the last tick, which queries their caches again and so re-arms them. */
+    private void redrawDirty(ServerLevel level) {
+        if (dirty.isEmpty()) {
+            return;
+        }
+        Map<Long, Integer> sides = new HashMap<>(dirty);
+        dirty.clear();
+        sides.forEach((node, mask) -> redraw(level, BlockPos.of(node), mask));
     }
 
     /** The joined nodes beside {@code pos} that open the face {@code mask} opens towards them. */

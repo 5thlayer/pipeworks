@@ -27,6 +27,18 @@ _Avoid_: part, pipe (a pipe is one kind of node)
 A Consumer's block entity that joins a segment through the `FluidPort` API, so a machine fills and drains pipes. It adds no capacity unless it says so.
 _Avoid_: connector, fluid face (a face is NeoForge's capability on one side of a block)
 
+**Fluid inventory**:
+A block beside a node that is no node itself but exposes a fluid handler on the facing side, such as another mod's tank or machine. It moves fluid in and out of a segment through that handler and never joins it.
+_Avoid_: machine (a port is often one), foreign tank, fluid face
+
+**Arm**:
+What a pipe draws towards a side where fluid can move: a node it is linked to, or a fluid inventory.
+_Avoid_: connection, link (a link is between two nodes in a segment; an arm is only what is drawn)
+
+**Closed side**:
+A side of a pipe a player has shut, where it links to no node and moves no fluid with a fluid inventory. Closing the face between two nodes closes it on both. Every side starts open, and a port's sides are its own to open.
+_Avoid_: disconnected side, wrenched side, blocked side
+
 **Creative pipe**:
 A pipe in every way but its refill: it keeps its segment full of the fluid its screen sets it to, with no recipe. A segment has at most one fluid among its creative pipes.
 _Avoid_: infinite pipe, source block (collides with the game's fluid source blocks)

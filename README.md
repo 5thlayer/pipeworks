@@ -41,3 +41,4 @@ A 5thlayer Library: a mod the FactoryWorks Pack consumes as a pinned local jar. 
 ## License
 
 MIT, with the art above under CC0 1.0. Source is on [GitHub](https://github.com/5thlayer/pipeworks).
+Releases are on [Modrinth](https://modrinth.com/mod/F854p8ec) and [CurseForge](https://www.curseforge.com/projects/1730637).

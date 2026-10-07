@@ -24,6 +24,17 @@ joining and leaving are driven by `onPlace` and `affectNeighborsAfterRemoval`, n
 loading. Only a Consumer's port has a block entity, and it joins from `onLoad`, which does nothing
 for a port already in the graph.
 
+**A node whose block is gone leaves.** Vanilla calls `affectNeighborsAfterRemoval` only when a
+removal's flags include `UPDATE_NEIGHBORS`, and `/setblock` or `/fill` in strict mode, a structure
+clearing its area, or another mod can leave it out (#4). So the graph is also checked against the
+world: on the level tick, a bounded number of nodes at a time, and whenever a node's segment is
+reached through it. A node whose position is loaded and holds no pipe, tank or port leaves as a
+broken one does, taking its share. A position that is not loaded is never judged. The reverse is not
+caught: a pipe placed with `UPDATE_SKIP_ON_PLACE`, as strict mode does, never joins, since nothing
+finds a block the graph does not know. Considered: a mixin into `LevelChunk.setBlockState`, which
+sees every change whatever its flags, placements included. It would be the Library's first mixin,
+to be checked again on every Minecraft update, for removals that only commands and other mods make.
+
 **A node that would mix waits.** A port, or a pipe or tank set by something other than a player,
 whose join would mix two fluids is in no segment: it has no fluid slot, it links to nothing, and a
 pipe draws arms only to the nodes it is linked to. Every waiting node tries again each tick and

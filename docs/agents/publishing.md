@@ -19,7 +19,7 @@ Most answers are in the repo. Keep them the same on both sites and in the repo: 
 | Environment | Client and Server, as `scripts/upload.py` sends |
 | Dependencies | `modrinth_dependencies` and `curseforge_dependencies` in `gradle.properties` |
 
-What the repo lacks: the icon, any gallery images, and the categories. The icon and gallery must show the Library honestly and must not be AI-generated on Modrinth ([§5.5, §6.2](https://modrinth.com/legal/rules)).
+The icon is `publish/pipeworks-icon.png` and the cover `publish/pipeworks-cover.png`, both drawn by `publish/make-cover.py`. What the repo lacks: any gallery images, and the categories. The icon and gallery must show the Library honestly and must not be AI-generated on Modrinth ([§5.5, §6.2](https://modrinth.com/legal/rules)).
 
 ## Modrinth
 

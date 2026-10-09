@@ -72,9 +72,15 @@ server's segment, covers every node. Considered: a block entity with a renderer,
 fluid's own texture and an exact height, but it gives up the plain block: every tank would carry a
 block entity holding only what its segment already knows.
 
-**The tracer holds back.** The storage tank is one block of Factorio's 25,000, not the 3 by 3 it
-occupies there, and the in-line Pump, pipe-to-ground, pipe drag-laying and pipe Dismantle (ADR 0002,
-FactoryWorks ADR-0110) are later work.
+**The storage tank is one block.** It holds Factorio's 25,000 mB in one block, not the 3 by 3 it
+occupies there, and a pack that wants Factorio's volume per block sets the tank's capacity (below).
+Considered: a 3 by 3 tank on Groundworks' footprint (Groundworks ADR 0009), with Factorio's four
+corner connections (#3). It would be the Library's first dependency, and a segment has no node that
+spans several positions: one would join, split, wait and be saved across nine, or eight parts would
+be ports of the origin that open only at the corners, for a tank that only looks more like Factorio's.
+
+**The tracer holds back.** The in-line Pump, pipe-to-ground, pipe drag-laying and pipe Dismantle
+(ADR 0002, FactoryWorks ADR-0110) are later work.
 
 **A pack sets the capacities by server config.** `pipeworks-server.toml` holds the pipe's and the
 tank's capacity, 100 and 25,000 mB by default, as the other 5thlayer Libraries' figures are set (#2).

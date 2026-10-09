@@ -14,7 +14,7 @@ Pipeworks adds pipes and a storage tank on Factorio 2.0's model of fluid: a conn
 - **See the level.** A storage tank shows how full its segment is, in fifteen steps, as fluid of the right colour in its glass. With [Jade](https://www.curseforge.com/minecraft/mc-mods/jade) installed, looking at a pipe, tank or port shows its segment's fluid, amount and capacity.
 - **The creative pipe.** `pipeworks:creative_pipe`, in the creative tab, keeps its segment full of the fluid its screen sets. Click its slot with a bucket, or any item holding a fluid, to set it, and with an empty cursor to clear it. With JEI or EMI installed, a fluid can be dragged onto the slot.
 
-Not yet: the in-line pump, pipe-to-ground, and a 3 by 3 tank.
+Not yet: the in-line pump and pipe-to-ground.
 
 ## For pack authors
 

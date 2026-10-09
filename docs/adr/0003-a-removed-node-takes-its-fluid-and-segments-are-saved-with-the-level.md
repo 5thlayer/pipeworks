@@ -74,7 +74,14 @@ block entity holding only what its segment already knows.
 
 **The tracer holds back.** The storage tank is one block of Factorio's 25,000, not the 3 by 3 it
 occupies there, and the in-line Pump, pipe-to-ground, pipe drag-laying and pipe Dismantle (ADR 0002,
-FactoryWorks ADR-0110) are later work. The capacities are constants until a pack needs to set them.
+FactoryWorks ADR-0110) are later work.
+
+**A pack sets the capacities by server config.** `pipeworks-server.toml` holds the pipe's and the
+tank's capacity, 100 and 25,000 mB by default, as the other 5thlayer Libraries' figures are set (#2).
+A node takes the configured capacity when it joins, and keeps the one it was saved with: changing the
+config changes the pipes and tanks placed afterwards, so a segment may hold nodes of both. Considered:
+giving every saved node the configured capacity on load, which voids what a shrunk segment no longer
+holds, for a change a pack makes once, before a world has pipes.
 
 FactoryWorks ADR-0109, that the Pack depends on no third-party content mod, stays with the Pack: it
 is why Pipeworks exists, and nothing in this Library applies it.

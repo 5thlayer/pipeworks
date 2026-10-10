@@ -24,6 +24,18 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v6
 
+      # The Library requires Groundworks, whose releases reach ~/.m2 only on a maintainer's machine. So the
+      # runner builds the tagged release that build.gradle prefers and publishes it to its own ~/.m2.
+      - id: groundworks
+        run: echo "version=$(sed -n "s/^ *prefer '\(.*\)'$/\1/p" build.gradle)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: 5thlayer/groundworks
+          ref: v${{ steps.groundworks.outputs.version }}
+          path: groundworks
+      - run: sh ./gradlew publishToMavenLocal
+        working-directory: groundworks
+
       # The build, with the JUnit tests.
       - run: ./gradlew build
 

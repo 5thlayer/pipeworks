@@ -28,6 +28,13 @@ versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.${mod_id}]]
+modId = "groundworks"
+type = "required"
+versionRange = "${groundworksRange}"
+ordering = "NONE"
+side = "BOTH"
+
 # Recipe viewers drop a fluid on the creative pipe's screen. Neither is needed to load.
 [[dependencies.${mod_id}]]
 modId = "jei"

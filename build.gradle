@@ -24,6 +24,8 @@ tasks.withType(Jar).configureEach {
 }
 
 repositories {
+    // Groundworks: its releases are published to the local maven repository only.
+    mavenLocal()
     exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
         forRepository { maven { url = 'https://cursemaven.com' } }
         filter { includeGroup 'curse.maven' }
@@ -40,6 +42,10 @@ repositories {
 sourceSets {
     gametest
 }
+
+// The Groundworks versions the Library builds against and, through neoforge.mods.toml, requires at
+// load. The lower bound is the preferred version below and rises with it (ADR 0005).
+def groundworksRange = '[0.5.5,0.6)'
 
 def gameTestReport = layout.buildDirectory.file('reports/gametest.xml').get().asFile
 
@@ -121,6 +127,13 @@ def jeiVersion = '29.20.0.53'
 def emiFile = '8630349'
 
 dependencies {
+    // Required at load and not bundled (ADR 0005). CI reads the version `prefer` names.
+    implementation('io.github.5thlayer:groundworks') {
+        version {
+            strictly groundworksRange
+            prefer '0.5.5'
+        }
+    }
     // JEI finds the creative pipe screen's drop target by its annotation, so the Library loads without it.
     // EMI finds its plugin by annotation too. It has no official 26.1.2 build: this is an unofficial port.
     compileOnly "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
@@ -165,6 +178,7 @@ tasks.named('check') { dependsOn checkJarLicensing }
 def modProperties = [
         mod_id: mod_id, mod_name: mod_name, mod_description: mod_description, version: mod_version,
         minecraft_version: minecraft_version, neoforge_version: neoforge_version,
+        groundworksRange: groundworksRange,
 ]
 processResources {
     inputs.properties modProperties

@@ -51,6 +51,16 @@ _Avoid_: contamination
 A node that would mix two fluids if it joined, so it is in no segment and has no fluid slot. It joins once it no longer would.
 _Avoid_: orphan, isolated node
 
+### Machines and tools
+
+**Pump**:
+The machine that draws a still source block beside it into its segment. A source in the infinite-source tag, water by default, stays in place and gives a fixed rate; any other is taken whole, as a bucket would take it.
+_Avoid_: Offshore Pump, in-line pump (a pump that moves fluid along a pipe, which is not built)
+
+**Dismantle Family**:
+The pipes a Groundworks Dismantle takes up as one span: the block tag `pipeworks:dismantle/pipes`, joined only where each pipe draws an arm toward the other, so a closed side ends a span.
+_Avoid_: dismantle group
+
 ### Parties
 
 **Pipeworks**:

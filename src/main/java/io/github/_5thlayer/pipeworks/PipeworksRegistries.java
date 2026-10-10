@@ -7,6 +7,11 @@ import io.github._5thlayer.pipeworks.block.CreativePipeBlock;
 import io.github._5thlayer.pipeworks.block.CreativePipeMenu;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
+import io.github._5thlayer.pipeworks.pump.PumpBlock;
+import io.github._5thlayer.pipeworks.pump.PumpBlockEntity;
+import io.github._5thlayer.pipeworks.pump.PumpItem;
+import java.util.Set;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +20,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -25,11 +31,13 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** The pipe, the storage tank and the creative pipe, their items, the creative pipe's menu and the creative tab. No fluid is registered here. */
+/** The pipe, the storage tank, the Pump and the creative pipe, their items, the creative pipe's menu and the creative tab. No fluid is registered here. */
 public final class PipeworksRegistries {
 
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Pipeworks.MOD_ID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Pipeworks.MOD_ID);
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Pipeworks.MOD_ID);
     private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, Pipeworks.MOD_ID);
     private static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Pipeworks.MOD_ID);
@@ -41,10 +49,17 @@ public final class PipeworksRegistries {
     /** Has no recipe, which keeps it out of survival: it is in the creative tab and {@code /give}. */
     public static final DeferredBlock<CreativePipeBlock> CREATIVE_PIPE = BLOCKS.registerBlock("creative_pipe", CreativePipeBlock::new,
             props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
+    /** Has no recipe: a pack adds one. */
+    public static final DeferredBlock<PumpBlock> PUMP = BLOCKS.registerBlock("pump", PumpBlock::new,
+            props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
 
     public static final DeferredItem<?> PIPE_ITEM = ITEMS.registerSimpleBlockItem("pipe", PIPE);
     public static final DeferredItem<?> STORAGE_TANK_ITEM = ITEMS.registerSimpleBlockItem("storage_tank", STORAGE_TANK);
     public static final DeferredItem<?> CREATIVE_PIPE_ITEM = ITEMS.registerSimpleBlockItem("creative_pipe", CREATIVE_PIPE);
+    public static final DeferredItem<PumpItem> PUMP_ITEM = ITEMS.registerItem("pump", props -> new PumpItem(PUMP.get(), props.useBlockDescriptionPrefix()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP_ENTITY =
+            BLOCK_ENTITIES.register("pump", () -> new BlockEntityType<>(PumpBlockEntity::new, Set.of(PUMP.get())));
 
     /** The extra data the server sends on opening is the creative pipe's position. */
     public static final DeferredHolder<MenuType<?>, MenuType<CreativePipeMenu>> CREATIVE_PIPE_MENU =
@@ -57,6 +72,7 @@ public final class PipeworksRegistries {
                     .displayItems((parameters, output) -> {
                         output.accept(PIPE_ITEM.get());
                         output.accept(STORAGE_TANK_ITEM.get());
+                        output.accept(PUMP_ITEM.get());
                         output.accept(CREATIVE_PIPE_ITEM.get());
                     })
                     .build());
@@ -67,6 +83,7 @@ public final class PipeworksRegistries {
     static void register(IEventBus modBus) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
+        BLOCK_ENTITIES.register(modBus);
         MENUS.register(modBus);
         CREATIVE_TABS.register(modBus);
         modBus.addListener(PipeworksRegistries::registerCapabilities);
@@ -88,6 +105,7 @@ public final class PipeworksRegistries {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(PIPE_ITEM.get());
             event.accept(STORAGE_TANK_ITEM.get());
+            event.accept(PUMP_ITEM.get());
         }
     }
 }

@@ -100,6 +100,7 @@ public final class PipeworksGameTests {
         ClosedSideTests.register(tests);
         PipeDismantleTests.register(tests);
         PipeStretchTests.register(tests);
+        PumpTests.register(tests);
     }
 
     private static Identifier id(String path) {

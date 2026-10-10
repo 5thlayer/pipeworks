@@ -3,14 +3,12 @@
 
 package io.github._5thlayer.pipeworks.dismantle;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github._5thlayer.groundworks.DismantleFamily;
 import io.github._5thlayer.groundworks.DismantleSpan;
 import io.github._5thlayer.groundworks.Dismantles;
 import io.github._5thlayer.groundworks.Refusal;
 import io.github._5thlayer.groundworks.ShortestPath;
+import io.github._5thlayer.pipeworks.Adjacent;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import net.minecraft.core.BlockPos;
@@ -56,11 +54,7 @@ public final class PipeFamily implements DismantleFamily {
 
             @Override
             public Iterable<BlockPos> neighbours(BlockPos pos) {
-                List<BlockPos> around = new ArrayList<>(6);
-                for (Direction side : Direction.values()) {
-                    around.add(pos.relative(side));
-                }
-                return around;
+                return Adjacent.around(pos);
             }
 
             @Override
@@ -77,13 +71,10 @@ public final class PipeFamily implements DismantleFamily {
      * nodes (ADR 0005).
      */
     static boolean joined(Level level, BlockPos a, BlockPos b) {
-        for (Direction side : Direction.values()) {
-            if (a.relative(side).equals(b)) {
-                return FluidPipeBlock.drawsArm(level.getBlockState(a), side)
-                        && FluidPipeBlock.drawsArm(level.getBlockState(b), side.getOpposite());
-            }
-        }
-        return false;
+        Direction side = Adjacent.face(a, b);
+        return side != null
+                && FluidPipeBlock.drawsArm(level.getBlockState(a), side)
+                && FluidPipeBlock.drawsArm(level.getBlockState(b), side.getOpposite());
     }
 
     @Override

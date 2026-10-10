@@ -21,7 +21,7 @@ public final class PumpRule {
     static final int MINECRAFT_TICKS_PER_SECOND = 20;
 
     /** What a source block holds, in millibuckets. */
-    public static final long BLOCK = 1_000;
+    public static final int BUCKET_MB = 1_000;
 
     private PumpRule() {
     }
@@ -41,7 +41,7 @@ public final class PumpRule {
      * at the same rate: 1,000 mB at 60 mB a tick is 17 ticks, rounded up.
      */
     public static int ticksPerBlock() {
-        return (int) Math.ceilDiv(BLOCK, (long) milliBucketsPerTick());
+        return Math.ceilDiv(BUCKET_MB, milliBucketsPerTick());
     }
 
     /**

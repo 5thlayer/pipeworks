@@ -28,13 +28,15 @@ import org.jspecify.annotations.Nullable;
 /** Pipes laid by Groundworks' Stretch: a rise climbs straight up in place, then the leg runs level (ADR 0005). */
 public final class PipeLegs implements LegBuilder {
 
-    private static final String BLOCKED_KEY = "message.pipeworks.stretch.pipe_blocked";
+    enum Reason implements Refusal {
+        BLOCKED("message.pipeworks.stretch.pipe_blocked"),
+        MIXED("message.pipeworks.mixed_fluids");
 
-    private static final String MIXED_KEY = "message.pipeworks.mixed_fluids";
+        private final String key;
 
-    enum Blocked implements Refusal {
-        BLOCKED,
-        MIXED
+        Reason(String key) {
+            this.key = key;
+        }
     }
 
     private PipeLegs() {
@@ -59,13 +61,13 @@ public final class PipeLegs implements LegBuilder {
         for (BlockPos pos : positions) {
             blocks.add(new PlacementPlan.Placed(pos, opened(pipe, level, pos, laid)));
             if (refusal == null && (!level.isInWorldBounds(pos) || !level.getBlockState(pos).canBeReplaced())) {
-                refusal = new Refusal.At(Blocked.BLOCKED, pos);
+                refusal = new Refusal.At(Reason.BLOCKED, pos);
             }
         }
         if (refusal == null) {
             BlockPos mixed = firstMixing(level, positions, laid);
             if (mixed != null) {
-                refusal = new Refusal.At(Blocked.MIXED, mixed);
+                refusal = new Refusal.At(Reason.MIXED, mixed);
             }
         }
         return new PlacementPlan(blocks, List.of(), refusal);
@@ -73,11 +75,11 @@ public final class PipeLegs implements LegBuilder {
 
     @Override
     public Component message(Refusal refusal) {
-        boolean mixed = refusal instanceof Refusal.At at && at.reason() == Blocked.MIXED;
-        return Component.translatable(mixed ? MIXED_KEY : BLOCKED_KEY);
+        Refusal reason = refusal instanceof Refusal.At at ? at.reason() : refusal;
+        return Component.translatable(reason instanceof Reason known ? known.key : Reason.BLOCKED.key);
     }
 
-    // The run is one connected chain, so the fluids its ends reach meet in it; wouldLink cannot see that.
+    // The run is one connected chain, so the fluids its ends reach meet in it; wouldLink cannot see that (#16).
     private static @Nullable BlockPos firstMixing(Level level, List<BlockPos> positions, Set<BlockPos> laid) {
         FluidResource seen = null;
         for (BlockPos pos : positions) {
@@ -112,7 +114,6 @@ public final class PipeLegs implements LegBuilder {
         return positions;
     }
 
-    // The arms include one toward a fluid inventory, so the plan equals what the click lays (ADR 0003).
     private static BlockState opened(FluidPipeBlock pipe, Level level, BlockPos pos, Set<BlockPos> laid) {
         return pipe.withArms(pipe.defaultBlockState(), side -> {
             BlockPos beside = pos.relative(side);

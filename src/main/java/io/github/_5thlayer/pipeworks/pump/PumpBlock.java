@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.serialization.MapCodec;
+import io.github._5thlayer.pipeworks.Adjacent;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
+import io.github._5thlayer.pipeworks.api.FluidPorts;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -43,13 +45,17 @@ public class PumpBlock extends BaseEntityBlock {
         registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
-    /** The fluid of each still source block beside {@code pos}, in {@link Direction#values()} order. */
-    public static List<Fluid> sourcesBeside(BlockGetter level, BlockPos pos) {
-        List<Fluid> sources = new ArrayList<>();
-        for (Direction side : Direction.values()) {
-            FluidState fluid = level.getFluidState(pos.relative(side));
+    /** A still source block beside a Pump. */
+    public record Source(BlockPos pos, Fluid fluid) {
+    }
+
+    /** Each still source block beside {@code pos}, in {@link Direction#values()} order. */
+    public static List<Source> sourcesBeside(BlockGetter level, BlockPos pos) {
+        List<Source> sources = new ArrayList<>();
+        for (BlockPos beside : Adjacent.around(pos)) {
+            FluidState fluid = level.getFluidState(beside);
             if (fluid.isSource()) {
-                sources.add(fluid.getType());
+                sources.add(new Source(beside, fluid.getType()));
             }
         }
         return sources;
@@ -92,7 +98,7 @@ public class PumpBlock extends BaseEntityBlock {
 
     @Override
     protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        PumpBlockEntity.leave(level, pos);
+        FluidPorts.leave(level, pos);
         super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 }

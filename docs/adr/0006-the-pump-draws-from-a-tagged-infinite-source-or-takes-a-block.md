@@ -20,6 +20,10 @@ that plays alone in vanilla, where sources do form.
   the rate holds on average.
 - **The fluid is read each tick, not recorded at placement.** The Pump draws the first source beside
   it that is the segment's own fluid, or the first of any if the segment is empty, so it never mixes.
+- **The Pump may be placed beside, and draw from, any placed still source.** Finite fluids are
+  drained block by block, since a source block holds only its 1,000 mB; only a fluid in
+  `pipeworks:infinite_sources` is infinite, so only it is left in place. The siting rule does not
+  separate a natural source from one a player placed.
 - **Placement is refused with no still source of any fluid beside it**, in the plan, so the preview
   draws it red and nothing is consumed. Facing is cosmetic. It takes no power and has no recipe.
 - The numbers are Pipeworks' own, frozen from Factorio's (FactoryWorks ADR 0115) and held by

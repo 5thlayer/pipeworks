@@ -3,6 +3,8 @@
 
 package io.github._5thlayer.pipeworks.pump;
 
+import java.util.List;
+
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
 import io.github._5thlayer.pipeworks.api.FluidPort;
@@ -51,10 +53,6 @@ public class PumpBlockEntity extends BlockEntity implements FluidPort {
         FluidPorts.join(this);
     }
 
-    static void leave(ServerLevel level, BlockPos pos) {
-        FluidPorts.leave(level, pos);
-    }
-
     void serverTick() {
         if (waiting > 0) {
             waiting--;
@@ -68,7 +66,8 @@ public class PumpBlockEntity extends BlockEntity implements FluidPort {
             return;
         }
         FluidResource held = segment.getResource(0);
-        var chosen = PumpRule.choose(PumpBlock.sourcesBeside(server, worldPosition),
+        var sources = PumpBlock.sourcesBeside(server, worldPosition);
+        var chosen = PumpRule.choose(sources.stream().map(PumpBlock.Source::fluid).toList(),
                 held == null || held.isEmpty() ? null : held.getFluid());
         if (chosen.isEmpty()) {
             return;
@@ -81,17 +80,18 @@ public class PumpBlockEntity extends BlockEntity implements FluidPort {
             }
             return;
         }
-        take(server, segment, fluid);
+        take(server, segment, fluid, sources);
     }
 
-    // The block goes only when its whole bucket fits, so a block taken is never lost.
-    private void take(ServerLevel server, ResourceHandler<FluidResource> segment, Fluid fluid) {
+    // The block goes only when its whole bucket fits, so a block taken is never lost (ADR 0006).
+    private void take(ServerLevel server, ResourceHandler<FluidResource> segment, Fluid fluid,
+            List<PumpBlock.Source> sources) {
         try (Transaction tx = Transaction.openRoot()) {
-            if (segment.insert(FluidResource.of(fluid), (int) PumpRule.BLOCK, tx) != PumpRule.BLOCK) {
+            if (segment.insert(FluidResource.of(fluid), PumpRule.BUCKET_MB, tx) != PumpRule.BUCKET_MB) {
                 return;
             }
-            for (Direction side : Direction.values()) {
-                BlockPos source = worldPosition.relative(side);
+            for (PumpBlock.Source found : sources) {
+                BlockPos source = found.pos();
                 var state = server.getBlockState(source);
                 var fluidState = state.getFluidState();
                 if (fluidState.isSource() && fluidState.getType() == fluid

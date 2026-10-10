@@ -1,0 +1,6 @@
+{
+  "values": [
+    "#minecraft:pickaxes",
+    { "id": "#c:tools/wrench", "required": false }
+  ]
+}

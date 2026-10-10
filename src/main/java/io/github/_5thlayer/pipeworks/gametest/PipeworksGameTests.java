@@ -98,6 +98,8 @@ public final class PipeworksGameTests {
         TankLevelTests.register(tests);
         ArmTests.register(tests);
         ClosedSideTests.register(tests);
+        PipeDismantleTests.register(tests);
+        PipeStretchTests.register(tests);
     }
 
     private static Identifier id(String path) {

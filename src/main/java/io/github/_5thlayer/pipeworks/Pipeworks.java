@@ -3,8 +3,10 @@
 
 package io.github._5thlayer.pipeworks;
 
+import io.github._5thlayer.pipeworks.dismantle.PipeFamily;
 import io.github._5thlayer.pipeworks.gametest.PipeworksGameTests;
 import io.github._5thlayer.pipeworks.network.CreativePipeFluidPayload;
+import io.github._5thlayer.pipeworks.stretch.PipeLegs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -28,6 +30,8 @@ public final class Pipeworks {
 
     public Pipeworks(IEventBus modBus) {
         PipeworksRegistries.register(modBus);
+        PipeFamily.register();
+        PipeLegs.register();
         PipeworksGameTests.register(modBus);
         modBus.addListener(Pipeworks::registerPayloads);
         modBus.addListener(TankFluidPayload::register);

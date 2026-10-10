@@ -7,7 +7,7 @@ status: accepted
 > **Imported from FactoryWorks ADR-0110**, unchanged apart from renumbering. Pipeworks is new code
 > written for the Pack, not carved from it. Issue numbers (`#n`) and ADRs cited as FactoryWorks
 > refer to 5thlayer/factoryworks. [ADR 0003](0003-a-removed-node-takes-its-fluid-and-segments-are-saved-with-the-level.md)
-> records where Pipeworks departs from this decision; the glossary in `CONTEXT.md` has the current terms.
+> records where Pipeworks departs from this decision; the glossary in `GLOSSARY.md` has the current terms.
 
 A connected run of pipes, tanks and machine fluid ports is one fluid segment: a single fluid box
 holding one fluid, its capacity the sum of its parts, and flow inside it instant. Throughput is

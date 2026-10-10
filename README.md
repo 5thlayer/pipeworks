@@ -36,7 +36,7 @@ The pipe, tank and creative pipe models and textures are from [Oritech](https://
 
 ## Developing
 
-A 5thlayer Library: a mod the FactoryWorks Pack consumes as a pinned local jar. See `CONTEXT.md` for the domain glossary. `sh ./gradlew build` runs the JUnit tests on a plain JVM, and `sh ./gradlew runGameTestServer` the game tests headless. The segment rules are `segment/SegmentGraph`, with no Minecraft types, so they are tested without a world.
+A 5thlayer Library: a mod the FactoryWorks Pack consumes as a pinned local jar. See `GLOSSARY.md` for the domain glossary. `sh ./gradlew build` runs the JUnit tests on a plain JVM, and `sh ./gradlew runGameTestServer` the game tests headless. The segment rules are `segment/SegmentGraph`, with no Minecraft types, so they are tested without a world.
 
 ## License
 

@@ -4,6 +4,7 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- `pipeworks:outlet`, the **Outlet**: a port that sets its segment's fluid down as one source block in the space it faces, with no power and no recipe. It faces away from the block it is placed against and joins pipes on every other face. Once the segment holds 1,000 mB and that space is empty or replaceable, holding no source block, it takes the bucket and places the block, breaking a replaceable block with its drops. A fluid with no block stays in the pipes, and it never draws fluid from the world (#20).
 - `pipeworks:pump`, the **Pump**: a port that draws a still source block beside it into its segment, on any side, with no power and no recipe. A source in the fluid tag `pipeworks:infinite_sources` (ships `minecraft:water`) is never taken, and the pump adds 60 mB a tick, Factorio's 1,200 mB a second. Any other source is taken whole, as a bucket would, once the segment has room for 1,000 mB, and the pump then waits 17 ticks. It draws only the segment's own fluid, so it never mixes, and it is refused where no still source stands beside it. `PumpBlock.sourcesBeside` and `PumpBlockEntity.INFINITE_SOURCES` are the pieces a Consumer can read (#16).
 
 - **Breaking for installs: Pipeworks requires Groundworks** `0.5.5` or later in the 0.5 series, as a separate download and not bundled (ADR 0005). `neoforge.mods.toml` and the uploads' related projects name it (#16).

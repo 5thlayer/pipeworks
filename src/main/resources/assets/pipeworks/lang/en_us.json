@@ -1,10 +1,12 @@
 {
   "block.pipeworks.creative_pipe": "Creative Pipe",
+  "block.pipeworks.outlet": "Outlet",
   "block.pipeworks.pipe": "Pipe",
   "block.pipeworks.pump": "Pump",
   "block.pipeworks.storage_tank": "Storage Tank",
   "config.jade.plugin_pipeworks.waiting": "Waiting node",
   "item.pipeworks.creative_pipe": "Creative Pipe",
+  "item.pipeworks.outlet": "Outlet",
   "item.pipeworks.pipe": "Pipe",
   "item.pipeworks.pump": "Pump",
   "item.pipeworks.storage_tank": "Storage Tank",

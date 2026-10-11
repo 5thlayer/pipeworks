@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * The Outlet (ADR 0007): it takes a bucket's worth from its segment and sets it down as a source
  * block in the space it faces, only when that space is empty or replaceable, only once its segment
- * holds 1,000 mB, never for a fluid with no block, and never draws fluid from the world. Each test
+ * holds 1,000 mB, never over a source block or a pipe, never for a fluid with no block, and never draws fluid from the world. Each test
  * stands the outlet at x 2 in a row at z 4, facing west onto x 1, with a tank at x 3 to hold a
  * bucket's worth.
  */
@@ -31,6 +31,8 @@ final class OutletTests {
     private static final BlockPos FRONT = OUTLET.west();
     private static final BlockPos TANK = OUTLET.east();
     private static final int SETTLE = 3;
+    /** Long enough for an outlet that was going to set a block down to have done so. */
+    private static final int WAIT = SETTLE + 5;
 
     private OutletTests() {
     }
@@ -39,6 +41,8 @@ final class OutletTests {
         tests.test("an_outlet_sets_a_bucket_of_water_down_as_a_source_block", 20, OutletTests::placesWater);
         tests.test("an_outlet_replaces_a_replaceable_block_it_faces", 20, OutletTests::replaces);
         tests.test("an_outlet_waits_while_the_space_it_faces_is_occupied", 30, OutletTests::waitsOnOccupied);
+        tests.test("an_outlet_never_overwrites_a_source_block", 20, OutletTests::keepsSource);
+        tests.test("an_outlet_leaves_a_pipe_it_faces", 20, OutletTests::keepsPipe);
         tests.test("an_outlet_waits_until_its_segment_holds_a_bucket", 20, OutletTests::waitsForBucket);
         tests.test("an_outlet_ignores_a_fluid_with_no_block", 20, OutletTests::ignoresBlockless);
         tests.test("an_outlet_never_draws_fluid_from_the_world", 20, OutletTests::neverDraws);
@@ -68,9 +72,11 @@ final class OutletTests {
         return FluidSegments.get(helper.getLevel()).contentsAt(helper.absolutePos(TANK));
     }
 
-    private static long amount(GameTestHelper helper) {
+    private static void assertTank(GameTestHelper helper, long amount, String what) {
         var contents = contents(helper);
-        return contents == null ? 0 : contents.amount();
+        if ((contents == null ? 0 : contents.amount()) != amount) {
+            helper.fail("the tank holds " + contents + ", not " + what, TANK);
+        }
     }
 
     private static void placesWater(GameTestHelper helper) {
@@ -80,9 +86,7 @@ final class OutletTests {
             if (!front.isSource() || front.getType() != Fluids.WATER) {
                 helper.fail("the space the outlet faces holds " + helper.getBlockState(FRONT) + ", not a water source", FRONT);
             }
-            if (amount(helper) != 500) {
-                helper.fail("the tank holds " + contents(helper) + ", not the 500 mB left after a bucket", TANK);
-            }
+            assertTank(helper, 500, "the 500 mB left after a bucket");
         }).thenSucceed();
     }
 
@@ -93,22 +97,18 @@ final class OutletTests {
             if (!helper.getBlockState(FRONT).getFluidState().isSource()) {
                 helper.fail("the snow layer stands, not a water source", FRONT);
             }
-            if (amount(helper) != 0) {
-                helper.fail("the tank holds " + contents(helper) + ", not nothing", TANK);
-            }
+            assertTank(helper, 0, "nothing");
         }).thenSucceed();
     }
 
     private static void waitsOnOccupied(GameTestHelper helper) {
         outletAndTank(helper);
         helper.setBlock(FRONT, Blocks.STONE);
-        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 1_000)).thenIdle(SETTLE + 5).thenExecute(() -> {
+        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 1_000)).thenIdle(WAIT).thenExecute(() -> {
             if (!helper.getBlockState(FRONT).is(Blocks.STONE)) {
                 helper.fail("the outlet replaced the stone it faces", FRONT);
             }
-            if (amount(helper) != 1_000) {
-                helper.fail("the tank holds " + contents(helper) + ", not its 1000 mB", TANK);
-            }
+            assertTank(helper, 1_000, "its 1000 mB");
             helper.setBlock(FRONT, Blocks.AIR);
         }).thenIdle(SETTLE).thenExecute(() -> {
             if (!helper.getBlockState(FRONT).getFluidState().isSource()) {
@@ -117,27 +117,45 @@ final class OutletTests {
         }).thenSucceed();
     }
 
+    private static void keepsSource(GameTestHelper helper) {
+        outletAndTank(helper);
+        helper.setBlock(FRONT, Blocks.LAVA);
+        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 1_000)).thenIdle(WAIT).thenExecute(() -> {
+            if (!helper.getBlockState(FRONT).is(Blocks.LAVA)) {
+                helper.fail("the outlet set water down over a lava source", FRONT);
+            }
+            assertTank(helper, 1_000, "its 1000 mB");
+        }).thenSucceed();
+    }
+
+    private static void keepsPipe(GameTestHelper helper) {
+        outletAndTank(helper);
+        helper.setBlock(FRONT, PipeworksRegistries.PIPE.get());
+        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 1_000)).thenIdle(WAIT).thenExecute(() -> {
+            if (!helper.getBlockState(FRONT).is(PipeworksRegistries.PIPE.get())) {
+                helper.fail("the outlet broke the pipe it faces", FRONT);
+            }
+            assertTank(helper, 1_000, "its 1000 mB");
+        }).thenSucceed();
+    }
+
     private static void waitsForBucket(GameTestHelper helper) {
         outletAndTank(helper);
-        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 999)).thenIdle(SETTLE + 5).thenExecute(() -> {
+        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, Fluids.WATER, 999)).thenIdle(WAIT).thenExecute(() -> {
             if (!helper.getBlockState(FRONT).isAir()) {
                 helper.fail("the outlet set " + helper.getBlockState(FRONT) + " down from 999 mB", FRONT);
             }
-            if (amount(helper) != 999) {
-                helper.fail("the tank holds " + contents(helper) + ", not its 999 mB", TANK);
-            }
+            assertTank(helper, 999, "its 999 mB");
         }).thenSucceed();
     }
 
     private static void ignoresBlockless(GameTestHelper helper) {
         outletAndTank(helper);
-        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, TestFluid.FLUID.get(), 1_000)).thenIdle(SETTLE + 5).thenExecute(() -> {
+        helper.startSequence().thenIdle(1).thenExecute(() -> fill(helper, TestFluid.FLUID.get(), 1_000)).thenIdle(WAIT).thenExecute(() -> {
             if (!helper.getBlockState(FRONT).isAir()) {
                 helper.fail("the outlet set " + helper.getBlockState(FRONT) + " down for a fluid with no block", FRONT);
             }
-            if (amount(helper) != 1_000) {
-                helper.fail("the tank holds " + contents(helper) + ", not its 1000 mB", TANK);
-            }
+            assertTank(helper, 1_000, "its 1000 mB");
         }).thenSucceed();
     }
 
@@ -145,10 +163,8 @@ final class OutletTests {
         helper.setBlock(FRONT, Blocks.WATER);
         helper.setBlock(OUTLET.north(), Blocks.WATER);
         outletAndTank(helper);
-        helper.startSequence().thenIdle(SETTLE + 5).thenExecute(() -> {
-            if (amount(helper) != 0) {
-                helper.fail("the tank holds " + contents(helper) + ", drawn from the world", TANK);
-            }
+        helper.startSequence().thenIdle(WAIT).thenExecute(() -> {
+            assertTank(helper, 0, "nothing, since it draws none from the world");
             if (!helper.getBlockState(FRONT).is(Blocks.WATER) || !helper.getBlockState(OUTLET.north()).is(Blocks.WATER)) {
                 helper.fail("a source block beside the outlet was taken", OUTLET);
             }

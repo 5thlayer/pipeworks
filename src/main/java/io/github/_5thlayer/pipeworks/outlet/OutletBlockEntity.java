@@ -22,8 +22,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * A port that empties its segment into the world a bucket at a time: once the segment holds
- * {@link FluidType#BUCKET_VOLUME}, and the space the outlet faces is empty or replaceable and holds no
- * source block, it takes the bucket and sets one source block of the fluid there. A fluid with no
+ * {@link FluidType#BUCKET_VOLUME}, and the space the outlet faces is empty or holds a replaceable block
+ * and no source block, it takes the bucket and sets one source block of the fluid there. A fluid with no
  * block stays in the pipes. It never picks fluid up, and its front is no port face (ADR 0007).
  */
 public class OutletBlockEntity extends BlockEntity implements FluidPort {
@@ -55,27 +55,26 @@ public class OutletBlockEntity extends BlockEntity implements FluidPort {
         if (segment == null) {
             return;
         }
-        FluidResource held = segment.getResource(0);
-        if (held == null || held.isEmpty()) {
+        FluidResource fluid = segment.getResource(0);
+        if (fluid == null || fluid.isEmpty()) {
             return;
         }
-        BlockState source = sourceBlock(held.getFluid());
+        BlockState toPlace = sourceBlock(fluid.getFluid());
         BlockPos front = worldPosition.relative(facing());
-        BlockState there = server.getBlockState(front);
-        if (source == null || !canPlaceInto(there, held.getFluid())) {
+        BlockState replaced = server.getBlockState(front);
+        if (toPlace == null || !canPlaceInto(replaced)) {
             return;
         }
         try (Transaction tx = Transaction.openRoot()) {
-            if (segment.extract(held, FluidType.BUCKET_VOLUME, tx) != FluidType.BUCKET_VOLUME) {
+            if (segment.extract(fluid, FluidType.BUCKET_VOLUME, tx) != FluidType.BUCKET_VOLUME
+                    || !server.setBlock(front, toPlace, Block.UPDATE_ALL_IMMEDIATE)) {
                 return;
             }
-            // A replaceable block breaks with its drops, as under a bucket.
-            if (!there.isAir() && !there.liquid()) {
-                server.destroyBlock(front, true);
+            // A replaceable block drops what it would if broken, once the source has taken its place.
+            if (!replaced.isAir() && !replaced.liquid()) {
+                Block.dropResources(replaced, server, front);
             }
-            if (server.setBlock(front, source, Block.UPDATE_ALL_IMMEDIATE)) {
-                tx.commit();
-            }
+            tx.commit();
         }
     }
 
@@ -90,10 +89,11 @@ public class OutletBlockEntity extends BlockEntity implements FluidPort {
     }
 
     /**
-     * Empty, or a block a bucket of {@code fluid} would replace, but never a source block, which
-     * would be lost to the one set down.
+     * Empty, or a replaceable block such as grass, snow or a flowing fluid, but never a source block,
+     * which would be lost to the one set down. A bucket's wider rule, any block that is not solid,
+     * would break a pipe, a torch or a rail.
      */
-    private static boolean canPlaceInto(BlockState there, Fluid fluid) {
-        return there.isAir() || (there.canBeReplaced(fluid) && !there.getFluidState().isSource());
+    private static boolean canPlaceInto(BlockState replaced) {
+        return replaced.canBeReplaced() && !replaced.getFluidState().isSource();
     }
 }

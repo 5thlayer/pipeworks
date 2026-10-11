@@ -19,9 +19,11 @@ rule.
 - **It sets a block down only once the segment holds 1,000 mB**, in one transaction with the
   extract, so a bucket taken is never lost and a part bucket stays in the pipes. It waits on nothing
   else: once the block is set, the space holds a source and the next one waits until it is gone.
-- **The space must be empty, or replaceable as a bucket finds it** (snow, grass, flowing fluid),
-  **and hold no source block.** A replaceable block breaks with its drops, as under a bucket. A source
-  is never overwritten, of the same fluid or another, and the Outlet does not waterlog a block.
+- **The space must be empty or hold a replaceable block** (snow, grass, flowing fluid), **and no
+  source block.** Replaceable is the block's own flag, not a bucket's wider rule, which takes any
+  block that is not solid and so would break a pipe, a torch or a rail. A replaced block drops what
+  it would if broken, once the source has taken its place. A source is never overwritten, of the same
+  fluid or another, and the Outlet does not waterlog a block.
 - **A fluid with no source block is left in the pipes.** No other fluid is singled out: it does not
   vaporize water in an ultrawarm dimension as a bucket does, since it is a machine and not a player.
 - **It never draws fluid from the world.** It takes no power and has no recipe; a pack adds one.

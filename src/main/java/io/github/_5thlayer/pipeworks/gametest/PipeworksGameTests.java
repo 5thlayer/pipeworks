@@ -65,6 +65,7 @@ public final class PipeworksGameTests {
         }
         TestPort.register(modBus);
         TestInventory.register(modBus);
+        TestFluid.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
         modBus.addListener(PipeworksGameTests::addTestPack);
     }
@@ -101,6 +102,7 @@ public final class PipeworksGameTests {
         PipeDismantleTests.register(tests);
         PipeStretchTests.register(tests);
         PumpTests.register(tests);
+        OutletTests.register(tests);
     }
 
     private static Identifier id(String path) {

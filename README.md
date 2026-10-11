@@ -14,6 +14,7 @@ Pipeworks adds pipes and a storage tank on Factorio 2.0's model of fluid: a conn
 - **See the level.** A storage tank shows how full its segment is, in fifteen steps, as fluid of the right colour in its glass. With [Jade](https://www.curseforge.com/minecraft/mc-mods/jade) installed, looking at a pipe, tank or port shows its segment's fluid, amount and capacity.
 - **The creative pipe.** `pipeworks:creative_pipe`, in the creative tab, keeps its segment full of the fluid its screen sets. Click its slot with a bucket, or any item holding a fluid, to set it, and with an empty cursor to clear it. With JEI or EMI installed, a fluid can be dragged onto the slot.
 - **A Pump.** `pipeworks:pump` draws a still source block beside it into its segment. A source in the fluid tag `pipeworks:infinite_sources`, water by default, is left in place and gives 1,200 mB a second; any other is taken whole, as a bucket would, once the segment has room for 1,000 mB.
+- **An Outlet.** `pipeworks:outlet` sets its segment's fluid down as a source block in the space it faces, a bucket's worth at a time, once that space is empty or replaceable. It never picks fluid up.
 - **Dismantle and drag-laying.** Pipes are a [Groundworks](https://github.com/5thlayer/groundworks) Dismantle Family and are laid by its Stretch: sneak-click a pipe with a pickaxe, then click another to take up the run between them; drag a line of pipes the way belts are laid.
 
 Not yet: the in-line pump and pipe-to-ground.

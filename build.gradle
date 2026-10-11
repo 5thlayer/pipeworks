@@ -1,7 +1,7 @@
 // ModDevGradle on Java 25, the game test server that names each test, the jar's licensing, ~/.m2-only
 // publishing and the release and upload tasks come from the libworks convention plugin (libworks ADR 0003).
 plugins {
-    id 'io.github.5thlayer.libworks.module' version '0.1.2'
+    id 'io.github.5thlayer.libworks.module' version '0.2.0'
 }
 
 // What the Library requires of the other Libraries, each as a range whose lower bound is a released version:
@@ -34,13 +34,6 @@ repositories {
     }
 }
 
-// Data only the Library's own runs load (src/gametest/resources): datapacks that fill the tags a
-// Consumer fills, so a game test or the dev client can use an item the shipped tags leave out. It is
-// no part of the jar.
-sourceSets {
-    gametest
-}
-
 neoForge {
     runs {
         // EMI's 26.1 port still carries @OnlyIn, and a dev run halts on a warning screen over it that
@@ -48,19 +41,9 @@ neoForge {
         configureEach {
             systemProperty 'neoforge.warnings.onlyin.hide', 'true'
         }
-        client {
-            // A stick in pipeworks:closes_sides, to try closed sides by hand: dev_pack/, which only this run turns on.
-            systemProperty 'pipeworks.devPack', 'true'
-        }
         gameTestServer {
             // Marks this run as the Library's own, which is when it registers its test port block.
             systemProperty 'pipeworks.gametest', 'true'
-        }
-    }
-
-    mods {
-        "$mod_id" {
-            sourceSet sourceSets.gametest
         }
     }
 }

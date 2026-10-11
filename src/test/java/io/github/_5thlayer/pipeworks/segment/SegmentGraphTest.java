@@ -23,7 +23,7 @@ class SegmentGraphTest {
     private static final long PIPE = 100;
     private static final long TANK = 25_000;
     private static final String WATER = "minecraft:water";
-    private static final String OIL = "pipeworks:test_fluid";
+    private static final String TEST_FLUID = "pipeworks:test_fluid";
 
     /** A line of pipes 0..length-1, each linked to the one before. */
     private static SegmentGraph line(int length) {
@@ -98,8 +98,8 @@ class SegmentGraphTest {
     void aSegmentHoldsOneFluid() {
         SegmentGraph graph = line(2);
         graph.insert(0, WATER, 10, false);
-        assertEquals(0, graph.insert(1, OIL, 10, false));
-        assertEquals(0, graph.extract(1, OIL, 10, false));
+        assertEquals(0, graph.insert(1, TEST_FLUID, 10, false));
+        assertEquals(0, graph.extract(1, TEST_FLUID, 10, false));
         assertEquals(10, graph.contents(0).amount());
     }
 
@@ -108,8 +108,8 @@ class SegmentGraphTest {
         SegmentGraph graph = line(2);
         graph.insert(0, WATER, 10, false);
         graph.extract(0, null, 10, false);
-        assertEquals(10, graph.insert(0, OIL, 10, false));
-        assertEquals(OIL, graph.contents(1).fluid());
+        assertEquals(10, graph.insert(0, TEST_FLUID, 10, false));
+        assertEquals(TEST_FLUID, graph.contents(1).fluid());
     }
 
     @Test
@@ -118,11 +118,11 @@ class SegmentGraphTest {
         graph.add(0, PIPE);
         graph.add(2, PIPE);
         graph.insert(0, WATER, 10, false);
-        graph.insert(2, OIL, 10, false);
+        graph.insert(2, TEST_FLUID, 10, false);
 
         Placement refused = graph.add(1, PIPE, 0, 2);
 
-        assertEquals(new Placement.Refused(Set.of(WATER, OIL)), refused);
+        assertEquals(new Placement.Refused(Set.of(WATER, TEST_FLUID)), refused);
         assertFalse(graph.contains(1));
         assertEquals(2, graph.segmentCount());
         assertEquals(10, graph.contents(0).amount());
@@ -135,7 +135,7 @@ class SegmentGraphTest {
         graph.add(0, PIPE);
         graph.add(2, PIPE);
         graph.insert(0, WATER, 10, false);
-        graph.insert(2, OIL, 10, false);
+        graph.insert(2, TEST_FLUID, 10, false);
         assertInstanceOf(Placement.Refused.class, graph.check(0, 2));
         assertInstanceOf(Placement.Accepted.class, graph.check(0));
         assertEquals(2, graph.size());
@@ -222,7 +222,7 @@ class SegmentGraphTest {
         assertEquals(WATER, graph.contents(1).fluid());
         graph.extract(1, null, graph.contents(1).amount(), false);
         assertNull(graph.contents(1).fluid());
-        assertEquals(200, graph.insert(1, OIL, 500, false));
+        assertEquals(200, graph.insert(1, TEST_FLUID, 500, false));
     }
 
     @Test
@@ -281,7 +281,7 @@ class SegmentGraphTest {
         graph.add(4, TANK, 3);
         graph.add(10, PIPE);
         graph.insert(0, WATER, 1234, false);
-        graph.insert(10, OIL, 42, false);
+        graph.insert(10, TEST_FLUID, 42, false);
 
         SegmentGraph restored = SegmentGraph.restore(graph.nodeData(), graph.segmentData());
 
@@ -290,7 +290,7 @@ class SegmentGraphTest {
         assertEquals(1234, restored.contents(2).amount());
         assertEquals(WATER, restored.contents(4).fluid());
         assertEquals(4 * PIPE + TANK, restored.contents(0).capacity());
-        assertEquals(OIL, restored.contents(10).fluid());
+        assertEquals(TEST_FLUID, restored.contents(10).fluid());
         graph.remove(1);
         restored.remove(1);
         assertEquals(graph.contents(0).amount(), restored.contents(0).amount());
@@ -436,7 +436,7 @@ class SegmentGraphTest {
         SegmentGraph graph = line(4);
         graph.unlink(1, 2);
         graph.insert(0, WATER, 50, false);
-        graph.insert(3, OIL, 50, false);
+        graph.insert(3, TEST_FLUID, 50, false);
 
         assertFalse(graph.canLink(1, 2));
         assertInstanceOf(Placement.Refused.class, graph.link(1, 2));
@@ -444,7 +444,7 @@ class SegmentGraphTest {
         assertEquals(2, graph.segmentCount());
         assertFalse(graph.linked(1, 2));
         assertEquals(WATER, graph.contents(0).fluid());
-        assertEquals(OIL, graph.contents(3).fluid());
+        assertEquals(TEST_FLUID, graph.contents(3).fluid());
     }
 
     @Test

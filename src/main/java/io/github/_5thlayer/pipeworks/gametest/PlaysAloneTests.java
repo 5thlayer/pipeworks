@@ -17,12 +17,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.fml.ModList;
 
-/** The Library plays alone on Groundworks (ADR-0127): nothing else is loaded beside it, and what it consumes needs nothing else. */
+/** The Library plays alone on Groundworks (FactoryWorks ADR-0127): nothing else is loaded beside it, and what it consumes needs nothing else. */
 final class PlaysAloneTests {
 
-    private static final Set<String> BASE = Set.of("minecraft", "neoforge", "groundworks", Pipeworks.MOD_ID);
+    private static final Set<String> LOADED_ALONE = Set.of("minecraft", "neoforge", "groundworks", Pipeworks.MOD_ID);
 
-    private static final Set<String> ALONE = Set.of("minecraft", Pipeworks.MOD_ID);
+    private static final Set<String> FILLS_ALONE = Set.of("minecraft", Pipeworks.MOD_ID);
 
     private PlaysAloneTests() {
     }
@@ -34,7 +34,7 @@ final class PlaysAloneTests {
     }
 
     private static void onlyGroundworks(GameTestHelper helper) {
-        List<String> extra = ModList.get().getMods().stream().map(m -> m.getModId()).filter(id -> !BASE.contains(id)).toList();
+        List<String> extra = ModList.get().getMods().stream().map(m -> m.getModId()).filter(id -> !LOADED_ALONE.contains(id)).toList();
         helper.assertTrue(extra.isEmpty(), "the run loads " + extra + " beside Groundworks");
         helper.succeed();
     }
@@ -44,7 +44,7 @@ final class PlaysAloneTests {
         List<TagKey<?>> read = List.of(FluidPipes.CLOSES_SIDES, PumpBlockEntity.INFINITE_SOURCES, PipeFamily.PIPES);
         for (TagKey<?> tag : read) {
             if (!reachesAlone(helper, tag)) {
-                helper.fail(tag.location() + " holds no entry of " + ALONE);
+                helper.fail(tag.location() + " holds no entry of " + FILLS_ALONE);
                 return;
             }
         }
@@ -59,7 +59,7 @@ final class PlaysAloneTests {
             }
             for (Ingredient ingredient : recipe.value().placementInfo().ingredients()) {
                 if (ingredient.items().noneMatch(PlaysAloneTests::isAlone)) {
-                    helper.fail(recipe.id().identifier() + " has an ingredient with no item of " + ALONE);
+                    helper.fail(recipe.id().identifier() + " has an ingredient with no item of " + FILLS_ALONE);
                     return;
                 }
             }
@@ -74,6 +74,6 @@ final class PlaysAloneTests {
     }
 
     private static boolean isAlone(Holder<?> holder) {
-        return holder.unwrapKey().filter(key -> ALONE.contains(key.identifier().getNamespace())).isPresent();
+        return holder.unwrapKey().filter(key -> FILLS_ALONE.contains(key.identifier().getNamespace())).isPresent();
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-/** The pipe and the storage tank are craftable by hand on a server with nothing else installed (ADR-0127). */
+/** The pipe and the storage tank are craftable by hand on a server with nothing else installed (FactoryWorks ADR-0127). */
 final class RecipeTests {
 
     private RecipeTests() {
@@ -25,7 +25,6 @@ final class RecipeTests {
         tests.test("the_storage_tank_has_a_crafting_recipe", 1, helper -> crafts(helper, PipeworksRegistries.STORAGE_TANK_ITEM.get()));
     }
 
-    /** A grid filled from a shaped recipe's own pattern must match it and make the item. */
     private static void crafts(GameTestHelper helper, Item item) {
         for (RecipeHolder<?> holder : helper.getLevel().getServer().getRecipeManager().getRecipes()) {
             if (holder.value() instanceof ShapedRecipe recipe) {

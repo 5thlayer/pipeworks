@@ -25,6 +25,7 @@ class PlaysAloneTest {
 
     private static final Path CODE = Path.of("src/main/java");
     private static final Path RESOURCES = Path.of("src/main/resources");
+    private static final Path TAG_CHECK = CODE.resolve("io/github/_5thlayer/pipeworks/gametest/PlaysAloneTests.java");
 
     @Test
     void theShippedCodeAndResourcesNameNoOtherModulesId() throws IOException {
@@ -45,6 +46,24 @@ class PlaysAloneTest {
     @Test
     void theShippedResourcesHoldNothingInAnotherModulesNamespace() throws IOException {
         assertEquals(List.of(), PlaysAlone.otherModulesNamespaces(RESOURCES));
+    }
+
+    /** A tag the code starts reading fails here until {@code PlaysAloneTests} checks it in game. */
+    @Test
+    void everyTagTheCodeReadsIsCheckedInGame() throws IOException {
+        assertEquals(List.of(), PlaysAlone.tagsReadButUnchecked(CODE, TAG_CHECK));
+    }
+
+    @Test
+    void aTagTheCodeReadsOrDeclaresIsReportedUntilTheCheckNamesIt(@TempDir Path code) throws IOException {
+        write(code.resolve("a/Fuel.java"), "class Fuel { static final TagKey<Item> FUEL = ItemTags.create(id(\"fuel\")); }");
+        write(code.resolve("a/Burn.java"), "class Burn { boolean b(ItemStack s) { return s.is(ItemTags.LOGS) || s.is(Fuel.FUEL); } }");
+        write(code.resolve("a/Mine.java"), "class Mine { boolean m(BlockState s) { return s.is(Tags.Blocks.ORES) && !s.is(BlockTags.LOGS); } }");
+        write(code.resolve("a/Flow.java"), "class Flow { boolean f(FluidState s) { return s.is(FluidTags.LAVA); } }");
+        write(code.resolve("a/Lazy.java"), "class Lazy { boolean l(ItemStack s) { return s.is(TagKey.create(Registries.ITEM, id(\"x\"))); } }");
+        write(code.resolve("a/gametest/Check.java"), "class Check { List<TagKey<?>> checked = List.of(FluidTags.LAVA, BlockTags.LOGS); }");
+        assertEquals(List.of("a/Burn.java reads ItemTags.LOGS", "a/Fuel.java declares Fuel.FUEL", "a/Lazy.java creates a TagKey outside a constant",
+                "a/Mine.java reads Tags.Blocks.ORES"), PlaysAlone.tagsReadButUnchecked(code, code.resolve("a/gametest/Check.java")));
     }
 
     @Test

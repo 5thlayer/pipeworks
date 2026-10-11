@@ -14,49 +14,64 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * The Library plays alone on Groundworks (ADR-0127): nothing it ships names another suite mod's id or
- * puts data in its namespace. The tags it consumes are checked by the game tests, which resolve them.
+ * The Library plays alone on Groundworks (FactoryWorks ADR-0127): nothing it ships names another Module's id or
+ * holds data or assets in its namespace. The tags it consumes are checked by {@code PlaysAloneTests} in game,
+ * where they resolve.
  */
 class PlaysAloneTest {
 
-    private static final List<Path> SHIPPED = List.of(Path.of("src/main/java"), Path.of("src/main/resources"));
+    private static final Path CODE = Path.of("src/main/java");
+    private static final Path RESOURCES = Path.of("src/main/resources");
 
     @Test
-    void theShippedLibraryNamesNoOtherSuiteMod() throws IOException {
-        for (Path root : SHIPPED) {
-            assertEquals(List.of(), PlaysAlone.foreignIds(root, Pipeworks.MOD_ID));
-        }
-        assertEquals(List.of(), PlaysAlone.foreignNamespaces(Path.of("src/main/resources"), Pipeworks.MOD_ID));
+    void theShippedCodeAndResourcesNameNoOtherModulesId() throws IOException {
+        assertEquals(List.of(), PlaysAlone.otherModulesIds(CODE));
+        assertEquals(List.of(), PlaysAlone.otherModulesIds(RESOURCES));
     }
 
     @Test
-    void aForeignIdInJavaSourceIsReported(@TempDir Path root) throws IOException {
-        write(root.resolve("x/Belts.java"), "class Belts { String id = \"beltworks:belt\"; }");
-        assertEquals(List.of("x/Belts.java names beltworks:belt"), PlaysAlone.foreignIds(root, Pipeworks.MOD_ID));
+    void theShippedResourcesHoldNothingInAnotherModulesNamespace() throws IOException {
+        assertEquals(List.of(), PlaysAlone.otherModulesNamespaces(RESOURCES));
     }
 
     @Test
-    void aForeignIdInAnAssetOrTheModsTomlIsReported(@TempDir Path root) throws IOException {
-        write(root.resolve("assets/pipeworks/models/item/pipe.json"), "{\"parent\":\"wireworks:item/pole\"}");
-        write(root.resolve("META-INF/neoforge.mods.toml"), "[[dependencies.pipeworks]]\nmodId=\"craftworks\"\n# craftworks:assembler\n");
-        assertEquals(List.of("META-INF/neoforge.mods.toml names craftworks:assembler",
-                "assets/pipeworks/models/item/pipe.json names wireworks:item/pole"), PlaysAlone.foreignIds(root, Pipeworks.MOD_ID));
+    void aDataOrAssetFolderInAnotherModulesNamespaceIsReported(@TempDir Path resources) throws IOException {
+        write(resources.resolve("data/fieldworks/recipe/x.json"), "{}");
+        write(resources.resolve("assets/voidworks/lang/en_us.json"), "{}");
+        write(resources.resolve("data/pipeworks/recipe/x.json"), "{}");
+        write(resources.resolve("data/groundworks/tags/item/dismantles.json"), "{}");
+        assertEquals(List.of("assets/voidworks", "data/fieldworks"), PlaysAlone.otherModulesNamespaces(resources));
     }
 
     @Test
-    void theLibrarysOwnGroundworksAndTheSharedNamespacesAreAllowed(@TempDir Path root) throws IOException {
-        write(root.resolve("data/pipeworks/recipe/x.json"),
-                "{\"a\":\"minecraft:glass\",\"b\":\"#c:glass_blocks\",\"c\":\"groundworks:x\",\"d\":\"neoforge:y\",\"e\":\"pipeworks:pipe\"}");
-        write(root.resolve("data/groundworks/tags/item/dismantles.json"), "{}");
-        assertEquals(List.of(), PlaysAlone.foreignIds(root, Pipeworks.MOD_ID));
-        assertEquals(List.of(), PlaysAlone.foreignNamespaces(root, Pipeworks.MOD_ID));
+    void anIdInDataIsReported(@TempDir Path resources) throws IOException {
+        write(resources.resolve("data/pipeworks/recipe/x.json"), "{\"key\":{\"a\":\"gearworks:gear\"}}");
+        assertEquals(List.of("data/pipeworks/recipe/x.json names gearworks:gear"), PlaysAlone.otherModulesIds(resources));
     }
 
     @Test
-    void aFolderInAnotherSuiteModsNamespaceIsReported(@TempDir Path root) throws IOException {
-        write(root.resolve("data/fieldworks/recipe/x.json"), "{}");
-        write(root.resolve("assets/factoryworks/lang/en_us.json"), "{}");
-        assertEquals(List.of("data/fieldworks", "assets/factoryworks"), PlaysAlone.foreignNamespaces(root, Pipeworks.MOD_ID));
+    void aTagOfTheRetiredPackInARecipeIsReported(@TempDir Path resources) throws IOException {
+        write(resources.resolve("data/pipeworks/recipe/x.json"), "{\"key\":{\"a\":\"#factoryworks:belts\"}}");
+        assertEquals(List.of("data/pipeworks/recipe/x.json names factoryworks:belts"), PlaysAlone.otherModulesIds(resources));
+    }
+
+    @Test
+    void anIdInJavaSourceIsReported(@TempDir Path code) throws IOException {
+        write(code.resolve("x/Belts.java"), "class Belts { String id = \"beltworks:belt\"; }");
+        assertEquals(List.of("x/Belts.java names beltworks:belt"), PlaysAlone.otherModulesIds(code));
+    }
+
+    @Test
+    void anIdInTheModsTomlIsReported(@TempDir Path resources) throws IOException {
+        write(resources.resolve("META-INF/neoforge.mods.toml"), "description = \"fills wireworks:cable\"");
+        assertEquals(List.of("META-INF/neoforge.mods.toml names wireworks:cable"), PlaysAlone.otherModulesIds(resources));
+    }
+
+    @Test
+    void theModsOwnIdsGroundworksAndTheSharedNamespacesAreAllowed(@TempDir Path resources) throws IOException {
+        write(resources.resolve("assets/pipeworks/models/x.json"),
+                "{\"a\":\"pipeworks:block/x\",\"b\":\"minecraft:glass\",\"c\":\"#c:glass_blocks\",\"d\":\"groundworks:x\",\"e\":\"neoforge:y\"}");
+        assertEquals(List.of(), PlaysAlone.otherModulesIds(resources));
     }
 
     private static void write(Path file, String text) throws IOException {

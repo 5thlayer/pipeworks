@@ -1,7 +1,7 @@
 // ModDevGradle on Java 25, the game test server that names each test, the jar's licensing, ~/.m2-only
 // publishing and the release and upload tasks come from the libworks convention plugin (libworks ADR 0003).
 plugins {
-    id 'io.github.5thlayer.libworks.module' version '0.1.1'
+    id 'io.github.5thlayer.libworks.module' version '0.1.2'
 }
 
 // What the Library requires of the other Libraries, each as a range whose lower bound is a released version:
@@ -17,8 +17,13 @@ libworks {
     }
 }
 
-// The viewers and Jade the dev client loads. Groundworks comes from ~/.m2, which the plugin adds.
 repositories {
+    // Groundworks: its releases are published to the local maven repository only, and nothing else
+    // resolves from there.
+    exclusiveContent {
+        forRepository { mavenLocal() }
+        filter { includeModule 'io.github.5thlayer', 'groundworks' }
+    }
     exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
         forRepository { maven { url = 'https://cursemaven.com' } }
         filter { includeGroup 'curse.maven' }

@@ -25,6 +25,9 @@ final class PlaysAlone {
     /** Not a Module since FactoryWorks Core retired (FactoryWorks ADR-0128), and no Module may name it either. */
     private static final String RETIRED_PACK = "factoryworks";
 
+    private static final Pattern DEPENDENCY_MOD_ID = Pattern.compile("(?m)^\\s*modId\\s*=\\s*\"([^\"]+)\"");
+    private static final Pattern DEPENDENCY_TYPE = Pattern.compile("(?m)^\\s*type\\s*=\\s*\"([^\"]+)\"");
+
     private PlaysAlone() {
     }
 
@@ -53,6 +56,41 @@ final class PlaysAlone {
             try (Stream<Path> namespaces = Files.list(dir)) {
                 namespaces.map(p -> p.getFileName().toString()).filter(forbidden()::contains).sorted()
                         .forEach(ns -> found.add(kind + "/" + ns));
+            }
+        }
+        return found;
+    }
+
+    /** Each string in the Java source under {@code code} that is another Module's namespace, as an id built in code names it. */
+    static List<String> otherModulesNamespaceStrings(Path code) throws IOException {
+        Pattern namespaces = Pattern.compile("\"(" + String.join("|", forbidden()) + ")\"");
+        List<String> found = new ArrayList<>();
+        for (Path file : files(code)) {
+            if (!file.toString().endsWith(".java")) {
+                continue;
+            }
+            Matcher namespace = namespaces.matcher(Files.readString(file));
+            while (namespace.find()) {
+                found.add(relative(code, file) + " names " + namespace.group());
+            }
+        }
+        return found;
+    }
+
+    /** Each other Module that the mods.toml under {@code resources} requires; an optional dependency is allowed. */
+    static List<String> otherModulesRequired(Path resources) throws IOException {
+        Path toml = resources.resolve("META-INF/neoforge.mods.toml");
+        List<String> found = new ArrayList<>();
+        if (!Files.isRegularFile(toml)) {
+            return found;
+        }
+        for (String block : Files.readString(toml).split("(?m)^(?=\\[)")) {
+            Matcher modId = DEPENDENCY_MOD_ID.matcher(block);
+            Matcher type = DEPENDENCY_TYPE.matcher(block);
+            // NeoForge reads a dependency with no type as required.
+            boolean required = !type.find() || type.group(1).equalsIgnoreCase("required");
+            if (block.startsWith("[[dependencies.") && modId.find() && forbidden().contains(modId.group(1)) && required) {
+                found.add(relative(resources, toml) + " requires " + modId.group(1));
             }
         }
         return found;

@@ -14,14 +14,9 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -42,9 +37,6 @@ public final class PipeworksGameTests {
      */
     private static final String OWN_RUN = "pipeworks.gametest";
 
-    /** Set by the {@code client} run, which turns on {@code dev_pack/}. */
-    private static final String DEV_PACK = "pipeworks.devPack";
-
     private static final DeferredRegister<MapCodec<? extends GameTestInstance>> TEST_TYPES =
             DeferredRegister.create(Registries.TEST_INSTANCE_TYPE, Pipeworks.MOD_ID);
 
@@ -57,9 +49,6 @@ public final class PipeworksGameTests {
 
     public static void register(IEventBus modBus) {
         TEST_TYPES.register(modBus);
-        if (Boolean.getBoolean(DEV_PACK)) {
-            modBus.addListener(PipeworksGameTests::addDevPack);
-        }
         if (!GameTestHooks.isGametestEnabled() || !Boolean.getBoolean(OWN_RUN)) {
             return;
         }
@@ -67,26 +56,6 @@ public final class PipeworksGameTests {
         TestInventory.register(modBus);
         TestFluid.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
-        modBus.addListener(PipeworksGameTests::addTestPack);
-    }
-
-    /**
-     * The datapack in {@code src/gametest/resources}, which puts a stick in {@code pipeworks:closes_sides}
-     * for the tests.
-     */
-    private static void addTestPack(AddPackFindersEvent event) {
-        event.addPackFinders(id("gametest_pack"), PackType.SERVER_DATA, Component.literal("Pipeworks game tests"),
-                PackSource.BUILT_IN, true, Pack.Position.TOP);
-    }
-
-    /**
-     * The same stick for trying closed sides in the dev client, where the shipped tag is empty. In
-     * {@code src/gametest/resources}, so not in the jar; only the {@code client} run sets
-     * {@value #DEV_PACK}.
-     */
-    private static void addDevPack(AddPackFindersEvent event) {
-        event.addPackFinders(id("dev_pack"), PackType.SERVER_DATA, Component.literal("Pipeworks dev tags"),
-                PackSource.BUILT_IN, true, Pack.Position.TOP);
     }
 
     private static void registerTests(RegisterGameTestsEvent event) {

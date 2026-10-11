@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "pipeworks:block/outlet_vertical",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "pipeworks:block/outlet",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pipeworks:block/outlet"
+    },
+    "facing=south": {
+      "model": "pipeworks:block/outlet",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "pipeworks:block/outlet_vertical"
+    },
+    "facing=west": {
+      "model": "pipeworks:block/outlet",
+      "y": 270
+    }
+  }
+}

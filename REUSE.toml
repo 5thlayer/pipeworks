@@ -10,8 +10,6 @@ path = [
     ".gitignore",
     ".gitmodules",
     "**/*.mods.toml",
-    "scripts/*.py",
-    "scripts/*.sh",
     "**/*.md",
     "src/main/resources/**/*.json",
     "src/main/resources/**/*.nbt",

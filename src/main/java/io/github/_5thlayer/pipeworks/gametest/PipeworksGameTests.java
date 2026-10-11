@@ -24,7 +24,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * The Library's game tests, run by the {@code gameTestServer} Gradle run: the Minecraft-integration
  * seam, with a real player on a real server. Each test stands on the {@code gametest/platform}
- * structure, a stone floor that {@code scripts/build-gametest-structures.py} writes, and sets up
+ * structure, a stone floor that the libworks plugin's {@code buildGametestStructures} writes, and sets up
  * what it needs itself, so the setup is in the diff.
  */
 public final class PipeworksGameTests {
@@ -54,6 +54,7 @@ public final class PipeworksGameTests {
         }
         TestPort.register(modBus);
         TestInventory.register(modBus);
+        TestFluid.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
     }
 
@@ -72,6 +73,7 @@ public final class PipeworksGameTests {
         PipeStretchTests.register(tests);
         PumpTests.register(tests);
         RecipeTests.register(tests);
+        OutletTests.register(tests);
     }
 
     private static Identifier id(String path) {

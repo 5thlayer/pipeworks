@@ -1,31 +1,29 @@
+// ModDevGradle on Java 25, the game test server that names each test, the jar's licensing, ~/.m2-only
+// publishing and the release and upload tasks come from the libworks convention plugin (libworks ADR 0003).
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.147'
+    id 'io.github.5thlayer.libworks.module' version '0.2.0'
 }
 
-group = maven_group
-version = mod_version
-base.archivesName = archives_name
-
-java {
-    withSourcesJar()
-    toolchain.languageVersion = JavaLanguageVersion.of(25)
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.release = 25
-}
-
-// The Minecraft version goes in the jar's name and not in the Library's version:
-// pipeworks-26.1.2-0.1.0.jar.
-tasks.withType(Jar).configureEach {
-    archiveVersion = "$minecraft_version-$mod_version"
+// What the Library requires of the other Libraries, each as a range whose lower bound is a released version:
+// the one the Library is built and run against and the one CI builds from its tag. neoforge.mods.toml names
+// each as ${<name>_range}. The Library's own tags are pipeworks-v<version>, the plugin's default.
+libworks {
+    // Required at load and not bundled (ADR 0005). Capped below the next minor, 0.6, which moves when
+    // the Library takes it.
+    upstream('groundworks') {
+        // Groundworks' tags are v<version>.
+        tagPrefix = 'v'
+        range = '[0.5.5,0.6)'
+    }
 }
 
 repositories {
-    // Groundworks: its releases are published to the local maven repository only.
-    mavenLocal()
+    // Groundworks: its releases are published to the local maven repository only, and nothing else
+    // resolves from there.
+    exclusiveContent {
+        forRepository { mavenLocal() }
+        filter { includeModule 'io.github.5thlayer', 'groundworks' }
+    }
     exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
         forRepository { maven { url = 'https://cursemaven.com' } }
         filter { includeGroup 'curse.maven' }
@@ -36,64 +34,17 @@ repositories {
     }
 }
 
-// The Groundworks versions the Library builds against and, through neoforge.mods.toml, requires at
-// load. The lower bound is the preferred version below and rises with it (ADR 0005).
-def groundworksRange = '[0.5.5,0.6)'
-
-def gameTestReport = layout.buildDirectory.file('reports/gametest.xml').get().asFile
-
 neoForge {
-    version = neoforge_version
-
     runs {
         // EMI's 26.1 port still carries @OnlyIn, and a dev run halts on a warning screen over it that
         // production never shows.
         configureEach {
             systemProperty 'neoforge.warnings.onlyin.hide', 'true'
         }
-        // The same player every launch, so a dev save keeps its inventory and position.
-        client {
-            client()
-            programArguments.addAll '--username', 'Developer', '--uuid', '123456781234123412341234567890ab'
-            // -PquickPlay=<save> opens that save straight from launch (the skillworks:quicklaunch skill).
-            programArguments.addAll providers.gradleProperty('quickPlay').map { ['--quickPlaySingleplayer', it] }.orElse([])
-        }
-        // Runs the Library's game tests headless and exits, non-zero if any fails. 26.1 has no
-        // namespace property, so the selector is what keeps vanilla's tests out.
-        // A directory of its own, so nothing the dev client loads or saves reaches it.
         gameTestServer {
-            type = 'gameTestServer'
-            gameDirectory = project.file('run/gametest')
-            programArguments.addAll '--tests', "${mod_id}:*", '--report', gameTestReport.absolutePath
             // Marks this run as the Library's own, which is when it registers its test port block.
             systemProperty 'pipeworks.gametest', 'true'
         }
-    }
-
-    mods {
-        "$mod_id" {
-            sourceSet sourceSets.main
-        }
-    }
-}
-
-// The server says only how many tests passed, so the report is read back to name them: a green
-// run that didn't run a test is no evidence for it. The report, not the exit code, decides, so a
-// failing run still names its tests; a server that crashes writes no report and fails here too.
-// The server writes the report but not its folder, which a clean checkout has yet to make.
-tasks.named('runGameTestServer') {
-    ignoreExitValue = true
-    doFirst {
-        gameTestReport.delete()
-        gameTestReport.parentFile.mkdirs()
-    }
-    doLast {
-        if (!gameTestReport.exists()) throw new GradleException("The game test server wrote no report at $gameTestReport")
-        def cases = new groovy.xml.XmlSlurper().parse(gameTestReport).'**'.findAll { it.name() == 'testcase' }
-        if (cases.isEmpty()) throw new GradleException('The game test server ran no tests')
-        cases.each { logger.lifecycle("${it.failure.size() ? 'FAILED' : 'passed'}  ${it.@name}") }
-        def failed = cases.count { it.failure.size() }
-        if (failed) throw new GradleException("$failed of ${cases.size()} game tests failed")
     }
 }
 
@@ -117,13 +68,6 @@ def jeiVersion = '29.20.0.53'
 def emiFile = '8630349'
 
 dependencies {
-    // Required at load and not bundled (ADR 0005). CI reads the version `prefer` names.
-    implementation('io.github.5thlayer:groundworks') {
-        version {
-            strictly groundworksRange
-            prefer '0.5.5'
-        }
-    }
     // JEI finds the creative pipe screen's drop target by its annotation, so the Library loads without it.
     // EMI finds its plugin by annotation too. It has no official 26.1.2 build: this is an unofficial port.
     compileOnly "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
@@ -133,70 +77,5 @@ dependencies {
     // Jade finds the HUD plugin by its annotation, so the Library runs without it.
     compileOnly 'curse.maven:jade-324717:8651070'
     clientMods 'curse.maven:jade-324717:8651070'
-
-    testImplementation platform('org.junit:junit-bom:5.10.2')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// The JUnit tests run on a plain JVM, with no Minecraft on their classpath: they test the rules
-// that read no game state, and the game tests test the rest. A Library whose rules need game types
-// adds `addModdingDependenciesTo sourceSets.test` to the neoForge block.
-test {
-    useJUnitPlatform()
-}
-
-// The jar is what players are handed, so it carries the MIT licence the Library is under and the CC0 one of the Oritech art in it.
-def jarLicensing = ['LICENSE', 'LICENSES/MIT.txt', 'LICENSES/CC0-1.0.txt']
-tasks.named('jar', Jar) {
-    from(rootDir) { include jarLicensing }
-}
-
-// Fails the build when the jar lost its licensing.
-def checkJarLicensing = tasks.register('checkJarLicensing') {
-    def jarFile = tasks.named('jar', Jar).flatMap { it.archiveFile }
-    inputs.file jarFile
-    doLast {
-        def names = new java.util.zip.ZipFile(jarFile.get().asFile).withCloseable { zip -> zip.entries()*.name as Set }
-        def missing = jarLicensing.findAll { !names.contains(it) }
-        if (missing) throw new GradleException("${jarFile.get().asFile.name} lacks its licensing: ${missing.join(', ')}")
-    }
-}
-tasks.named('check') { dependsOn checkJarLicensing }
-
-// neoforge.mods.toml names nothing of its own: it is filled from gradle.properties.
-def modProperties = [
-        mod_id: mod_id, mod_name: mod_name, mod_description: mod_description, version: mod_version,
-        minecraft_version: minecraft_version, neoforge_version: neoforge_version,
-        groundworksRange: groundworksRange,
-]
-processResources {
-    inputs.properties modProperties
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand modProperties
-    }
-}
-
-// Maven local only, which is where a Consumer's development build and the Pack's pin read the
-// Library's jar (release-train). Nothing here publishes anywhere else.
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = base.archivesName.get()
-            from components.java
-        }
-    }
-}
-
-// A version in the local maven repository never changes: Consumers resolve it by version and the
-// Pack pins its sha256, so a fix is the next patch version (docs/agents/releases.md). Gradle's own
-// mavenLocal() says where that is, and it's removed again so nothing resolves from it.
-tasks.withType(PublishToMavenLocal).configureEach {
-    def local = repositories.mavenLocal()
-    repositories.remove(local)
-    def published = new File(local.url.path, "${maven_group.replace('.', '/')}/$archives_name/$mod_version")
-    doFirst {
-        if (published.exists()) throw new GradleException(
-                "$mod_name $mod_version is already in $published, and a published version never changes: bump mod_version")
-    }
-}

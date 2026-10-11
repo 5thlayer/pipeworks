@@ -1,6 +1,8 @@
 pluginManagement {
     repositories {
         maven { url = 'https://maven.neoforged.net/releases' }
+        // The libworks convention plugin, which releases to ~/.m2 only.
+        mavenLocal()
         gradlePluginPortal()
     }
 }

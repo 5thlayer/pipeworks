@@ -57,6 +57,10 @@ _Avoid_: orphan, isolated node
 The machine that draws a still source block beside it into its segment. A source in the infinite-source tag, water by default, stays in place and gives a fixed rate; any other is taken whole, as a bucket would take it.
 _Avoid_: Offshore Pump, in-line pump (a pump that moves fluid along a pipe, which is not built)
 
+**Outlet**:
+The machine that sets its segment's fluid down as a source block in the space it faces, a bucket's worth at a time, once the segment holds one and the space is empty or replaceable. It never picks fluid up.
+_Avoid_: drain, spout, fluid placer
+
 **Dismantle Family**:
 The pipes a Groundworks Dismantle takes up as one span: the block tag `pipeworks:dismantle/pipes`, joined only where each pipe draws an arm toward the other, so a closed side ends a span.
 _Avoid_: dismantle group

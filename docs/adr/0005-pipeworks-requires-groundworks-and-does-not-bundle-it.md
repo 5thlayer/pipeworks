@@ -13,7 +13,7 @@ with the pipes they read (FactoryWorks ADR 0127, ADR 0128).
 
 **Groundworks is a required dependency, installed beside Pipeworks.** It is Wireworks' choice in its
 ADR 0010, and `build.gradle` compiles and runs against it without `jarJar`. `neoforge.mods.toml`
-requires `groundworksRange` (`[0.5.5,0.6)`), and the Modrinth and CurseForge uploads list Groundworks
+requires `upstream('groundworks')`'s range (`[0.5.5,0.6)`, `${groundworks_range}`), and the Modrinth and CurseForge uploads list Groundworks
 as a required dependency. The lower bound is the version built against and the upper bound the next
 minor, so a Groundworks patch needs no Pipeworks release.
 

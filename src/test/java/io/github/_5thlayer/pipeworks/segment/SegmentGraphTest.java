@@ -23,7 +23,7 @@ class SegmentGraphTest {
     private static final long PIPE = 100;
     private static final long TANK = 25_000;
     private static final String WATER = "minecraft:water";
-    private static final String OIL = "factoryworks:crude_oil";
+    private static final String OIL = "pipeworks:test_fluid";
 
     /** A line of pipes 0..length-1, each linked to the one before. */
     private static SegmentGraph line(int length) {

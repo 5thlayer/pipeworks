@@ -1,5 +1,7 @@
-# Builds and tests every push. It never publishes: a Library's jar reaches the Pack only through
-# ~/.m2, and Modrinth and CurseForge, only from a maintainer's machine (docs/agents/releases.md).
+# Builds and tests every push through the CI every Module shares, at the tag of the plugin
+# build.gradle applies: the two versions move together (libworks ADR 0003). It never publishes:
+# a Library's jar reaches the Pack only through ~/.m2, and Modrinth and CurseForge, only from a
+# maintainer's machine (docs/agents/releases.md).
 name: CI
 
 on:
@@ -11,56 +13,5 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: 25
-
-      - uses: gradle/actions/setup-gradle@v6
-
-      # The Library requires Groundworks, whose releases reach ~/.m2 only on a maintainer's machine. So the
-      # runner builds the tagged release that build.gradle prefers and publishes it to its own ~/.m2.
-      - id: groundworks
-        run: echo "version=$(sed -n "s/^ *prefer '\(.*\)'$/\1/p" build.gradle)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v7
-        with:
-          repository: 5thlayer/groundworks
-          ref: v${{ steps.groundworks.outputs.version }}
-          path: groundworks
-      - run: sh ./gradlew publishToMavenLocal
-        working-directory: groundworks
-
-      # The build, with the JUnit tests.
-      - run: ./gradlew build
-
-      # A headless server that runs the game tests and names each one; it fails if it ran none.
-      - run: ./gradlew runGameTestServer
-
-      - if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: gametest-report
-          path: |
-            build/reports/gametest.xml
-            build/reports/tests/
-            run/gametest/logs/
-          if-no-files-found: ignore
-
-  # The upload step's tests, against a stand-in server on localhost. They contact no site.
-  scripts:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - run: python3 -m unittest discover scripts/tests
-
-  reuse:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: fsfe/reuse-action@v6
+  ci:
+    uses: 5thlayer/libworks/.github/workflows/module-ci.yml@plugin-v0.1.1

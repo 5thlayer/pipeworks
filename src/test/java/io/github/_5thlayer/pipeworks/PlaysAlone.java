@@ -30,7 +30,8 @@ final class PlaysAlone {
 
     /** Each id in another Module's namespace that a file under {@code root} names, a structure's saved block ids included. */
     static List<String> otherModulesIds(Path root) throws IOException {
-        Pattern ids = Pattern.compile("\\b(" + String.join("|", forbidden()) + "):[a-z0-9_./-]+");
+        // No word boundary before the namespace: in a structure's NBT a string's length byte can be a letter.
+        Pattern ids = Pattern.compile("(" + String.join("|", forbidden()) + "):[a-z0-9_./-]+");
         List<String> found = new ArrayList<>();
         for (Path file : files(root)) {
             Matcher id = ids.matcher(text(file));

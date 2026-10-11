@@ -6,9 +6,12 @@ package io.github._5thlayer.pipeworks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -65,6 +68,17 @@ class PlaysAloneTest {
     void anIdInTheModsTomlIsReported(@TempDir Path resources) throws IOException {
         write(resources.resolve("META-INF/neoforge.mods.toml"), "description = \"fills wireworks:cable\"");
         assertEquals(List.of("META-INF/neoforge.mods.toml names wireworks:cable"), PlaysAlone.otherModulesIds(resources));
+    }
+
+    @Test
+    void anIdInAStructureIsReportedWhenItsLengthByteIsALetter(@TempDir Path resources) throws IOException {
+        String id = "fieldworks:" + "o".repeat('A' - "fieldworks:".length());
+        Path nbt = resources.resolve("data/pipeworks/structure/x.nbt");
+        Files.createDirectories(nbt.getParent());
+        try (OutputStream out = new GZIPOutputStream(Files.newOutputStream(nbt))) {
+            out.write(("\u0008\u0000\u0004Name\u0000" + (char) id.length() + id).getBytes(StandardCharsets.ISO_8859_1));
+        }
+        assertEquals(List.of("data/pipeworks/structure/x.nbt names " + id), PlaysAlone.otherModulesIds(resources));
     }
 
     @Test

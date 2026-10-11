@@ -9,11 +9,11 @@ a player right-clicks a pipe with an item in `pipeworks:closes_sides`, or a Cons
 the API. A sneak-click is
 left to Groundworks' Dismantle, which a pack binds to the same wrenches.
 
-**The tag ships a stick.** `pipeworks:closes_sides` holds `minecraft:stick`, so a player with Groundworks and
-Pipeworks alone can close a side (#15, ADR-0127). A pack that wants other items replaces the tag
-(`"replace": true`); a pack that adds to it keeps the stick too. This amends the first decision, a tag
-that shipped empty with a stick standing in while it stayed so: that meant a pack could not tell the
-stand-in from a choice.
+**The tag ships a stick.** `pipeworks:closes_sides` holds `minecraft:stick`, so a player with
+Groundworks and Pipeworks alone can close a side (#15, FactoryWorks ADR-0127). A pack that wants
+other items replaces the tag (`"replace": true`); a pack that adds to it keeps the stick too. This
+amends the first decision, a tag that shipped empty with a stick standing in while it stayed so:
+that meant a pack could not tell the stand-in from a choice.
 
 **What a closed side is.** It opens no face: the node's mask, already saved with the level (ADR 0003),
 loses that bit, so the pipe links to no node there and exposes no fluid handler on that side. A
@@ -27,7 +27,8 @@ side that would mix two fluids is refused, as such a placement is. A port's face
 (`docs/research/pipe-connections-and-wrenches.md`), the blockstate keeps one arm property per side,
 and Jade, which reads the server, names the closed sides.
 
-**Considered.** An empty tag, which the Library first shipped: a player on Groundworks alone could not close a
-side, and Craftworks' Assembler needs closed sides to keep its fluid connections apart. Leaving it out: Pipeworks would have nothing to offer until pipe-to-ground lands, and a
-pack with no room for spacing would have no way to keep two runs apart. A plug model on a closed
-side: a third value per arm, 3⁶ states for a pipe instead of 2⁶, for something Jade already shows.
+**Considered.** An empty tag, which the Library first shipped: a player on Groundworks alone could
+not close a side, and Craftworks' Assembler needs closed sides to keep its fluid connections apart.
+Leaving it out: Pipeworks would have nothing to offer until pipe-to-ground lands, and a pack with no
+room for spacing would have no way to keep two runs apart. A plug model on a closed side: a third
+value per arm, 3⁶ states for a pipe instead of 2⁶, for something Jade already shows.

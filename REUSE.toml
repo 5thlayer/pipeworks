@@ -14,7 +14,6 @@ path = [
     "scripts/*.sh",
     "**/*.md",
     "src/main/resources/**/*.json",
-    "src/gametest/resources/**",
     "src/main/resources/**/*.nbt",
     "LICENSE",
     "publish/summary.txt",

@@ -20,7 +20,7 @@ Not yet: the in-line pump and pipe-to-ground.
 
 ## For pack authors
 
-- **Closing a pipe's sides.** A pipe's side can be closed, to keep two runs apart or cut a pipe off from a block holding fluid. It is off until a pack allows it: put the items that should do it in the item tag `pipeworks:closes_sides`, which ships empty. A right-click on a pipe with one of them toggles the side clicked. Opening a side that would mix two fluids is refused.
+- **Closing a pipe's sides.** A pipe's side can be closed, to keep two runs apart or cut a pipe off from a block holding fluid. A right-click on a pipe with an item in the item tag `pipeworks:closes_sides` toggles the side clicked. The tag ships a stick; a pack replaces the tag to name other items, or adds to it and keeps the stick. Opening a side that would mix two fluids is refused.
 
 ## For mod authors
 

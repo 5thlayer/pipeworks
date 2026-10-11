@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- `pipeworks:pipe` (three from three copper ingots) and `pipeworks:storage_tank` (four iron ingots, four glass and a copper ingot) have crafting recipes from vanilla items, so Pipeworks is craftable with Groundworks alone. The Pump and the creative pipe still have none (5thlayer/factoryworks#610).
+- The item tag `pipeworks:closes_sides` ships `minecraft:stick`, where it shipped empty: a player with no pack can close a pipe side. A pack that names other items replaces the tag with `"replace": true`; one that adds to it keeps the stick (ADR 0004, #15).
 - `pipeworks:pump`, the **Pump**: a port that draws a still source block beside it into its segment, on any side, with no power and no recipe. A source in the fluid tag `pipeworks:infinite_sources` (ships `minecraft:water`) is never taken, and the pump adds 60 mB a tick, Factorio's 1,200 mB a second. Any other source is taken whole, as a bucket would, once the segment has room for 1,000 mB, and the pump then waits 17 ticks. It draws only the segment's own fluid, so it never mixes, and it is refused where no still source stands beside it. `PumpBlock.sourcesBeside` and `PumpBlockEntity.INFINITE_SOURCES` are the pieces a Consumer can read (#16).
 
 - **Breaking for installs: Pipeworks requires Groundworks** `0.5.5` or later in the 0.5 series, as a separate download and not bundled (ADR 0005). `neoforge.mods.toml` and the uploads' related projects name it (#16).

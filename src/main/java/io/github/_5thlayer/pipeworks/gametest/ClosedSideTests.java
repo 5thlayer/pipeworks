@@ -36,8 +36,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The closed side (#9, ADR 0004): a click with an item in {@code pipeworks:closes_sides}, and the
- * API a Consumer's own tool calls, close and open a pipe's side. The game test datapack
- * ({@code src/gametest/resources}) puts a stick in the tag, which the shipped tag leaves empty; a
+ * API a Consumer's own tool calls, close and open a pipe's side. The shipped tag holds a stick; a
  * stone is an item that is not in it.
  *
  * <p>Each test lays its nodes in a row at z 4, which {@code at(x)} indexes. A click lands on an arm

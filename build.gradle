@@ -36,13 +36,6 @@ repositories {
     }
 }
 
-// Data only the Library's own runs load (src/gametest/resources): datapacks that fill the tags a
-// Consumer fills, so a game test or the dev client can use an item the shipped tags leave out. It is
-// no part of the jar.
-sourceSets {
-    gametest
-}
-
 // The Groundworks versions the Library builds against and, through neoforge.mods.toml, requires at
 // load. The lower bound is the preferred version below and rises with it (ADR 0005).
 def groundworksRange = '[0.5.5,0.6)'
@@ -64,8 +57,6 @@ neoForge {
             programArguments.addAll '--username', 'Developer', '--uuid', '123456781234123412341234567890ab'
             // -PquickPlay=<save> opens that save straight from launch (the skillworks:quicklaunch skill).
             programArguments.addAll providers.gradleProperty('quickPlay').map { ['--quickPlaySingleplayer', it] }.orElse([])
-            // A stick in pipeworks:closes_sides, to try closed sides by hand: dev_pack/, which only this run turns on.
-            systemProperty 'pipeworks.devPack', 'true'
         }
         // Runs the Library's game tests headless and exits, non-zero if any fails. 26.1 has no
         // namespace property, so the selector is what keeps vanilla's tests out.
@@ -82,7 +73,6 @@ neoForge {
     mods {
         "$mod_id" {
             sourceSet sourceSets.main
-            sourceSet sourceSets.gametest
         }
     }
 }

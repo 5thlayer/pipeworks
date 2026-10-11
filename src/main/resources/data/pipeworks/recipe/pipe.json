@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "CCC"
+  ],
+  "result": {
+    "id": "pipeworks:pipe",
+    "count": 3
+  }
+}

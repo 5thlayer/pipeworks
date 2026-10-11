@@ -62,6 +62,7 @@ public final class PipeworksGameTests {
         var environment = event.registerEnvironment(id("default"), new TestEnvironmentDefinition.AllOf(List.of()));
         var tests = new Registrar(event, environment);
         LoadTests.register(tests);
+        PlaysAloneTests.register(tests);
         SegmentTests.register(tests);
         CreativePipeTests.register(tests);
         TankLevelTests.register(tests);

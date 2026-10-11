@@ -1,6 +1,10 @@
 ![Pipeworks](https://raw.githubusercontent.com/5thlayer/pipeworks/main/publish/pipeworks-cover.png)
 
-Pipeworks adds pipes and a storage tank on Factorio 2.0's model of fluid: a connected run of pipes, tanks and machine ports is one **segment**, holding one fluid, with its capacity the sum of its parts and its flow instant. There is no pressure and no fluid creeping block to block. A run is full or empty as one.
+Pipeworks is a simple fluid logistics mod. It adds pipes, a storage tank, a pump to draw fluid from a source and an outlet to place it in the world.
+
+## Why?
+
+Because I wanted my own fluid logistics for the -Works mods suite. Nothing special here, simplicity rules.
 
 **NeoForge, Minecraft 26.1.2 only.** Pipeworks is early work, so please report any issues you find on [GitHub](https://github.com/5thlayer/pipeworks/issues).
 

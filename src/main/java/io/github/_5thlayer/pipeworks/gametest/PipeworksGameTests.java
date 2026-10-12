@@ -74,6 +74,7 @@ public final class PipeworksGameTests {
         PumpTests.register(tests);
         RecipeTests.register(tests);
         OutletTests.register(tests);
+        CreativeTabTests.register(tests);
     }
 
     private static Identifier id(String path) {

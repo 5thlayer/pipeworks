@@ -55,7 +55,7 @@ public final class FluidPorts {
      * it fills every pipe, tank and port of the segment at once.
      */
     public static @Nullable ResourceHandler<FluidResource> segment(Level level, BlockPos pos) {
-        return level instanceof ServerLevel server ? FluidSegments.get(server).handlerAt(pos) : null;
+        return level instanceof ServerLevel server ? FluidSegments.get(server).handlerAt(server, pos) : null;
     }
 
     private static int maskOf(Predicate<Direction> faces) {

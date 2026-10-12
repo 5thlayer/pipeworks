@@ -58,7 +58,7 @@ final class PumpTests {
     }
 
     private static SegmentGraph.@Nullable Contents contents(GameTestHelper helper) {
-        return FluidSegments.get(helper.getLevel()).contentsAt(helper.absolutePos(NEXT));
+        return FluidSegments.get(helper.getLevel()).contentsAt(helper.getLevel(), helper.absolutePos(NEXT));
     }
 
     private static void water(GameTestHelper helper) {

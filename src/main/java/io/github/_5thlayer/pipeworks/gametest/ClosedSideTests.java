@@ -99,7 +99,7 @@ final class ClosedSideTests {
     }
 
     private static SegmentGraph.@Nullable Contents contents(GameTestHelper helper, int x) {
-        return FluidSegments.get(level(helper)).contentsAt(abs(helper, x));
+        return FluidSegments.get(level(helper)).contentsAt(level(helper), abs(helper, x));
     }
 
     private static boolean sameSegment(GameTestHelper helper, int a, int b) {
@@ -322,7 +322,7 @@ final class ClosedSideTests {
             }
         }).thenIdle(RECHECK).thenExecute(() -> {
             ServerLevel level = level(helper);
-            var port = FluidSegments.get(level).contentsAt(abs(helper, 2));
+            var port = FluidSegments.get(level).contentsAt(level, abs(helper, 2));
             if (!closed(helper, 1, Direction.EAST) || arm(helper, 1, Direction.EAST)) {
                 helper.fail("the refused side is open, or draws an arm, after the tick", at(1));
             } else if (port == null || port.segment() == contents(helper, 1).segment()) {
@@ -398,8 +398,8 @@ final class ClosedSideTests {
         var saved = FluidSegments.CODEC.encodeStart(NbtOps.INSTANCE, FluidSegments.get(level(helper))).getOrThrow();
         var loaded = FluidSegments.CODEC.parse(NbtOps.INSTANCE, saved).getOrThrow();
 
-        var first = loaded.contentsAt(abs(helper, 1));
-        var second = loaded.contentsAt(abs(helper, 2));
+        var first = loaded.contentsAt(level(helper), abs(helper, 1));
+        var second = loaded.contentsAt(level(helper), abs(helper, 2));
         if (!loaded.closed(abs(helper, 1), Direction.EAST) || !loaded.closed(abs(helper, 2), Direction.WEST)
                 || !loaded.closed(abs(helper, 0), Direction.UP)) {
             helper.fail("a closed side did not come back closed", at(1));

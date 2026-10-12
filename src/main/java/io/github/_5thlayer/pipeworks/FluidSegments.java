@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,9 @@ import org.slf4j.Logger;
 public final class FluidSegments extends SavedData {
 
     public static final int ALL_FACES = 0b111111;
+
+    /** The nodes checked against the world each level tick (ADR 0003). */
+    private static final int SWEEP_PER_TICK = 64;
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -131,6 +135,11 @@ public final class FluidSegments extends SavedData {
             new HashMap<>();
     /** The sides of each pipe to check again on the next level tick, as a mask by node. */
     private final Map<Long, Integer> dirty = new HashMap<>();
+    /**
+     * Every node in the order the level tick checks them against the world: one checked goes to the
+     * back, so each is reached in turn at a bounded cost a tick.
+     */
+    private final Set<Long> rota = new LinkedHashSet<>();
 
     private FluidSegments() {
         this.graph = new SegmentGraph();
@@ -140,6 +149,7 @@ public final class FluidSegments extends SavedData {
         for (NodeRecord node : nodes) {
             specs.put(node.node(), new Spec(node.capacity(), node.mask()));
             index(node.node());
+            rota.add(node.node());
             if (node.waiting()) {
                 waiting.add(node.node());
             }
@@ -184,6 +194,7 @@ public final class FluidSegments extends SavedData {
         if (event.getLevel() instanceof ServerLevel level) {
             FluidSegments segments = level.getDataStorage().get(TYPE);
             if (segments != null) {
+                segments.sweep(level);
                 segments.settle(level);
                 segments.refill();
                 segments.redrawDirty(level);
@@ -403,6 +414,7 @@ public final class FluidSegments extends SavedData {
         long node = pos.asLong();
         if (specs.putIfAbsent(node, new Spec(capacity, mask)) == null) {
             index(node);
+            rota.add(node);
             waiting.add(node);
             setDirty();
             settle(level);
@@ -416,6 +428,7 @@ public final class FluidSegments extends SavedData {
             return;
         }
         unindex(node);
+        rota.remove(node);
         sources.remove(node);
         remasked.remove(node);
         caches.remove(node);
@@ -483,22 +496,58 @@ public final class FluidSegments extends SavedData {
         }
     }
 
-    /** The segment holding {@code pos} as one fluid slot, or null if the position is in none. */
-    public @Nullable ResourceHandler<FluidResource> handlerAt(BlockPos pos) {
+    /**
+     * The segment holding {@code pos} as one fluid slot, or null if the position is in none. A node
+     * whose block is gone leaves first, so it has none (ADR 0003).
+     */
+    public @Nullable ResourceHandler<FluidResource> handlerAt(ServerLevel level, BlockPos pos) {
+        leaveIfGone(level, pos);
         return joined(pos.asLong()) ? new Handler(pos.asLong()) : null;
     }
 
     /**
-     * As {@link #handlerAt(BlockPos)}, but null on a side the node has closed. A null side is no
-     * face and gets the handler.
+     * As {@link #handlerAt(ServerLevel, BlockPos)}, but null on a side the node has closed. A null
+     * side is no face and gets the handler.
      */
-    public @Nullable ResourceHandler<FluidResource> handlerAt(BlockPos pos, @Nullable Direction side) {
-        return side != null && closed(pos, side) ? null : handlerAt(pos);
+    public @Nullable ResourceHandler<FluidResource> handlerAt(ServerLevel level, BlockPos pos, @Nullable Direction side) {
+        leaveIfGone(level, pos);
+        return side != null && closed(pos, side) ? null : handlerAt(level, pos);
     }
 
-    /** What the segment holding {@code pos} holds, or null if the position is in none. */
-    public SegmentGraph.@Nullable Contents contentsAt(BlockPos pos) {
+    /**
+     * What the segment holding {@code pos} holds, or null if the position is in none. A node whose
+     * block is gone leaves first, so it holds nothing (ADR 0003).
+     */
+    public SegmentGraph.@Nullable Contents contentsAt(ServerLevel level, BlockPos pos) {
+        leaveIfGone(level, pos);
         return joined(pos.asLong()) ? graph.contents(pos.asLong()) : null;
+    }
+
+    /**
+     * Takes the node at {@code pos} out of the graph if its position is loaded and holds no pipe,
+     * tank or port: a removal whose flags left out {@code UPDATE_NEIGHBORS} never told it (ADR 0003).
+     * A position that is not loaded is never judged, nor is one read off the server thread, where
+     * the level hands out no block entity and a port would look gone.
+     */
+    private void leaveIfGone(ServerLevel level, BlockPos pos) {
+        if (specs.containsKey(pos.asLong()) && level.getServer().isSameThread() && level.isLoaded(pos)
+                && !isNode(level, pos)) {
+            leave(level, pos);
+        }
+    }
+
+    /**
+     * Checks the next {@link #SWEEP_PER_TICK} nodes of the rota against the world, so a node nobody
+     * reaches is still found.
+     */
+    private void sweep(ServerLevel level) {
+        for (int i = Math.min(SWEEP_PER_TICK, rota.size()); i > 0; i--) {
+            Iterator<Long> first = rota.iterator();
+            long node = first.next();
+            first.remove();
+            rota.add(node);
+            leaveIfGone(level, BlockPos.of(node));
+        }
     }
 
     /** Whether {@code pos} is a node that waits outside every segment (ADR 0003). */
@@ -530,7 +579,8 @@ public final class FluidSegments extends SavedData {
         }
         for (long node : List.copyOf(waiting)) {
             Spec spec = specs.get(node);
-            if (graph.add(node, spec.capacity(), neighbours(BlockPos.of(node), spec.mask()))
+            // Gone if a capability invalidated above was read through it, which made it leave.
+            if (spec != null && graph.add(node, spec.capacity(), neighbours(BlockPos.of(node), spec.mask()))
                     instanceof SegmentGraph.Placement.Accepted) {
                 waiting.remove(node);
                 changed(level, node);

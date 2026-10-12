@@ -245,7 +245,7 @@ final class SegmentTests {
         var saved = FluidSegments.CODEC.encodeStart(NbtOps.INSTANCE, segments).getOrThrow();
         var loaded = FluidSegments.CODEC.parse(NbtOps.INSTANCE, saved).getOrThrow();
 
-        var contents = loaded.contentsAt(helper.absolutePos(at(2)));
+        var contents = loaded.contentsAt(level(helper), helper.absolutePos(at(2)));
         if (contents == null || contents.amount() != 321
                 || contents.capacity() != 3 * Pipeworks.PIPE_CAPACITY + Pipeworks.TANK_CAPACITY) {
             helper.fail("the saved segment came back as " + contents, at(2));
@@ -255,7 +255,7 @@ final class SegmentTests {
     }
 
     private static SegmentGraph.@Nullable Contents contentsAt(GameTestHelper helper, int x) {
-        return FluidSegments.get(level(helper)).contentsAt(helper.absolutePos(at(x)));
+        return FluidSegments.get(level(helper)).contentsAt(level(helper), helper.absolutePos(at(x)));
     }
 
     private static long amountAt(GameTestHelper helper, int x) {
@@ -289,13 +289,13 @@ final class SegmentTests {
         var loaded = FluidSegments.CODEC.parse(NbtOps.INSTANCE, saved).getOrThrow();
 
         for (int x : new int[] {0, 2}) {
-            var dropped = loaded.contentsAt(helper.absolutePos(at(x)));
+            var dropped = loaded.contentsAt(level(helper), helper.absolutePos(at(x)));
             if (dropped == null || dropped.fluid() != null || dropped.amount() != 0) {
                 helper.fail("a segment saved with an unknown fluid came back as " + dropped, at(x));
                 return;
             }
         }
-        var kept = loaded.contentsAt(helper.absolutePos(at(4)));
+        var kept = loaded.contentsAt(level(helper), helper.absolutePos(at(4)));
         if (kept == null || kept.amount() != 30) {
             helper.fail("the lava segment came back as " + kept, at(4));
             return;

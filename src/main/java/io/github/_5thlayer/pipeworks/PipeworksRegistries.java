@@ -87,7 +87,7 @@ public final class PipeworksRegistries {
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(Capabilities.Fluid.BLOCK,
                 (level, pos, state, entity, side) -> level instanceof ServerLevel server
-                        ? FluidSegments.get(server).handlerAt(pos, side) : null,
+                        ? FluidSegments.get(server).handlerAt(server, pos, side) : null,
                 PIPE.get(), STORAGE_TANK.get(), CREATIVE_PIPE.get());
     }
 

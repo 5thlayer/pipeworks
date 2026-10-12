@@ -193,10 +193,10 @@ final class ArmTests {
         inventory(helper, at(3), Direction.WEST);
         helper.startSequence().thenIdle(RECHECK).thenExecute(() -> {
             var segments = FluidSegments.get(level(helper));
-            var contents = segments.contentsAt(helper.absolutePos(at(2)));
+            var contents = segments.contentsAt(level(helper), helper.absolutePos(at(2)));
             if (!arm(helper, 2, Direction.EAST)) {
                 helper.fail("the pipe draws no arm toward the inventory", at(2));
-            } else if (segments.contains(helper.absolutePos(at(3))) || segments.contentsAt(helper.absolutePos(at(3))) != null) {
+            } else if (segments.contains(helper.absolutePos(at(3))) || segments.contentsAt(level(helper), helper.absolutePos(at(3))) != null) {
                 helper.fail("the inventory joined the segment", at(3));
             } else if (contents == null || contents.capacity() != 2 * Pipeworks.PIPE_CAPACITY) {
                 helper.fail("the segment is " + contents + ", not the two pipes' " + 2 * Pipeworks.PIPE_CAPACITY + " mB", at(2));

@@ -65,6 +65,7 @@ public final class PipeworksGameTests {
         LoadTests.register(tests);
         PlaysAloneTests.register(tests);
         SegmentTests.register(tests);
+        GhostNodeTests.register(tests);
         CreativePipeTests.register(tests);
         TankLevelTests.register(tests);
         ArmTests.register(tests);

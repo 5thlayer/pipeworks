@@ -69,7 +69,7 @@ final class OutletTests {
     }
 
     private static SegmentGraph.@Nullable Contents contents(GameTestHelper helper) {
-        return FluidSegments.get(helper.getLevel()).contentsAt(helper.absolutePos(TANK));
+        return FluidSegments.get(helper.getLevel()).contentsAt(helper.getLevel(), helper.absolutePos(TANK));
     }
 
     private static void assertTank(GameTestHelper helper, long amount, String what) {

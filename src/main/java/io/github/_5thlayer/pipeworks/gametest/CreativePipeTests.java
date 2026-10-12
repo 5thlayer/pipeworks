@@ -86,7 +86,7 @@ final class CreativePipeTests {
     }
 
     private static SegmentGraph.@Nullable Contents contentsAt(GameTestHelper helper, int x) {
-        return FluidSegments.get(helper.getLevel()).contentsAt(helper.absolutePos(at(x)));
+        return FluidSegments.get(helper.getLevel()).contentsAt(helper.getLevel(), helper.absolutePos(at(x)));
     }
 
     private static ResourceHandler<FluidResource> faceAt(GameTestHelper helper, int x) {
@@ -298,7 +298,7 @@ final class CreativePipeTests {
             helper.fail("the saved creative pipe came back sourcing " + loaded.sourceAt(helper.absolutePos(at(0))), at(0));
             return;
         }
-        var contents = loaded.contentsAt(helper.absolutePos(at(0)));
+        var contents = loaded.contentsAt(helper.getLevel(), helper.absolutePos(at(0)));
         if (contents == null || !"minecraft:water".equals(contents.fluid()) || contents.amount() != Pipeworks.PIPE_CAPACITY) {
             helper.fail("the saved creative pipe's segment came back as " + contents, at(0));
             return;

@@ -65,7 +65,10 @@ public class PipeworksJadePlugin implements IWailaPlugin {
                 && (block.getBlock() instanceof FluidSegments.SegmentBlock || block.getBlockEntity() instanceof FluidPort);
     }
 
-    /** The level's segments, read without creating or settling them, as a HUD query should. */
+    /**
+     * The level's segments, read without creating or settling them, as a HUD query should. Reading a
+     * node's contents still takes it out if its block is gone (ADR 0003).
+     */
     private static @Nullable FluidSegments segments(Accessor<?> accessor) {
         return accessor.getLevel() instanceof ServerLevel level ? level.getDataStorage().get(FluidSegments.TYPE) : null;
     }
@@ -75,7 +78,8 @@ public class PipeworksJadePlugin implements IWailaPlugin {
         public @Nullable List<ViewGroup<FluidView.Data>> getGroups(Accessor<?> accessor) {
             FluidSegments segments = segments(accessor);
             SegmentGraph.Contents contents = segments == null || !(accessor instanceof BlockAccessor block)
-                    ? null : segments.contentsAt(block.getPosition());
+                    || !(accessor.getLevel() instanceof ServerLevel level)
+                    ? null : segments.contentsAt(level, block.getPosition());
             if (contents == null) {
                 return null;
             }

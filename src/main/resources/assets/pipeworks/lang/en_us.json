@@ -4,6 +4,7 @@
   "block.pipeworks.pipe": "Pipe",
   "block.pipeworks.pump": "Pump",
   "block.pipeworks.storage_tank": "Storage Tank",
+  "config.jade.plugin_pipeworks.closed": "Closed pipe sides",
   "config.jade.plugin_pipeworks.waiting": "Waiting node",
   "item.pipeworks.creative_pipe": "Creative Pipe",
   "item.pipeworks.outlet": "Outlet",

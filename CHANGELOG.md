@@ -4,6 +4,10 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+### Fixed
+
+- A dev client with Jade no longer crashes the first time the title screen opens: the Jade option for a pipe's closed sides has its line in the lang file, `config.jade.plugin_pipeworks.closed` (#25).
+
 ## 0.3.0
 
 - `pipeworks-server.toml`, a server config: `pipeCapacity` (default 100) and `tankCapacity` (default 25,000) set the millibuckets a pipe, creative pipe and storage tank add to their segment, each at least 1. A node takes the value when it is placed and keeps the one it was saved with, so a change reaches only the pipes and tanks placed after it, and one segment may hold both. `Pipeworks.PIPE_CAPACITY` and `TANK_CAPACITY` are the defaults, and `PipeworksConfig.pipeCapacity()` and `tankCapacity()` read the configured values (ADR 0003, #2).

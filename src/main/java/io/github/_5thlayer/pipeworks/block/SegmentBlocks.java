@@ -47,9 +47,10 @@ final class SegmentBlocks {
         }
     }
 
-    static void onPlace(Level level, BlockPos pos, BlockState state, BlockState oldState, long capacity) {
+    /** Joins the placed block's segment, with the capacity configured now, read only on the server. */
+    static void onPlace(Level level, BlockPos pos, BlockState state, BlockState oldState, FluidSegments.SegmentBlock block) {
         if (level instanceof ServerLevel server && !oldState.is(state.getBlock())) {
-            FluidSegments.get(server).join(server, pos, capacity, FluidSegments.ALL_FACES);
+            FluidSegments.get(server).join(server, pos, block.capacity(), FluidSegments.ALL_FACES);
         }
     }
 

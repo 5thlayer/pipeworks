@@ -77,6 +77,7 @@ public final class PipeworksGameTests {
         RecipeTests.register(tests);
         OutletTests.register(tests);
         FluidItemTests.register(tests);
+        ConfigTests.register(tests);
         CreativeTabTests.register(tests);
     }
 

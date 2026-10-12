@@ -19,7 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 /**
  * A pipe that keeps its segment full of one fluid, the dev tool a segment is checked with: place
  * it, place pipes beside it, set its fluid in its screen. It is a pipe in every way but its refill:
- * the same 100 millibuckets, shape, arms and linking. Using it opens the screen, with no bucket
+ * the same capacity, shape, arms and linking. Using it opens the screen, with no bucket
  * shortcut on the block. Breaking it stops the refill, and the fluid is saved with the level, in
  * {@link FluidSegments}, since like the pipe it is a plain block.
  *

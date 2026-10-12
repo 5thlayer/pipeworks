@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import com.mojang.serialization.MapCodec;
 import io.github._5thlayer.pipeworks.FluidSegments;
-import io.github._5thlayer.pipeworks.Pipeworks;
+import io.github._5thlayer.pipeworks.PipeworksConfig;
 import io.github._5thlayer.pipeworks.api.FluidPipes;
 import io.github._5thlayer.pipeworks.fluiditem.FluidItems;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A pipe: a node of 100 millibuckets that joins every pipe, tank and port beside it (ADR 0002).
+ * A pipe: a node of the configured capacity, 100 millibuckets by default, that joins every pipe,
+ * tank and port beside it (ADR 0002).
  * It draws an arm towards each side where fluid can move: a node its segment links it to, or a
  * fluid inventory beside it. A pipe waiting outside every segment draws none (ADR 0003), nor does
  * a closed side, which is drawn as an empty one (ADR 0004).
@@ -84,7 +85,7 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
 
     @Override
     public long capacity() {
-        return Pipeworks.PIPE_CAPACITY;
+        return PipeworksConfig.pipeCapacity();
     }
 
     @Override
@@ -167,7 +168,7 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        SegmentBlocks.onPlace(level, pos, state, oldState, capacity());
+        SegmentBlocks.onPlace(level, pos, state, oldState, this);
     }
 
     /**

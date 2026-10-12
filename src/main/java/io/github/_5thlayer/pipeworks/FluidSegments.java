@@ -234,7 +234,7 @@ public final class FluidSegments extends SavedData {
 
     /** Implemented by the blocks that are nodes of a segment themselves, with no block entity. */
     public interface SegmentBlock {
-        /** The millibuckets this block adds to its segment. */
+        /** The millibuckets this block adds to its segment when it joins, read then and kept after. */
         long capacity();
 
         /** Whether this block draws an arm towards each side where fluid can move, as a pipe does. */

@@ -5,7 +5,7 @@ package io.github._5thlayer.pipeworks.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github._5thlayer.pipeworks.FluidSegments;
-import io.github._5thlayer.pipeworks.Pipeworks;
+import io.github._5thlayer.pipeworks.PipeworksConfig;
 import io.github._5thlayer.pipeworks.fluiditem.FluidItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -24,9 +24,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A storage tank: a node of 25,000 millibuckets that opens every face. It is a plain block, since
- * its fluid is its segment's and the segment is saved with the level. Its {@link #LEVEL} is the
- * segment's fill, which the server sets and which is all the client knows of it (ADR 0003).
+ * A storage tank: a node of the configured capacity, 25,000 millibuckets by default, that opens
+ * every face. It is a plain block, since its fluid is its segment's and the segment is saved with
+ * the level. Its {@link #LEVEL} is the segment's fill, which the server sets and which is all the
+ * client knows of it (ADR 0003).
  */
 public class StorageTankBlock extends Block implements FluidSegments.SegmentBlock {
 
@@ -52,7 +53,7 @@ public class StorageTankBlock extends Block implements FluidSegments.SegmentBloc
 
     @Override
     public long capacity() {
-        return Pipeworks.TANK_CAPACITY;
+        return PipeworksConfig.tankCapacity();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class StorageTankBlock extends Block implements FluidSegments.SegmentBloc
 
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        SegmentBlocks.onPlace(level, pos, state, oldState, capacity());
+        SegmentBlocks.onPlace(level, pos, state, oldState, this);
     }
 
     @Override

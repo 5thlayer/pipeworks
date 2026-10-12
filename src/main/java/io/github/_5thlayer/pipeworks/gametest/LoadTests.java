@@ -8,9 +8,9 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.neoforged.fml.ModList;
 
 /**
- * The Library loads on a server with nothing else installed, at the version its build gave it. It
- * is the harness's own check too: a run that reports this test ran the Library's tests, not
- * vanilla's.
+ * The Library loads on a server with only Groundworks and the libworks runtime it nests, at the
+ * version its build gave it. It is the harness's own check too: a run that reports this test ran the
+ * Library's tests, not vanilla's.
  */
 final class LoadTests {
 

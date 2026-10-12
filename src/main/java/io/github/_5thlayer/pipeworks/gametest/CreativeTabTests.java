@@ -13,7 +13,10 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-/** Every item the Library registers shows in the suite's shared Works tab, and the Library keeps no tab of its own (#17). */
+/**
+ * Every item the Library registers shows in the suite's shared Works tab, and the Library keeps no tab of its own
+ * (FactoryWorks ADR-0128, #17).
+ */
 final class CreativeTabTests {
 
     private CreativeTabTests() {

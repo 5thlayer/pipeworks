@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.3.1
+
 ### Fixed
 
 - A dev client with Jade no longer crashes the first time the title screen opens: the Jade option for a pipe's closed sides has its line in the lang file, `config.jade.plugin_pipeworks.closed` (#25).

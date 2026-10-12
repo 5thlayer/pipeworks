@@ -65,6 +65,10 @@ _Avoid_: drain, spout, fluid placer
 The pipes a Groundworks Dismantle takes up as one span: the block tag `pipeworks:dismantle/pipes`, joined only where each pipe draws an arm toward the other, so a closed side ends a span.
 _Avoid_: dismantle group
 
+**Works tab**:
+The creative tab the suite's mods share, `libworks:works`, registered by the libworks runtime the Library nests. Every Pipeworks item shows there; Pipeworks registers no tab of its own (FactoryWorks ADR-0128).
+_Avoid_: Pipeworks tab, creative tab (alone)
+
 ### Parties
 
 **Pipeworks**:

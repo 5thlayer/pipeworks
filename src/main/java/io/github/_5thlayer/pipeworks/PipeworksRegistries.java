@@ -46,10 +46,10 @@ public final class PipeworksRegistries {
     /** Has no recipe, which keeps it out of survival: it is in the Works tab and {@code /give}. */
     public static final DeferredBlock<CreativePipeBlock> CREATIVE_PIPE = BLOCKS.registerBlock("creative_pipe", CreativePipeBlock::new,
             props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
-    /** Has no recipe: a pack adds one. */
+    /** Has a crafting recipe from pipes and vanilla items; a pack may replace it. */
     public static final DeferredBlock<PumpBlock> PUMP = BLOCKS.registerBlock("pump", PumpBlock::new,
             props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
-    /** Has no recipe: a pack adds one. */
+    /** Has a crafting recipe from pipes and vanilla items; a pack may replace it. */
     public static final DeferredBlock<OutletBlock> OUTLET = BLOCKS.registerBlock("outlet", OutletBlock::new,
             props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
 

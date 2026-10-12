@@ -25,7 +25,10 @@ that plays alone in vanilla, where sources do form.
   `pipeworks:infinite_sources` is infinite, so only it is left in place. The siting rule does not
   separate a natural source from one a player placed.
 - **Placement is refused with no still source of any fluid beside it**, in the plan, so the preview
-  draws it red and nothing is consumed. Facing is cosmetic. It takes no power and has no recipe.
+  draws it red and nothing is consumed. Facing is cosmetic. It takes no power. The Library ships a
+  crafting recipe (four pipes, a piston and a bucket), which a pack may replace. This amends the
+  first decision, no recipe, which left it to a pack before each Module played alone (FactoryWorks
+  ADR-0127, #24).
 - The numbers are Pipeworks' own, frozen from Factorio's (FactoryWorks ADR 0115) and held by
   `PumpRuleTest`, not read from a corpus.
 

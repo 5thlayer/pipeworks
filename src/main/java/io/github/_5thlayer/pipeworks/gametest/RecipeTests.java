@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-/** The pipe and the storage tank are craftable by hand on a server with nothing else installed (FactoryWorks ADR-0127). */
+/** The pipe, the storage tank, the Pump and the Outlet are craftable by hand on a server with nothing else installed (FactoryWorks ADR-0127). */
 final class RecipeTests {
 
     private RecipeTests() {
@@ -23,6 +23,8 @@ final class RecipeTests {
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("the_pipe_has_a_crafting_recipe", 1, helper -> crafts(helper, PipeworksRegistries.PIPE_ITEM.get()));
         tests.test("the_storage_tank_has_a_crafting_recipe", 1, helper -> crafts(helper, PipeworksRegistries.STORAGE_TANK_ITEM.get()));
+        tests.test("the_pump_has_a_crafting_recipe", 1, helper -> crafts(helper, PipeworksRegistries.PUMP_ITEM.get()));
+        tests.test("the_outlet_has_a_crafting_recipe", 1, helper -> crafts(helper, PipeworksRegistries.OUTLET_ITEM.get()));
     }
 
     private static void crafts(GameTestHelper helper, Item item) {

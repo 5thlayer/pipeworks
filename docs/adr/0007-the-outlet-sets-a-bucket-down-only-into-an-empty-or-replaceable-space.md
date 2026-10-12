@@ -26,7 +26,9 @@ rule.
   fluid or another, and the Outlet does not waterlog a block.
 - **A fluid with no source block is left in the pipes.** No other fluid is singled out: it does not
   vaporize water in an ultrawarm dimension as a bucket does, since it is a machine and not a player.
-- **It never draws fluid from the world.** It takes no power and has no recipe; a pack adds one.
+- **It never draws fluid from the world.** It takes no power. The Library ships a crafting
+  recipe (four pipes and a dispenser), which a pack may replace. This amends the first decision, no
+  recipe, which left it to a pack before each Module played alone (FactoryWorks ADR-0127, #24).
 
 ## Consequences
 

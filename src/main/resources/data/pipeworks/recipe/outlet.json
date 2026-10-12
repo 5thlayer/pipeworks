@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "T": "pipeworks:pipe",
+    "D": "minecraft:dispenser"
+  },
+  "pattern": [
+    " T ",
+    "TDT",
+    " T "
+  ],
+  "result": {
+    "id": "pipeworks:outlet",
+    "count": 1
+  }
+}

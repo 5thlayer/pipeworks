@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "T": "pipeworks:pipe",
+    "P": "minecraft:piston",
+    "B": "minecraft:bucket"
+  },
+  "pattern": [
+    " T ",
+    "TPT",
+    " B "
+  ],
+  "result": {
+    "id": "pipeworks:pump",
+    "count": 1
+  }
+}

@@ -25,12 +25,13 @@ import net.minecraft.tags.TagKey;
 import net.neoforged.fml.ModList;
 
 /**
- * The Library plays alone on Groundworks (FactoryWorks ADR-0127): nothing else is loaded beside it, and every tag its code
+ * The Library plays alone on Groundworks (FactoryWorks ADR-0127): nothing else is loaded beside it but the
+ * libworks runtime it nests, and every tag its code
  * reads or its data names holds an entry of Minecraft or Pipeworks.
  */
 final class PlaysAloneTests {
 
-    private static final Set<String> LOADED_ALONE = Set.of("minecraft", "neoforge", "groundworks", Pipeworks.MOD_ID);
+    private static final Set<String> LOADED_ALONE = Set.of("minecraft", "neoforge", "groundworks", "libworks", Pipeworks.MOD_ID);
 
     private static final Set<String> FILLS_ALONE = Set.of("minecraft", Pipeworks.MOD_ID);
 

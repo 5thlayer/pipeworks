@@ -15,14 +15,20 @@ libworks {
         tagPrefix = 'v'
         range = '[0.5.5,0.6)'
     }
+    // Nested by jar-in-jar, so players install nothing more; FML loads the newest nested copy in range,
+    // which runs to the next minor.
+    runtime = '0.1.1'
 }
 
 repositories {
-    // Groundworks: its releases are published to the local maven repository only, and nothing else
-    // resolves from there.
+    // Groundworks and libworks-runtime: their releases are published to the local maven repository
+    // only, and nothing else resolves from there.
     exclusiveContent {
         forRepository { mavenLocal() }
-        filter { includeModule 'io.github.5thlayer', 'groundworks' }
+        filter {
+            includeModule 'io.github.5thlayer', 'groundworks'
+            includeModule 'io.github.5thlayer', 'libworks-runtime'
+        }
     }
     exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
         forRepository { maven { url = 'https://cursemaven.com' } }

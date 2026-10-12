@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.3.0
+
 - `pipeworks-server.toml`, a server config: `pipeCapacity` (default 100) and `tankCapacity` (default 25,000) set the millibuckets a pipe, creative pipe and storage tank add to their segment, each at least 1. A node takes the value when it is placed and keeps the one it was saved with, so a change reaches only the pipes and tanks placed after it, and one segment may hold both. `Pipeworks.PIPE_CAPACITY` and `TANK_CAPACITY` are the defaults, and `PipeworksConfig.pipeCapacity()` and `tankCapacity()` read the configured values (ADR 0003, #2).
 - A **fluid item** used on a pipe or storage tank fills or empties its segment: a bucket, or any item with `Capabilities.Fluid.ITEM`, such as another mod's portable tank, through its first slot. A full item empties only whole, into a segment holding its fluid or none; an empty or part-full one fills from the segment's fluid and never takes another. A refused item does nothing, so a bucket never sets its fluid down beside the node. The hand changes as at a cauldron: unchanged in creative, and one of a stack swapped with the result put in the inventory. The creative pipe still opens its screen (5thlayer/factoryworks ADR-0121, #12).
 - Every Pipeworks item shows in the suite's shared **Works** creative tab (`libworks:works`) and in no vanilla tab, so the pipe, storage tank, Pump and outlet leave Functional Blocks, and the Pipeworks tab `pipeworks:items` and its lang key `itemGroup.pipeworks.items` are gone. The jar nests `libworks-runtime` 0.1.1 by jar-in-jar, so a player installs nothing more; `neoforge.mods.toml` requires `libworks` from 0.1.1 to the next minor (FactoryWorks ADR-0128, #17).

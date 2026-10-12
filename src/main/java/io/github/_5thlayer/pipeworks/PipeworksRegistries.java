@@ -13,14 +13,11 @@ import io.github._5thlayer.pipeworks.outlet.OutletBlockEntity;
 import io.github._5thlayer.pipeworks.pump.PumpBlock;
 import io.github._5thlayer.pipeworks.pump.PumpBlockEntity;
 import io.github._5thlayer.pipeworks.pump.PumpItem;
-import java.util.List;
 import java.util.Set;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -95,15 +92,12 @@ public final class PipeworksRegistries {
     }
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            functionalBlockItems().forEach(event::accept);
-        } else if (event.getTabKey() == WorksTab.KEY) {
-            functionalBlockItems().forEach(event::accept);
+        if (event.getTabKey() == WorksTab.KEY) {
+            event.accept(PIPE_ITEM.get());
+            event.accept(STORAGE_TANK_ITEM.get());
+            event.accept(PUMP_ITEM.get());
+            event.accept(OUTLET_ITEM.get());
             event.accept(CREATIVE_PIPE_ITEM.get());
         }
-    }
-
-    private static List<Item> functionalBlockItems() {
-        return List.of(PIPE_ITEM.get(), STORAGE_TANK_ITEM.get(), PUMP_ITEM.get(), OUTLET_ITEM.get());
     }
 }

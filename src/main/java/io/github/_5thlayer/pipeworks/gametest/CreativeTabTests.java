@@ -36,6 +36,8 @@ final class CreativeTabTests {
                 .toList();
         List<Item> missing = BuiltInRegistries.ITEM.stream()
                 .filter(item -> BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(Pipeworks.MOD_ID))
+                // What only this run registers, such as the test canister, ships in no jar.
+                .filter(item -> !BuiltInRegistries.ITEM.getKey(item).getPath().startsWith("gametest_"))
                 .filter(item -> !shown.contains(item))
                 .toList();
         if (!missing.isEmpty()) {

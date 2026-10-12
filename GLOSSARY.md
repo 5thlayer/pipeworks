@@ -47,6 +47,10 @@ _Avoid_: infinite pipe, source block (collides with the game's fluid source bloc
 Joining two segments that hold different fluids. A player's placement that would is refused.
 _Avoid_: contamination
 
+**Fluid item**:
+An item that holds fluid through NeoForge's fluid item capability: a bucket, or another mod's portable tank. Used on a pipe or tank, a full one empties into the segment whole or not at all, and any other fills from the segment's fluid (5thlayer/factoryworks ADR-0121). The creative pipe takes it as the fluid its screen sets instead.
+_Avoid_: container, barrel (FactoryWorks' former 50 mB container, removed by ADR-0121)
+
 **Waiting node**:
 A node that would mix two fluids if it joined, so it is in no segment and has no fluid slot. It joins once it no longer would.
 _Avoid_: orphan, isolated node

@@ -13,6 +13,7 @@ Because I wanted my own fluid logistics for the -Works mods suite. Nothing speci
 ## Features
 
 - **Pipes and a storage tank.** A pipe holds 100 mB and a tank 25,000 mB, Factorio's volumes. Pipes draw an arm toward each pipe, tank or port they link to, and toward any block beside them that holds fluid.
+- **Buckets.** A bucket, or any mod's item that holds fluid, used on a pipe or tank fills or empties its segment. A full one empties only if the segment has room for all of it and holds that fluid or none; an empty or part-full one fills from the segment. In creative the item is left as it is.
 - **One fluid per segment.** A pipe or tank that would join two segments holding different fluids is refused, with a message saying so.
 - **Breaking splits fairly.** Breaking a pipe, tank or port splits its segment by capacity, and the broken block takes its share of the fluid. Segments are saved with the world and keep their fluid while their chunks are unloaded.
 - **See the level.** A storage tank shows how full its segment is, in fifteen steps, as fluid of the right colour in its glass. With [Jade](https://www.curseforge.com/minecraft/mc-mods/jade) installed, looking at a pipe, tank or port shows its segment's fluid, amount and capacity.

@@ -38,6 +38,12 @@ public class CreativePipeBlock extends FluidPipeBlock {
         return CODEC;
     }
 
+    /** A fluid item opens the screen, which sets the fluid from it, as any other item does. */
+    @Override
+    protected boolean takesFluidItems() {
+        return false;
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         // The server opens the menu, which brings the client's screen.

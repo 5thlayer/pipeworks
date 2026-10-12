@@ -55,6 +55,7 @@ public final class PipeworksGameTests {
         TestPort.register(modBus);
         TestInventory.register(modBus);
         TestFluid.register(modBus);
+        TestCanister.register(modBus);
         modBus.addListener(PipeworksGameTests::registerTests);
     }
 
@@ -75,6 +76,7 @@ public final class PipeworksGameTests {
         PumpTests.register(tests);
         RecipeTests.register(tests);
         OutletTests.register(tests);
+        FluidItemTests.register(tests);
         CreativeTabTests.register(tests);
     }
 

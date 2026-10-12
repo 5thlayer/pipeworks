@@ -11,6 +11,7 @@ import com.mojang.serialization.MapCodec;
 import io.github._5thlayer.pipeworks.FluidSegments;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.api.FluidPipes;
+import io.github._5thlayer.pipeworks.fluiditem.FluidItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -123,6 +124,11 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
         return state;
     }
 
+    /** Whether a fluid item used on this pipe fills from or empties into its segment. */
+    protected boolean takesFluidItems() {
+        return true;
+    }
+
     /** The side a click hit: that of the arm, or of the core's face where the hit is on the core. */
     static Direction sideHit(BlockPos pos, BlockHitResult hit) {
         Vec3 local = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
@@ -138,13 +144,14 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
-        if (!stack.is(FluidPipes.CLOSES_SIDES) || player.isSecondaryUseActive()) {
-            return super.useItemOn(stack, state, level, pos, player, hand, hit);
+        if (stack.is(FluidPipes.CLOSES_SIDES) && !player.isSecondaryUseActive()) {
+            if (level instanceof ServerLevel server) {
+                SegmentBlocks.toggleSide(server, pos, sideHit(pos, hit), player);
+            }
+            return InteractionResult.SUCCESS;
         }
-        if (level instanceof ServerLevel server) {
-            SegmentBlocks.toggleSide(server, pos, sideHit(pos, hit), player);
-        }
-        return InteractionResult.SUCCESS;
+        InteractionResult used = takesFluidItems() ? FluidItems.use(level, pos, player, hand) : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return used != InteractionResult.TRY_WITH_EMPTY_HAND ? used : super.useItemOn(stack, state, level, pos, player, hand, hit);
     }
 
     @Override

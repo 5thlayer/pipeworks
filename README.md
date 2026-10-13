@@ -8,6 +8,8 @@ Because I wanted my own fluid logistics for the -Works mods suite. Nothing speci
 
 **NeoForge, Minecraft 26.1.2 only.** Pipeworks is early work, so please report any issues you find on [GitHub](https://github.com/5thlayer/pipeworks/issues).
 
+To play Pipeworks beside every other FactoryWorks mod, install the [FactoryWorks Showcase](https://www.curseforge.com/minecraft/modpacks/factoryworks-showcase) modpack from CurseForge.
+
 > **Pipeworks is built for modpacks and other mods.** It registers no fluid and no machine. It carries whatever fluid another mod puts in, as Beltworks carries any item, and the creative pipe lets you try it with nothing else installed.
 
 ## Features

@@ -1,6 +1,6 @@
 # Builds and tests every push through the CI every Module shares, at the tag of the plugin
 # build.gradle applies: the two versions move together (libworks ADR 0003). It never publishes:
-# a Library's jar reaches a Consumer only through ~/.m2, and Modrinth and CurseForge, only from a
+# a Module's jar reaches a Consumer only through ~/.m2, and Modrinth and CurseForge, only from a
 # maintainer's machine (docs/agents/releases.md).
 name: CI
 

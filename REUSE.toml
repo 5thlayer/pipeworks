@@ -28,7 +28,7 @@ SPDX-FileCopyrightText = "Gradle"
 SPDX-License-Identifier = "Apache-2.0"
 
 # Vendored from Oritech v1.2.12 (https://github.com/Rearth/Oritech), which is CC0 1.0: its fluid
-# pipe and small tank models and textures, renamed and retextured to this Library's ids; the
+# pipe and small tank models and textures, renamed and retextured to this Module's ids; the
 # creative pipe's texture is a retint of the pipe's. None of it is from the ArtOfTecharium or
 # unused-textures sets its README lists as CC BY-NC and CC BY.
 [[annotations]]

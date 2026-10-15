@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * The Library plays alone on Groundworks (FactoryWorks ADR-0127): every tag its code reads is checked by
+ * The Module plays alone on Groundworks (FactoryWorks ADR-0127): every tag its code reads is checked by
  * {@code PlaysAloneTests} in game, where they resolve.
  * That nothing it ships names another Module is libworks-plugin's {@code checkPlaysAlone} (libworks ADR 0005).
  */

@@ -44,9 +44,9 @@ import snownee.jade.api.view.ViewGroup;
  * capacity, a line saying the node waits, and a line naming a pipe's closed sides (ADR 0004). Segments
  * and masks are the server's (ADR 0003), so each is asked for.
  *
- * <p>For any node, not a block of this Library's: a pipe or a tank, but also a Consumer's port or
+ * <p>For any node, not a block of this Module's: a pipe or a tank, but also a Consumer's port or
  * whatever else {@link FluidSegments#contentsAt} knows. Jade finds this class by its own annotation
- * and nothing else here refers to it, so the jar is a compile-time dependency only and the Library
+ * and nothing else here refers to it, so the jar is a compile-time dependency only and the Module
  * loads without Jade.
  */
 @WailaPlugin

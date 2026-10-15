@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * A fluid inventory for the tests to put beside a pipe, since Pipeworks ships none: a block that is
  * no node and exposes a fluid handler on one face at a time, which a test switches on and off as
  * Craftworks' fluid connections do, with {@code invalidateCapabilities} and no block update.
- * Registered only in the Library's own game test run.
+ * Registered only in the Module's own game test run.
  */
 final class TestInventory {
 

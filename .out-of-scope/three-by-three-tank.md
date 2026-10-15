@@ -8,7 +8,7 @@ connections.
 A segment's node is one position with a mask of open faces (ADRs 0002 and 0003). A 3 by 3 tank needs
 either a node that spans nine positions, which every join, split, waiting node and save would have to
 learn, or eight footprint parts acting as ports of the origin that open only at the corners. Either
-way the tank would stand on Groundworks' footprint (Groundworks ADR 0009), the Library's first
+way the tank would stand on Groundworks' footprint (Groundworks ADR 0009), the Module's first
 dependency, and the footprint's origin usually carries a block entity where ADR 0003 keeps the tank a
 plain block.
 

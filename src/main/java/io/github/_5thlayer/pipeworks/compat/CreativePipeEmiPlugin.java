@@ -19,7 +19,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Lets a fluid, or an item holding one, be dragged from EMI's list onto the slot of a creative
- * pipe's screen. EMI finds the plugin by its annotation, and nothing else names it, so the Library
+ * pipe's screen. EMI finds the plugin by its annotation, and nothing else names it, so the Module
  * loads without EMI.
  *
  * <p>The drop sends {@link CreativePipeFluidPayload}, which the server answers through the same

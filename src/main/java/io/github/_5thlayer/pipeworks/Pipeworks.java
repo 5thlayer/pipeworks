@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 /**
  * Pipes, a storage tank and the fluid-port API that join machines to them, on Factorio 2.0's fluid
- * segments (ADR 0002). The Library registers no fluid: it carries whatever a Consumer puts in.
+ * segments (ADR 0002). The Module registers no fluid: it carries whatever a Consumer puts in.
  */
 @Mod(Pipeworks.MOD_ID)
 public final class Pipeworks {

@@ -27,7 +27,7 @@ side that would mix two fluids is refused, as such a placement is. A port's face
 (`docs/research/pipe-connections-and-wrenches.md`), the blockstate keeps one arm property per side,
 and Jade, which reads the server, names the closed sides.
 
-**Considered.** An empty tag, which the Library first shipped: a player on Groundworks alone could
+**Considered.** An empty tag, which the Module first shipped: a player on Groundworks alone could
 not close a side, and Craftworks' Assembler needs closed sides to keep its fluid connections apart.
 Leaving it out: Pipeworks would have nothing to offer until pipe-to-ground lands, and a pack with no
 room for spacing would have no way to keep two runs apart. A plug model on a closed side: a third

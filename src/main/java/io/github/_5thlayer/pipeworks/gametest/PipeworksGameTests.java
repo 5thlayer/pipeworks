@@ -22,7 +22,7 @@ import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
- * The Library's game tests, run by the {@code gameTestServer} Gradle run: the Minecraft-integration
+ * The Module's game tests, run by the {@code gameTestServer} Gradle run: the Minecraft-integration
  * seam, with a real player on a real server. Each test stands on the {@code gametest/platform}
  * structure, a stone floor that the libworks plugin's {@code buildGametestStructures} writes, and sets up
  * what it needs itself, so the setup is in the diff.
@@ -32,8 +32,8 @@ public final class PipeworksGameTests {
     private static final Identifier PLATFORM = id("gametest/platform");
 
     /**
-     * Set by the Library's own {@code gameTestServer} run. A Consumer's game test server also has
-     * game tests enabled, and there the Library's test port block has no business existing.
+     * Set by the Module's own {@code gameTestServer} run. A Consumer's game test server also has
+     * game tests enabled, and there the Module's test port block has no business existing.
      */
     private static final String OWN_RUN = "pipeworks.gametest";
 

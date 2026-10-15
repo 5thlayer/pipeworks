@@ -15,7 +15,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
  * A fluid with no block, for the tests to pipe, since vanilla has none: it is carried like any other
- * and sets nothing down in the world, as a Consumer's gas would. Registered only in the Library's own
+ * and sets nothing down in the world, as a Consumer's gas would. Registered only in the Module's own
  * game test run.
  */
 final class TestFluid {

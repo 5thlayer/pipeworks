@@ -4,12 +4,12 @@ plugins {
     id 'io.github.5thlayer.libworks.module' version '0.3.0'
 }
 
-// What the Library requires of the other Libraries, each as a range whose lower bound is a released version:
-// the one the Library is built and run against and the one CI builds from its tag. neoforge.mods.toml names
-// each as ${<name>_range}. The Library's own tags are pipeworks-v<version>, the plugin's default.
+// What the Module requires of the other Modules, each as a range whose lower bound is a released version:
+// the one the Module is built and run against and the one CI builds from its tag. neoforge.mods.toml names
+// each as ${<name>_range}. The Module's own tags are pipeworks-v<version>, the plugin's default.
 libworks {
     // Required at load and not bundled (ADR 0005). Capped below the next minor, 0.6, which moves when
-    // the Library takes it.
+    // the Module takes it.
     upstream('groundworks') {
         // Groundworks' tags are v<version>.
         tagPrefix = 'v'
@@ -49,13 +49,13 @@ neoForge {
             systemProperty 'neoforge.warnings.onlyin.hide', 'true'
         }
         gameTestServer {
-            // Marks this run as the Library's own, which is when it registers its test port block.
+            // Marks this run as the Module's own, which is when it registers its test port block.
             systemProperty 'pipeworks.gametest', 'true'
         }
     }
 }
 
-// Mods the dev client loads alongside the Library, to check its integrations by hand. 26.1 has no
+// Mods the dev client loads alongside the Module, to check its integrations by hand. 26.1 has no
 // per-run classpath, so they go into the client's mods folder, which holds only what is listed here.
 configurations {
     clientMods { transitive = false }
@@ -75,13 +75,13 @@ def jeiVersion = '29.20.0.53'
 def emiFile = '8630349'
 
 dependencies {
-    // JEI finds the creative pipe screen's drop target by its annotation, so the Library loads without it.
+    // JEI finds the creative pipe screen's drop target by its annotation, so the Module loads without it.
     // EMI finds its plugin by annotation too. It has no official 26.1.2 build: this is an unofficial port.
     compileOnly "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
     clientMods "curse.maven:emi-unofficial-port-unstable-1544558:$emiFile"
     compileOnly "mezz.jei:jei-26.1.2-neoforge-api:$jeiVersion"
     clientMods "mezz.jei:jei-26.1.2-neoforge:$jeiVersion"
-    // Jade finds the HUD plugin by its annotation, so the Library runs without it.
+    // Jade finds the HUD plugin by its annotation, so the Module runs without it.
     compileOnly 'curse.maven:jade-324717:8651070'
     clientMods 'curse.maven:jade-324717:8651070'
 }

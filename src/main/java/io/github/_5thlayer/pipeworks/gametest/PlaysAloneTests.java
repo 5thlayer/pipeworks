@@ -25,7 +25,7 @@ import net.minecraft.tags.TagKey;
 import net.neoforged.fml.ModList;
 
 /**
- * The Library plays alone on Groundworks (FactoryWorks ADR-0127): nothing else is loaded beside it but the
+ * The Module plays alone on Groundworks (FactoryWorks ADR-0127): nothing else is loaded beside it but the
  * libworks runtime it nests, and every tag its code reads or its data names holds an entry of Minecraft or
  * Pipeworks.
  */

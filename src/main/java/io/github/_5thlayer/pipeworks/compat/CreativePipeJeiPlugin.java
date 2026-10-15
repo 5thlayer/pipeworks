@@ -24,7 +24,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 /**
  * Lets a fluid, or an item holding one, be dragged from JEI's list onto the slot of a creative
- * pipe's screen. JEI finds the plugin by its annotation, and nothing else names it, so the Library
+ * pipe's screen. JEI finds the plugin by its annotation, and nothing else names it, so the Module
  * loads without JEI.
  *
  * <p>The drop sends {@link CreativePipeFluidPayload}, which the server answers through the same

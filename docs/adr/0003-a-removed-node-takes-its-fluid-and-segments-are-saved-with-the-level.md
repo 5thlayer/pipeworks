@@ -32,7 +32,7 @@ reached through it. A node whose position is loaded and holds no pipe, tank or p
 broken one does, taking its share. A position that is not loaded is never judged. The reverse is not
 caught: a pipe placed with `UPDATE_SKIP_ON_PLACE`, as strict mode does, never joins, since nothing
 finds a block the graph does not know. Considered: a mixin into `LevelChunk.setBlockState`, which
-sees every change whatever its flags, placements included. It would be the Library's first mixin,
+sees every change whatever its flags, placements included. It would be the Module's first mixin,
 to be checked again on every Minecraft update, for removals that only commands and other mods make.
 
 **A node that would mix waits.** A port, or a pipe or tank set by something other than a player,
@@ -75,7 +75,7 @@ block entity holding only what its segment already knows.
 **The storage tank is one block.** It holds Factorio's 25,000 mB in one block, not the 3 by 3 it
 occupies there, and a pack that wants Factorio's volume per block sets the tank's capacity (below).
 Considered: a 3 by 3 tank on Groundworks' footprint (Groundworks ADR 0009), with Factorio's four
-corner connections (#3). It would be the Library's first dependency, and a segment has no node that
+corner connections (#3). It would be the Module's first dependency, and a segment has no node that
 spans several positions: one would join, split, wait and be saved across nine, or eight parts would
 be ports of the origin that open only at the corners, for a tank that only looks more like Factorio's.
 
@@ -83,11 +83,11 @@ be ports of the origin that open only at the corners, for a tank that only looks
 (ADR 0002, FactoryWorks ADR-0110) are later work.
 
 **A pack sets the capacities by server config.** `pipeworks-server.toml` holds the pipe's and the
-tank's capacity, 100 and 25,000 mB by default, as the other 5thlayer Libraries' figures are set (#2).
+tank's capacity, 100 and 25,000 mB by default, as the other 5thlayer Modules' figures are set (#2).
 A node takes the configured capacity when it joins, and keeps the one it was saved with: changing the
 config changes the pipes and tanks placed afterwards, so a segment may hold nodes of both. Considered:
 giving every saved node the configured capacity on load, which voids what a shrunk segment no longer
 holds, for a change a pack makes once, before a world has pipes.
 
 FactoryWorks ADR-0109, that the Pack depends on no third-party content mod, stays with the Pack: it
-is why Pipeworks exists, and nothing in this Library applies it.
+is why Pipeworks exists, and nothing in this Module applies it.

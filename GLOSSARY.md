@@ -7,7 +7,7 @@ machine's fluid slots and the pipes feeding them share one model.
 
 ## Language
 
-The Library's terms, each with what it is and the words to avoid. `/domain-modeling` adds them as they are resolved.
+The Module's terms, each with what it is and the words to avoid. `/domain-modeling` adds them as they are resolved.
 
 ### Fluid
 
@@ -70,14 +70,15 @@ The pipes a Groundworks Dismantle takes up as one span: the block tag `pipeworks
 _Avoid_: dismantle group
 
 **Works tab**:
-The creative tab the suite's mods share, `libworks:works`, registered by the libworks runtime the Library nests. Every Pipeworks item shows there; Pipeworks registers no tab of its own (FactoryWorks ADR-0128).
+The creative tab the suite's mods share, `libworks:works`, registered by the libworks runtime the Module nests. Every Pipeworks item shows there; Pipeworks registers no tab of its own (FactoryWorks ADR-0128).
 _Avoid_: Pipeworks tab, creative tab (alone)
 
 ### Parties
 
 **Pipeworks**:
-This Library.
+This Module.
+_Avoid_: Library, Binding
 
 **Consumer**:
-A mod that builds against this Library: the FactoryWorks Pack, or another Library.
+A mod that builds against this Module: the FactoryWorks Pack, or another Module.
 _Avoid_: client (collides with the game's client side), dependent, integration

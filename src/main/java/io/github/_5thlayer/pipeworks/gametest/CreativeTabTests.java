@@ -11,8 +11,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 
 /**
- * Every item the Library registers shows in the suite's shared Works tab, in order, and in no other tab, and the
- * Library keeps no tab of its own (FactoryWorks ADR-0128, #17).
+ * Every item the Module registers shows in the suite's shared Works tab, in order, and in no other tab, and the
+ * Module keeps no tab of its own (FactoryWorks ADR-0128, #17).
  */
 final class CreativeTabTests {
 
@@ -35,7 +35,7 @@ final class CreativeTabTests {
                 .filter(id -> id.getNamespace().equals(Pipeworks.MOD_ID))
                 .toList();
         if (!own.isEmpty()) {
-            helper.fail("the Library registers its own creative tab: " + own);
+            helper.fail("the Module registers its own creative tab: " + own);
             return;
         }
         helper.succeed();

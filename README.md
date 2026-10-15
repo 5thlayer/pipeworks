@@ -46,7 +46,7 @@ The pipe, tank and creative pipe models and textures are from [Oritech](https://
 
 ## Developing
 
-A 5thlayer Library: a mod its Consumers, other Libraries or a pack, read from the local maven repository by version. See `GLOSSARY.md` for the domain glossary. `sh ./gradlew build` runs the JUnit tests on a plain JVM, and `sh ./gradlew runGameTestServer` the game tests headless. The segment rules are `segment/SegmentGraph`, with no Minecraft types, so they are tested without a world.
+A 5thlayer Module: a mod its Consumers, other Modules or a pack, read from the local maven repository by version. See `GLOSSARY.md` for the domain glossary. `sh ./gradlew build` runs the JUnit tests on a plain JVM, and `sh ./gradlew runGameTestServer` the game tests headless. The segment rules are `segment/SegmentGraph`, with no Minecraft types, so they are tested without a world.
 
 ## License
 

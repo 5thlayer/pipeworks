@@ -25,7 +25,7 @@ final class CreativeTabTests {
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("the_works_tab_holds_every_item_in_order", 1,
                 helper -> WorksTabCheck.inOrder(helper, Pipeworks.MOD_ID, WORKS_TAB_ORDER));
-        tests.test("no_other_tab_holds_a_library_item", 1,
+        tests.test("no_other_tab_holds_a_module_item", 1,
                 helper -> WorksTabCheck.noOtherTab(helper, Pipeworks.MOD_ID));
         tests.test("the_library_registers_no_creative_tab", 1, CreativeTabTests::noOwnTab);
     }

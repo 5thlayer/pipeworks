@@ -33,8 +33,9 @@ SPDX-FileCopyrightText = "Gradle"
 SPDX-License-Identifier = "Apache-2.0"
 
 # Vendored from Oritech v1.2.12 (https://github.com/Rearth/Oritech), which is CC0 1.0: its fluid
-# pipe and small tank models and textures, renamed and retextured to this Module's ids; the
-# creative pipe's texture is a retint of the pipe's. None of it is from the ArtOfTecharium or
+# pipe and small tank models and textures, renamed and retextured to this Module's ids, the
+# textures' copper retinted to iron grey by 5thlayer; the creative pipe's texture is a retint of
+# the pipe's. None of it is from the ArtOfTecharium or
 # unused-textures sets its README lists as CC BY-NC and CC BY.
 [[annotations]]
 path = [
@@ -47,7 +48,7 @@ path = [
     "src/main/resources/assets/pipeworks/textures/block/creative_pipe.png",
 ]
 precedence = "override"
-SPDX-FileCopyrightText = "Rearth"
+SPDX-FileCopyrightText = ["Rearth", "2026 5thlayer"]
 SPDX-License-Identifier = "CC0-1.0"
 
 # The cover and icon are drawn by publish/make-cover.py from the pipe and tank textures above

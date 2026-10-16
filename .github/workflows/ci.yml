@@ -14,4 +14,4 @@ permissions:
 
 jobs:
   ci:
-    uses: 5thlayer/libworks/.github/workflows/module-ci.yml@plugin-v0.4.1
+    uses: 5thlayer/libworks/.github/workflows/module-ci.yml@plugin-v0.4.2

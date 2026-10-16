@@ -23,6 +23,10 @@ _Avoid_: held (collides with the Pack's Held recipe), level
 A pipe, a storage tank or a port: one position in a segment, with a capacity and the faces it opens.
 _Avoid_: part, pipe (a pipe is one kind of node)
 
+**Tank group**:
+Storage tanks that touch through open faces, drawn as one tank. A group lies inside one segment; a segment can hold several groups, and a tank alone is a group of one.
+_Avoid_: multiblock, tank stack (a group spreads sideways too)
+
 **Port**:
 A Consumer's block entity that joins a segment through the `FluidPort` API, so a machine fills and drains pipes. It adds no capacity unless it says so.
 _Avoid_: connector, fluid face (a face is NeoForge's capability on one side of a block)

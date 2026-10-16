@@ -1,0 +1,40 @@
+{
+  "textures": {
+    "0": "pipeworks:block/storage_tank",
+    "particle": "pipeworks:block/storage_tank"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        12
+      ],
+      "to": [
+        4,
+        2,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#0",
+          "uv": [
+            2,
+            6,
+            1.5,
+            6.5
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            2,
+            2.5,
+            1.5,
+            2
+          ]
+        }
+      }
+    }
+  ]
+}

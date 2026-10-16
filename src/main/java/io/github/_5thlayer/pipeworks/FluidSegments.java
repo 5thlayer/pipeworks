@@ -205,14 +205,26 @@ public final class FluidSegments extends SavedData {
 
     /**
      * A chunk loaded: its pipes check every side again, since their caches were dropped with it or
-     * never built.
+     * never built, and its tanks' segments find their groups again. The nodes beside it in loaded
+     * chunks check their side towards it, which they could not judge while it was unloaded.
      */
     static void onChunkLoad(ChunkEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel level) {
             FluidSegments segments = level.getDataStorage().get(TYPE);
             if (segments != null) {
-                for (long node : segments.nodesIn(event.getChunk().getPos())) {
+                ChunkPos chunk = event.getChunk().getPos();
+                for (long node : segments.nodesIn(chunk)) {
                     segments.markDirty(node, ALL_FACES);
+                    if (segments.graph.contains(node)) {
+                        segments.steps.reshape(segments.graph.segmentOf(node));
+                    }
+                    // A node across the border kept its arm towards this one while it was unloaded.
+                    for (Direction face : Direction.values()) {
+                        BlockPos beside = BlockPos.of(node).relative(face);
+                        if (!ChunkPos.containing(beside).equals(chunk) && segments.specs.containsKey(beside.asLong())) {
+                            segments.markDirty(beside.asLong(), bit(face.getOpposite()));
+                        }
+                    }
                 }
             }
         }
@@ -253,6 +265,21 @@ public final class FluidSegments extends SavedData {
          */
         default BlockState withArms(BlockState state, Predicate<Direction> arm) {
             return state;
+        }
+
+        /** Whether a side of this block can be closed: a pipe's can, a tank's cannot (ADR 0004). */
+        default boolean closesSides() {
+            return false;
+        }
+
+        /** Whether this block, linked to the node in {@code beside}, draws an arm towards it. */
+        default boolean armTowards(BlockState beside) {
+            return true;
+        }
+
+        /** Whether this block draws an arm towards a fluid inventory beside it. */
+        default boolean armsToInventories() {
+            return true;
         }
     }
 
@@ -371,7 +398,7 @@ public final class FluidSegments extends SavedData {
     public SideChange setSide(ServerLevel level, BlockPos pos, Direction side, boolean open) {
         long node = pos.asLong();
         Spec spec = specs.get(node);
-        if (spec == null || !(level.getBlockState(pos).getBlock() instanceof SegmentBlock block && block.hasArms())) {
+        if (spec == null || !(level.getBlockState(pos).getBlock() instanceof SegmentBlock block && block.closesSides())) {
             return SideChange.UNCHANGED;
         }
         BlockPos beside = pos.relative(side);
@@ -697,7 +724,7 @@ public final class FluidSegments extends SavedData {
         if (state.getBlock() instanceof SegmentBlock block && block.hasArms()) {
             BlockState drawn = block.withArms(state, face -> (sides & bit(face)) == 0
                     ? block.armOn(state, face)
-                    : drawsArm(level, pos, face, block.armOn(state, face)));
+                    : drawsArm(level, pos, block, face, block.armOn(state, face)));
             if (drawn != state) {
                 level.setBlock(pos, drawn, Block.UPDATE_ALL);
             }
@@ -708,18 +735,21 @@ public final class FluidSegments extends SavedData {
      * Whether the pipe at {@code pos} draws an arm on {@code face}: it is linked to the node there,
      * or the block there is a fluid inventory. A waiting pipe draws none, nor does a closed side
      * toward an inventory, and a neighbour that is a node is judged only by the link. Where the
-     * neighbour is not loaded its handler is unknown, so the arm stays {@code current}.
+     * neighbour is not loaded its handler is unknown, so the arm stays {@code current}. A block may
+     * draw arms towards only some of the nodes it is linked to, and towards no inventory: a storage
+     * tank draws them only towards the tanks of its group (ADR 0008).
      */
-    private boolean drawsArm(ServerLevel level, BlockPos pos, Direction face, boolean current) {
+    private boolean drawsArm(ServerLevel level, BlockPos pos, SegmentBlock block, Direction face, boolean current) {
         long node = pos.asLong();
         BlockPos beside = pos.relative(face);
+        boolean loaded = level.isLoaded(beside);
         if (graph.linked(node, beside.asLong())) {
             uncache(node, face);
-            return true;
+            return loaded ? block.armTowards(level.getBlockState(beside)) : current;
         }
-        boolean loaded = level.isLoaded(beside);
         Spec spec = specs.get(node);
-        if (spec == null || (spec.mask() & bit(face)) == 0 || waiting.contains(node) || loaded && isNode(level, beside)) {
+        if (!block.armsToInventories() || spec == null || (spec.mask() & bit(face)) == 0 || waiting.contains(node)
+                || loaded && isNode(level, beside)) {
             uncache(node, face);
             return false;
         }

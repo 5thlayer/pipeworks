@@ -2,127 +2,7400 @@
   "multipart": [
     {
       "apply": {
-        "model": "pipeworks:block/storage_tank"
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_0_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_0_12_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_4_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_8_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_0_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_bottom_12_12_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "down": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_0_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_0_12_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_4_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_8_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_0_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_0_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_0_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_0_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_4_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_4_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_4_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_8_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_8_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_8_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_12_0"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_12_1"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "false",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_12_2"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "false",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_cap_top_12_12_3"
+      },
+      "when": {
+        "AND": [
+          {
+            "up": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "false"
+              },
+              {
+                "north": "false",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              },
+              {
+                "north": "true",
+                "east": "true",
+                "south": "true",
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_down"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_down_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_mid"
+      },
+      "when": {
+        "north": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_up_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_up"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_down"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_down_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_mid"
+      },
+      "when": {
+        "north": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_up_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_rim_up"
+      },
+      "when": {
+        "north": "false",
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_down"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_down_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_mid"
+      },
+      "when": {
+        "north": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_up_open"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_west_open_up"
+      },
+      "when": {
+        "north": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_down"
+      },
+      "when": {
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_down_open"
+      },
+      "when": {
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_mid"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_up_open"
+      },
+      "when": {
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_mid_up"
+      },
+      "when": {
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_down"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_down_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_mid"
+      },
+      "when": {
+        "north": "false",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_up_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_open_up"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_down"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_down_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_mid"
+      },
+      "when": {
+        "north": "false",
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_up_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_rim_up"
+      },
+      "when": {
+        "north": "false",
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_down"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_down_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_down_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_mid"
+      },
+      "when": {
+        "north": "false",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_up_open"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_up_rim"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_north_east_up"
+      },
+      "when": {
+        "north": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_down"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_down_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_mid"
+      },
+      "when": {
+        "east": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_up_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_up"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_down"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_down_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_mid"
+      },
+      "when": {
+        "east": "false",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_up_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_rim_up"
+      },
+      "when": {
+        "east": "false",
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_down"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_down_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_mid"
+      },
+      "when": {
+        "east": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_up_open"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_north_open_up"
+      },
+      "when": {
+        "east": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_down"
+      },
+      "when": {
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_down_open"
+      },
+      "when": {
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_mid"
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_up_open"
+      },
+      "when": {
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_mid_up"
+      },
+      "when": {
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_down"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_down_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_mid"
+      },
+      "when": {
+        "east": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_up_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_open_up"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_down"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_down_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_mid"
+      },
+      "when": {
+        "east": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_up_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_rim_up"
+      },
+      "when": {
+        "east": "false",
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_down"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_down_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_down_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_mid"
+      },
+      "when": {
+        "east": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_up_open"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_up_rim"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_east_south_up"
+      },
+      "when": {
+        "east": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_down"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_down_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_mid"
+      },
+      "when": {
+        "south": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_up_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_up"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_down"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_down_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_mid"
+      },
+      "when": {
+        "south": "false",
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_up_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_rim_up"
+      },
+      "when": {
+        "south": "false",
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_down"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_down_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_mid"
+      },
+      "when": {
+        "south": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_up_open"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_west_open_up"
+      },
+      "when": {
+        "south": "false",
+        "west": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_down"
+      },
+      "when": {
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_down_open"
+      },
+      "when": {
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_mid"
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_up_open"
+      },
+      "when": {
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_mid_up"
+      },
+      "when": {
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_down"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_down_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_mid"
+      },
+      "when": {
+        "south": "false",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_up_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_open_up"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_down"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_down_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_mid"
+      },
+      "when": {
+        "south": "false",
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_up_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_rim_up"
+      },
+      "when": {
+        "south": "false",
+        "east": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_down"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_down_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_down_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_mid"
+      },
+      "when": {
+        "south": "false",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_up_open"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_up_rim"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_south_east_up"
+      },
+      "when": {
+        "south": "false",
+        "east": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_down"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_down_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_mid"
+      },
+      "when": {
+        "west": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_up_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_up"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_down"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_down_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_mid"
+      },
+      "when": {
+        "west": "false",
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_up_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_rim_up"
+      },
+      "when": {
+        "west": "false",
+        "north": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_down"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_down_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_mid"
+      },
+      "when": {
+        "west": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_up_open"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_north_open_up"
+      },
+      "when": {
+        "west": "false",
+        "north": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_down"
+      },
+      "when": {
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_down_open"
+      },
+      "when": {
+        "west": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_mid"
+      },
+      "when": {
+        "west": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_up_open"
+      },
+      "when": {
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_mid_up"
+      },
+      "when": {
+        "west": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_down"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_down_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_mid"
+      },
+      "when": {
+        "west": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_up_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_open_up"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_down"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_down_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_mid"
+      },
+      "when": {
+        "west": "false",
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_up_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_rim_up"
+      },
+      "when": {
+        "west": "false",
+        "south": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_down"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_down_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_down_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_mid"
+      },
+      "when": {
+        "west": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_up_open"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_up_rim"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_glass_west_south_up"
+      },
+      "when": {
+        "west": "false",
+        "south": "true",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1_core"
+      },
       "when": {
         "level": "1"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_1"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2_core"
+      },
       "when": {
         "level": "2"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_2"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3_core"
+      },
       "when": {
         "level": "3"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_3"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4_core"
+      },
       "when": {
         "level": "4"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_4"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5_core"
+      },
       "when": {
         "level": "5"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_5"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6_core"
+      },
       "when": {
         "level": "6"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_6"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7_core"
+      },
       "when": {
         "level": "7"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_7"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8_core"
+      },
       "when": {
         "level": "8"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_8"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9_core"
+      },
       "when": {
         "level": "9"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_9"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10_core"
+      },
       "when": {
         "level": "10"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_10"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11_core"
+      },
       "when": {
         "level": "11"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_11"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12_core"
+      },
       "when": {
         "level": "12"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_12"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13_core"
+      },
       "when": {
         "level": "13"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_13"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14_core"
+      },
       "when": {
         "level": "14"
-      },
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_14"
       }
     },
     {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15_core"
+      },
       "when": {
         "level": "15"
-      },
+      }
+    },
+    {
       "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_15"
+        "model": "pipeworks:block/storage_tank_fluid_below_core"
+      },
+      "when": {
+        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_above_core"
+      },
+      "when": {
+        "level": "15",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1_n"
+      },
+      "when": {
+        "level": "1",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2_n"
+      },
+      "when": {
+        "level": "2",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3_n"
+      },
+      "when": {
+        "level": "3",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4_n"
+      },
+      "when": {
+        "level": "4",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5_n"
+      },
+      "when": {
+        "level": "5",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6_n"
+      },
+      "when": {
+        "level": "6",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7_n"
+      },
+      "when": {
+        "level": "7",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8_n"
+      },
+      "when": {
+        "level": "8",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9_n"
+      },
+      "when": {
+        "level": "9",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10_n"
+      },
+      "when": {
+        "level": "10",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11_n"
+      },
+      "when": {
+        "level": "11",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12_n"
+      },
+      "when": {
+        "level": "12",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13_n"
+      },
+      "when": {
+        "level": "13",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14_n"
+      },
+      "when": {
+        "level": "14",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15_n"
+      },
+      "when": {
+        "level": "15",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_below_n"
+      },
+      "when": {
+        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
+        "down": "true",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_above_n"
+      },
+      "when": {
+        "level": "15",
+        "up": "true",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1_s"
+      },
+      "when": {
+        "level": "1",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2_s"
+      },
+      "when": {
+        "level": "2",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3_s"
+      },
+      "when": {
+        "level": "3",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4_s"
+      },
+      "when": {
+        "level": "4",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5_s"
+      },
+      "when": {
+        "level": "5",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6_s"
+      },
+      "when": {
+        "level": "6",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7_s"
+      },
+      "when": {
+        "level": "7",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8_s"
+      },
+      "when": {
+        "level": "8",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9_s"
+      },
+      "when": {
+        "level": "9",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10_s"
+      },
+      "when": {
+        "level": "10",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11_s"
+      },
+      "when": {
+        "level": "11",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12_s"
+      },
+      "when": {
+        "level": "12",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13_s"
+      },
+      "when": {
+        "level": "13",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14_s"
+      },
+      "when": {
+        "level": "14",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15_s"
+      },
+      "when": {
+        "level": "15",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_below_s"
+      },
+      "when": {
+        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
+        "down": "true",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_above_s"
+      },
+      "when": {
+        "level": "15",
+        "up": "true",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1_w"
+      },
+      "when": {
+        "level": "1",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2_w"
+      },
+      "when": {
+        "level": "2",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3_w"
+      },
+      "when": {
+        "level": "3",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4_w"
+      },
+      "when": {
+        "level": "4",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5_w"
+      },
+      "when": {
+        "level": "5",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6_w"
+      },
+      "when": {
+        "level": "6",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7_w"
+      },
+      "when": {
+        "level": "7",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8_w"
+      },
+      "when": {
+        "level": "8",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9_w"
+      },
+      "when": {
+        "level": "9",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10_w"
+      },
+      "when": {
+        "level": "10",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11_w"
+      },
+      "when": {
+        "level": "11",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12_w"
+      },
+      "when": {
+        "level": "12",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13_w"
+      },
+      "when": {
+        "level": "13",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14_w"
+      },
+      "when": {
+        "level": "14",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15_w"
+      },
+      "when": {
+        "level": "15",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_below_w"
+      },
+      "when": {
+        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
+        "down": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_above_w"
+      },
+      "when": {
+        "level": "15",
+        "up": "true",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_1_e"
+      },
+      "when": {
+        "level": "1",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_2_e"
+      },
+      "when": {
+        "level": "2",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_3_e"
+      },
+      "when": {
+        "level": "3",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_4_e"
+      },
+      "when": {
+        "level": "4",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_5_e"
+      },
+      "when": {
+        "level": "5",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_6_e"
+      },
+      "when": {
+        "level": "6",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_7_e"
+      },
+      "when": {
+        "level": "7",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_8_e"
+      },
+      "when": {
+        "level": "8",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_9_e"
+      },
+      "when": {
+        "level": "9",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_10_e"
+      },
+      "when": {
+        "level": "10",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_11_e"
+      },
+      "when": {
+        "level": "11",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_12_e"
+      },
+      "when": {
+        "level": "12",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_13_e"
+      },
+      "when": {
+        "level": "13",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_14_e"
+      },
+      "when": {
+        "level": "14",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_15_e"
+      },
+      "when": {
+        "level": "15",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_below_e"
+      },
+      "when": {
+        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
+        "down": "true",
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "pipeworks:block/storage_tank_fluid_above_e"
+      },
+      "when": {
+        "level": "15",
+        "up": "true",
+        "east": "true"
       }
     }
   ]

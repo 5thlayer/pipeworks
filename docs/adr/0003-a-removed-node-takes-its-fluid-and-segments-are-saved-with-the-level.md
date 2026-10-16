@@ -57,7 +57,7 @@ fluid slot and the removed one's capacity still counts in its segment. Considere
 change onto whichever segments followed a merge or a split. A split spreads the moved fluid over the
 runs and the broken node's share, and it cannot be taken back exactly.
 
-**A tank shows its segment's fill as a blockstate.** The client has no segments, so what a player
+**A tank shows its segment's fill as a blockstate.** *(ADR 0008 replaces how a tank shares out the fill: touching tanks draw as one tank group, filled from the bottom.)* The client has no segments, so what a player
 sees of one is what the server tells it. The storage tank has a `level` property, 0 to 15, which the
 server sets when the fill fraction of the tank's segment crosses a step (`SegmentGraph.step`: 0 for
 none, 15 for full, rounded down in between and never below 1 while it holds any). The way `redraw`

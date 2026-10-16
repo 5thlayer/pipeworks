@@ -35,7 +35,8 @@ SPDX-License-Identifier = "Apache-2.0"
 # Vendored from Oritech v1.2.12 (https://github.com/Rearth/Oritech), which is CC0 1.0: its fluid
 # pipe and small tank models and textures, renamed and retextured to this Module's ids, the
 # textures' copper retinted to iron grey by 5thlayer; the creative pipe's texture is a retint of
-# the pipe's. None of it is from the ArtOfTecharium or
+# the pipe's, and the tank's cap and glass parts are cut from its model by
+# tools/storage_tank_models.py. None of it is from the ArtOfTecharium or
 # unused-textures sets its README lists as CC BY-NC and CC BY.
 [[annotations]]
 path = [
@@ -43,6 +44,8 @@ path = [
     "src/main/resources/assets/pipeworks/models/block/pipe_arm.json",
     "src/main/resources/assets/pipeworks/models/block/pipe_straight.json",
     "src/main/resources/assets/pipeworks/models/block/storage_tank.json",
+    "src/main/resources/assets/pipeworks/models/block/storage_tank_cap_*.json",
+    "src/main/resources/assets/pipeworks/models/block/storage_tank_glass_*.json",
     "src/main/resources/assets/pipeworks/textures/block/pipe.png",
     "src/main/resources/assets/pipeworks/textures/block/storage_tank.png",
     "src/main/resources/assets/pipeworks/textures/block/creative_pipe.png",

@@ -3,6 +3,8 @@
 
 package io.github._5thlayer.pipeworks;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +14,9 @@ import java.util.Set;
 
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
+import io.github._5thlayer.pipeworks.segment.TankGroupFill;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -23,28 +27,33 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * What a storage tank shows of its segment, which the client cannot read since segments are the
- * server's (ADR 0003): the {@link StorageTankBlock#LEVEL} blockstate, its fill in steps, and the
- * fluid it is full of, sent as a {@link TankFluidPayload} only when that fluid changes.
- * {@link FluidSegments} marks a segment when its fill may have changed and calls {@link #update} on
- * the level tick, so a busy segment costs one comparison a tick and touches its nodes only when its
- * step or fluid changes.
+ * server's (ADRs 0003 and 0008): the {@link StorageTankBlock#LEVEL} blockstate, its share of its tank
+ * group's fill in steps, and the fluid it is full of, sent as a {@link TankFluidPayload} only when
+ * that fluid changes. {@link FluidSegments} marks a segment when its fill may have changed and calls
+ * {@link #update} on the level tick, so a busy segment costs a comparison a group a tick and touches
+ * its tanks only when a group's fill or the fluid changes.
  */
 final class TankSteps {
 
-    /** The steps a fill is shown in: {@link StorageTankBlock#LEVEL}'s maximum. */
-    static final int STEPS = 15;
+    /** A tank group: its tanks, and the height of each. */
+    private record Group(long[] tanks, int[] heights) {
+    }
 
-    /** What a segment was last shown as. A segment with no step shows no fluid. */
-    private record Shown(int step, @Nullable String fluid) {
+    /** What a segment was last shown as: each group's {@link TankGroupFill#fineStep}, and its fluid. */
+    private record Shown(List<Integer> fineSteps, @Nullable String fluid) {
 
-        static Shown of(SegmentGraph.Contents contents) {
-            int step = SegmentGraph.step(contents.amount(), contents.capacity(), STEPS);
-            return new Shown(step, step > 0 ? contents.fluid() : null);
+        static Shown of(SegmentGraph.Contents contents, List<Group> groups) {
+            List<Integer> fine = groups.stream()
+                    .map(g -> TankGroupFill.fineStep(contents.amount(), contents.capacity(), g.tanks().length))
+                    .toList();
+            return new Shown(fine, contents.amount() > 0 ? contents.fluid() : null);
         }
     }
 
     private final Set<Integer> touched = new HashSet<>();
     private final Map<Integer, Shown> shown = new HashMap<>();
+    /** The tank groups of each segment, found once until its tanks may have changed. */
+    private final Map<Integer, List<Group>> groups = new HashMap<>();
 
     /** The segment's fill may have changed. */
     void touch(int segment) {
@@ -54,9 +63,20 @@ final class TankSteps {
     /** Segments merged or split, so the ids and what was shown for them no longer mean anything. */
     void forgetAll() {
         shown.clear();
+        groups.clear();
     }
 
-    /** Shows each marked segment's step in its tanks, for the segments whose step or fluid changed since. */
+    /**
+     * A chunk holding some of the segment's nodes loaded, so tanks its groups were found without may
+     * be there now: they are found again, and shown on the next tick.
+     */
+    void reshape(int segment) {
+        groups.remove(segment);
+        shown.remove(segment);
+        touched.add(segment);
+    }
+
+    /** Shows each marked segment's fill in its tanks, for the segments whose groups' fill or fluid changed since. */
     void update(ServerLevel level, SegmentGraph graph) {
         if (touched.isEmpty()) {
             return;
@@ -64,40 +84,89 @@ final class TankSteps {
         for (int id : List.copyOf(touched)) {
             if (!graph.exists(id)) {
                 shown.remove(id);
+                groups.remove(id);
                 continue;
             }
-            Shown now = Shown.of(graph.segment(id));
+            List<Group> found = groups.computeIfAbsent(id, segment -> groupsOf(level, graph, segment));
+            Shown now = Shown.of(graph.segment(id), found);
             Shown before = shown.put(id, now);
             if (now.equals(before)) {
                 continue;
             }
             boolean fluidChanged = before == null || !Objects.equals(before.fluid(), now.fluid());
-            for (long node : graph.nodesOf(id)) {
-                show(level, BlockPos.of(node), now, fluidChanged, null);
+            for (int g = 0; g < found.size(); g++) {
+                Group group = found.get(g);
+                int[] steps = TankGroupFill.steps(group.heights(), now.fineSteps().get(g));
+                for (int t = 0; t < group.tanks().length; t++) {
+                    show(level, BlockPos.of(group.tanks()[t]), steps[t], now.fluid(), fluidChanged);
+                }
             }
         }
         touched.clear();
     }
 
     /**
-     * A player's client was just sent a chunk holding these nodes. Its tanks' blockstates are saved
-     * with the chunk, but a segment can have changed while it was unloaded, and the client has not
-     * been told any fluid.
+     * A player's client was just sent a chunk holding these nodes: it has not been told the fluid of
+     * its tanks. Their steps are saved with the chunk, and set again on the next tick if they fell
+     * behind, since a chunk loading {@linkplain #reshape reshapes} its segments.
      */
     void chunkSent(ServerLevel level, SegmentGraph graph, Set<Long> nodesInChunk, ServerPlayer player) {
         for (long node : nodesInChunk) {
-            if (graph.contains(node)) {
-                show(level, BlockPos.of(node), Shown.of(graph.contents(node)), true, player);
+            if (!graph.contains(node)) {
+                continue;
+            }
+            SegmentGraph.Contents contents = graph.contents(node);
+            if (contents.amount() > 0 && isLoadedTank(level, BlockPos.of(node))) {
+                PacketDistributor.sendToPlayer(player, new TankFluidPayload(BlockPos.of(node), contents.fluid()));
             }
         }
     }
 
     /**
-     * Sets the tank at {@code pos}, if it is one, to {@code now}. Its fluid, when {@code sendFluid},
-     * goes to the clients before the blockstate does, so the colour is there when the chunk next
-     * draws: to {@code only}, or with a null {@code only} to everyone tracking the tank.
+     * The loaded tanks of a segment in their groups: tanks beside each other that the segment links.
+     * A tank in an unloaded chunk is left out until it loads.
      */
-    private static void show(ServerLevel level, BlockPos pos, Shown now, boolean sendFluid, @Nullable ServerPlayer only) {
+    private static List<Group> groupsOf(ServerLevel level, SegmentGraph graph, int segment) {
+        Set<Long> tanks = new HashSet<>();
+        for (long node : graph.nodesOf(segment)) {
+            if (isLoadedTank(level, BlockPos.of(node))) {
+                tanks.add(node);
+            }
+        }
+        List<Group> found = new ArrayList<>();
+        Set<Long> seen = new HashSet<>();
+        for (long start : tanks) {
+            if (!seen.add(start)) {
+                continue;
+            }
+            List<Long> members = new ArrayList<>();
+            ArrayDeque<Long> queue = new ArrayDeque<>(List.of(start));
+            while (!queue.isEmpty()) {
+                long tank = queue.poll();
+                members.add(tank);
+                for (Direction face : Direction.values()) {
+                    long other = BlockPos.of(tank).relative(face).asLong();
+                    if (tanks.contains(other) && graph.linked(tank, other) && seen.add(other)) {
+                        queue.add(other);
+                    }
+                }
+            }
+            found.add(new Group(members.stream().mapToLong(Long::longValue).toArray(),
+                    members.stream().mapToInt(m -> BlockPos.of(m).getY()).toArray()));
+        }
+        return found;
+    }
+
+    private static boolean isLoadedTank(ServerLevel level, BlockPos pos) {
+        return level.isLoaded(pos) && level.getBlockState(pos).getBlock() instanceof StorageTankBlock;
+    }
+
+    /**
+     * Sets the tank at {@code pos}, if it is one, to {@code step} of {@code fluid}. Its fluid, when
+     * {@code sendFluid}, goes to the clients tracking it before the blockstate does, so the colour is
+     * there when the chunk next draws.
+     */
+    private static void show(ServerLevel level, BlockPos pos, int step, @Nullable String fluid, boolean sendFluid) {
         if (!level.isLoaded(pos)) {
             return;
         }
@@ -106,17 +175,11 @@ final class TankSteps {
             return;
         }
         if (sendFluid) {
-            TankFluidPayload payload = new TankFluidPayload(pos, now.fluid() == null ? "" : now.fluid());
-            if (only != null) {
-                if (now.fluid() != null) {
-                    PacketDistributor.sendToPlayer(only, payload);
-                }
-            } else {
-                PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), payload);
-            }
+            PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos),
+                    new TankFluidPayload(pos, fluid == null ? "" : fluid));
         }
-        if (state.getValue(StorageTankBlock.LEVEL) != now.step()) {
-            level.setBlock(pos, state.setValue(StorageTankBlock.LEVEL, now.step()), Block.UPDATE_CLIENTS);
+        if (state.getValue(StorageTankBlock.LEVEL) != step) {
+            level.setBlock(pos, state.setValue(StorageTankBlock.LEVEL, step), Block.UPDATE_CLIENTS);
         }
     }
 }

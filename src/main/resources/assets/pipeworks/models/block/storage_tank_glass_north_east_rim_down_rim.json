@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "0": "pipeworks:block/storage_tank",
+    "particle": "pipeworks:block/storage_tank"
+  },
+  "elements": [
+    {
+      "from": [
+        14,
+        2,
+        1
+      ],
+      "to": [
+        15,
+        3,
+        1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.5,
+            10.75,
+            3.75,
+            11
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

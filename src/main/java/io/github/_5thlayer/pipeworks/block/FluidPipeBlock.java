@@ -113,6 +113,11 @@ public class FluidPipeBlock extends Block implements FluidSegments.SegmentBlock 
     }
 
     @Override
+    public boolean closesSides() {
+        return true;
+    }
+
+    @Override
     public boolean armOn(BlockState state, Direction side) {
         return state.getValue(ARMS.get(side));
     }

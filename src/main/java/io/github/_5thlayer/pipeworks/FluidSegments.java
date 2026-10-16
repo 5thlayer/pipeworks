@@ -205,16 +205,25 @@ public final class FluidSegments extends SavedData {
 
     /**
      * A chunk loaded: its pipes check every side again, since their caches were dropped with it or
-     * never built, and its tanks' segments find their groups again.
+     * never built, and its tanks' segments find their groups again. The nodes beside it in loaded
+     * chunks check their side towards it, which they could not judge while it was unloaded.
      */
     static void onChunkLoad(ChunkEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel level) {
             FluidSegments segments = level.getDataStorage().get(TYPE);
             if (segments != null) {
-                for (long node : segments.nodesIn(event.getChunk().getPos())) {
+                ChunkPos chunk = event.getChunk().getPos();
+                for (long node : segments.nodesIn(chunk)) {
                     segments.markDirty(node, ALL_FACES);
                     if (segments.graph.contains(node)) {
                         segments.steps.reshape(segments.graph.segmentOf(node));
+                    }
+                    // A node across the border kept its arm towards this one while it was unloaded.
+                    for (Direction face : Direction.values()) {
+                        BlockPos beside = BlockPos.of(node).relative(face);
+                        if (!ChunkPos.containing(beside).equals(chunk) && segments.specs.containsKey(beside.asLong())) {
+                            segments.markDirty(beside.asLong(), bit(face.getOpposite()));
+                        }
                     }
                 }
             }

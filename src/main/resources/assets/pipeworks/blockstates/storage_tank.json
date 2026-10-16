@@ -47,7 +47,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_west"
       },
       "when": {
-        "north": "false",
         "west": "true"
       }
     },
@@ -56,7 +55,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_west_down"
       },
       "when": {
-        "north": "false",
         "west": "true",
         "down": "true"
       }
@@ -66,7 +64,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_west_up"
       },
       "when": {
-        "north": "false",
         "west": "true",
         "up": "true"
       }
@@ -76,7 +73,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_east"
       },
       "when": {
-        "north": "false",
         "east": "true"
       }
     },
@@ -85,7 +81,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_east_down"
       },
       "when": {
-        "north": "false",
         "east": "true",
         "down": "true"
       }
@@ -95,7 +90,6 @@
         "model": "pipeworks:block/storage_tank_glass_north_east_up"
       },
       "when": {
-        "north": "false",
         "east": "true",
         "up": "true"
       }
@@ -131,7 +125,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_north"
       },
       "when": {
-        "east": "false",
         "north": "true"
       }
     },
@@ -140,7 +133,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_north_down"
       },
       "when": {
-        "east": "false",
         "north": "true",
         "down": "true"
       }
@@ -150,7 +142,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_north_up"
       },
       "when": {
-        "east": "false",
         "north": "true",
         "up": "true"
       }
@@ -160,7 +151,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_south"
       },
       "when": {
-        "east": "false",
         "south": "true"
       }
     },
@@ -169,7 +159,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_south_down"
       },
       "when": {
-        "east": "false",
         "south": "true",
         "down": "true"
       }
@@ -179,7 +168,6 @@
         "model": "pipeworks:block/storage_tank_glass_east_south_up"
       },
       "when": {
-        "east": "false",
         "south": "true",
         "up": "true"
       }
@@ -215,7 +203,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_west"
       },
       "when": {
-        "south": "false",
         "west": "true"
       }
     },
@@ -224,7 +211,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_west_down"
       },
       "when": {
-        "south": "false",
         "west": "true",
         "down": "true"
       }
@@ -234,7 +220,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_west_up"
       },
       "when": {
-        "south": "false",
         "west": "true",
         "up": "true"
       }
@@ -244,7 +229,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_east"
       },
       "when": {
-        "south": "false",
         "east": "true"
       }
     },
@@ -253,7 +237,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_east_down"
       },
       "when": {
-        "south": "false",
         "east": "true",
         "down": "true"
       }
@@ -263,7 +246,6 @@
         "model": "pipeworks:block/storage_tank_glass_south_east_up"
       },
       "when": {
-        "south": "false",
         "east": "true",
         "up": "true"
       }
@@ -299,7 +281,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_north"
       },
       "when": {
-        "west": "false",
         "north": "true"
       }
     },
@@ -308,7 +289,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_north_down"
       },
       "when": {
-        "west": "false",
         "north": "true",
         "down": "true"
       }
@@ -318,7 +298,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_north_up"
       },
       "when": {
-        "west": "false",
         "north": "true",
         "up": "true"
       }
@@ -328,7 +307,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_south"
       },
       "when": {
-        "west": "false",
         "south": "true"
       }
     },
@@ -337,7 +315,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_south_down"
       },
       "when": {
-        "west": "false",
         "south": "true",
         "down": "true"
       }
@@ -347,7 +324,6 @@
         "model": "pipeworks:block/storage_tank_glass_west_south_up"
       },
       "when": {
-        "west": "false",
         "south": "true",
         "up": "true"
       }
@@ -957,350 +933,6 @@
     },
     {
       "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_1_nw"
-      },
-      "when": {
-        "level": "1",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_2_nw"
-      },
-      "when": {
-        "level": "2",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_3_nw"
-      },
-      "when": {
-        "level": "3",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_4_nw"
-      },
-      "when": {
-        "level": "4",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_5_nw"
-      },
-      "when": {
-        "level": "5",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_6_nw"
-      },
-      "when": {
-        "level": "6",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_7_nw"
-      },
-      "when": {
-        "level": "7",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_8_nw"
-      },
-      "when": {
-        "level": "8",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_9_nw"
-      },
-      "when": {
-        "level": "9",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_10_nw"
-      },
-      "when": {
-        "level": "10",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_11_nw"
-      },
-      "when": {
-        "level": "11",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_12_nw"
-      },
-      "when": {
-        "level": "12",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_13_nw"
-      },
-      "when": {
-        "level": "13",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_14_nw"
-      },
-      "when": {
-        "level": "14",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_15_nw"
-      },
-      "when": {
-        "level": "15",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_below_nw"
-      },
-      "when": {
-        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
-        "down": "true",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_above_nw"
-      },
-      "when": {
-        "level": "15",
-        "up": "true",
-        "west": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_1_sw"
-      },
-      "when": {
-        "level": "1",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_2_sw"
-      },
-      "when": {
-        "level": "2",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_3_sw"
-      },
-      "when": {
-        "level": "3",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_4_sw"
-      },
-      "when": {
-        "level": "4",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_5_sw"
-      },
-      "when": {
-        "level": "5",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_6_sw"
-      },
-      "when": {
-        "level": "6",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_7_sw"
-      },
-      "when": {
-        "level": "7",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_8_sw"
-      },
-      "when": {
-        "level": "8",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_9_sw"
-      },
-      "when": {
-        "level": "9",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_10_sw"
-      },
-      "when": {
-        "level": "10",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_11_sw"
-      },
-      "when": {
-        "level": "11",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_12_sw"
-      },
-      "when": {
-        "level": "12",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_13_sw"
-      },
-      "when": {
-        "level": "13",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_14_sw"
-      },
-      "when": {
-        "level": "14",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_15_sw"
-      },
-      "when": {
-        "level": "15",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_below_sw"
-      },
-      "when": {
-        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
-        "down": "true",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_above_sw"
-      },
-      "when": {
-        "level": "15",
-        "up": "true",
-        "west": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
         "model": "pipeworks:block/storage_tank_fluid_1_e"
       },
       "when": {
@@ -1452,350 +1084,6 @@
         "level": "15",
         "up": "true",
         "east": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_1_ne"
-      },
-      "when": {
-        "level": "1",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_2_ne"
-      },
-      "when": {
-        "level": "2",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_3_ne"
-      },
-      "when": {
-        "level": "3",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_4_ne"
-      },
-      "when": {
-        "level": "4",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_5_ne"
-      },
-      "when": {
-        "level": "5",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_6_ne"
-      },
-      "when": {
-        "level": "6",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_7_ne"
-      },
-      "when": {
-        "level": "7",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_8_ne"
-      },
-      "when": {
-        "level": "8",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_9_ne"
-      },
-      "when": {
-        "level": "9",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_10_ne"
-      },
-      "when": {
-        "level": "10",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_11_ne"
-      },
-      "when": {
-        "level": "11",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_12_ne"
-      },
-      "when": {
-        "level": "12",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_13_ne"
-      },
-      "when": {
-        "level": "13",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_14_ne"
-      },
-      "when": {
-        "level": "14",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_15_ne"
-      },
-      "when": {
-        "level": "15",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_below_ne"
-      },
-      "when": {
-        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
-        "down": "true",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_above_ne"
-      },
-      "when": {
-        "level": "15",
-        "up": "true",
-        "east": "true",
-        "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_1_es"
-      },
-      "when": {
-        "level": "1",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_2_es"
-      },
-      "when": {
-        "level": "2",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_3_es"
-      },
-      "when": {
-        "level": "3",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_4_es"
-      },
-      "when": {
-        "level": "4",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_5_es"
-      },
-      "when": {
-        "level": "5",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_6_es"
-      },
-      "when": {
-        "level": "6",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_7_es"
-      },
-      "when": {
-        "level": "7",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_8_es"
-      },
-      "when": {
-        "level": "8",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_9_es"
-      },
-      "when": {
-        "level": "9",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_10_es"
-      },
-      "when": {
-        "level": "10",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_11_es"
-      },
-      "when": {
-        "level": "11",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_12_es"
-      },
-      "when": {
-        "level": "12",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_13_es"
-      },
-      "when": {
-        "level": "13",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_14_es"
-      },
-      "when": {
-        "level": "14",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_15_es"
-      },
-      "when": {
-        "level": "15",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_below_es"
-      },
-      "when": {
-        "level": "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
-        "down": "true",
-        "east": "true",
-        "south": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "pipeworks:block/storage_tank_fluid_above_es"
-      },
-      "when": {
-        "level": "15",
-        "up": "true",
-        "east": "true",
-        "south": "true"
       }
     }
   ]

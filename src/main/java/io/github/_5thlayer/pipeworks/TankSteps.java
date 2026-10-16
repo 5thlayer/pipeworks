@@ -116,8 +116,7 @@ final class TankSteps {
                 continue;
             }
             SegmentGraph.Contents contents = graph.contents(node);
-            if (contents.amount() > 0 && level.isLoaded(BlockPos.of(node))
-                    && level.getBlockState(BlockPos.of(node)).getBlock() instanceof StorageTankBlock) {
+            if (contents.amount() > 0 && isLoadedTank(level, BlockPos.of(node))) {
                 PacketDistributor.sendToPlayer(player, new TankFluidPayload(BlockPos.of(node), contents.fluid()));
             }
         }
@@ -130,8 +129,7 @@ final class TankSteps {
     private static List<Group> groupsOf(ServerLevel level, SegmentGraph graph, int segment) {
         Set<Long> tanks = new HashSet<>();
         for (long node : graph.nodesOf(segment)) {
-            BlockPos pos = BlockPos.of(node);
-            if (level.isLoaded(pos) && level.getBlockState(pos).getBlock() instanceof StorageTankBlock) {
+            if (isLoadedTank(level, BlockPos.of(node))) {
                 tanks.add(node);
             }
         }
@@ -157,6 +155,10 @@ final class TankSteps {
                     members.stream().mapToInt(m -> BlockPos.of(m).getY()).toArray()));
         }
         return found;
+    }
+
+    private static boolean isLoadedTank(ServerLevel level, BlockPos pos) {
+        return level.isLoaded(pos) && level.getBlockState(pos).getBlock() instanceof StorageTankBlock;
     }
 
     /**

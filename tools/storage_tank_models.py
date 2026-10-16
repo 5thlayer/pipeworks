@@ -31,7 +31,9 @@ def num(x):
 
 # The glass: one pane a face, at the glass box's face, from 1 to 15 across and 2 to 14 up. A pane
 # reaches out by a strip to a side or a band to a cap the tank joins, textured with the pane's own
-# edge so no other part of the texture shows.
+# edge so no other part of the texture shows. A strip is drawn wherever its side joins, even on a
+# face that joins too: where a tank joins two sides at a corner, the strips of those faces close
+# the inside corner, which inside a full layer only the fluid sees.
 PLANE = {"north": ("z", 1), "south": ("z", 15), "west": ("x", 1), "east": ("x", 15)}
 ACROSS = {"north": ("x", "west", "east"), "south": ("x", "west", "east"),
           "west": ("z", "north", "south"), "east": ("z", "north", "south")}
@@ -94,7 +96,7 @@ for face in SIDES:
                             + ([{"low": low_side, "high": high_side}[across]] if across else [])
                             + ([up] if up else []))
             write(name, {"textures": TEXTURES, "elements": [pane(face, (arange, asample), (yrange, ysample))]})
-            when = {face: "false"}
+            when = {} if across else {face: "false"}
             if across:
                 when[{"low": low_side, "high": high_side}[across]] = "true"
             if up:
@@ -102,7 +104,8 @@ for face in SIDES:
             part(name, when)
 
 # The fluid: a white box tinted the fluid's colour, inset 1.5 from the sides it does not join and
-# out to the block's edge on those it does, from the bottom glass up to the tank's step. A tank
+# out to the block's edge on those it does, though never into a corner, where the glass may close
+# an inside corner, from the bottom glass up to the tank's step. A tank
 # that joins the one below has a full one there, so its fluid also fills the cap's height beneath,
 # and a full tank joined above fills the cap's height above.
 HORIZONTAL = {None: (FLUID_INSET, 16 - FLUID_INSET), "low": (0, FLUID_INSET), "high": (16 - FLUID_INSET, 16)}
@@ -123,6 +126,8 @@ def fluid(xs, ys, zs):
 def columns():
     for x in (None, "low", "high"):
         for z in (None, "low", "high"):
+            if x and z:
+                continue
             joins = {}
             if x:
                 joins[{"low": "west", "high": "east"}[x]] = "true"

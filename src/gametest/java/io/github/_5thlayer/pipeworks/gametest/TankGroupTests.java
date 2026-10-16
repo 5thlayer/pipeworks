@@ -60,22 +60,18 @@ final class TankGroupTests {
         fill(helper, pos, FluidResource.of(Fluids.WATER), amount);
     }
 
-    private static boolean level(GameTestHelper helper, BlockPos pos, int expected, String which) {
+    private static void level(GameTestHelper helper, BlockPos pos, int expected, String which) {
         int shown = helper.getBlockState(pos).getValue(StorageTankBlock.LEVEL);
         if (shown != expected) {
             helper.fail(which + " shows level " + shown + ", not " + expected, pos);
-            return false;
         }
-        return true;
     }
 
-    private static boolean joins(GameTestHelper helper, BlockPos pos, Direction face, boolean expected, String which) {
+    private static void joins(GameTestHelper helper, BlockPos pos, Direction face, boolean expected, String which) {
         boolean shown = helper.getBlockState(pos).getValue(StorageTankBlock.JOINS.get(face));
         if (shown != expected) {
             helper.fail(which + (expected ? " does not join " : " joins ") + face, pos);
-            return false;
         }
-        return true;
     }
 
     /** Three tanks on a pipe, 37,550 of 75,100 mB: the bottom full, the middle at 7, the top empty. */
@@ -86,14 +82,14 @@ final class TankGroupTests {
         }
         helper.startSequence().thenIdle(SETTLES).thenExecute(() -> water(helper, at(0, 1), 37_550)).thenIdle(SETTLES)
                 .thenExecute(() -> {
-                    boolean shown = level(helper, at(1, 1), 15, "the bottom tank")
-                            && level(helper, at(1, 2), 7, "the middle tank")
-                            && level(helper, at(1, 3), 0, "the top tank")
-                            && joins(helper, at(1, 1), Direction.UP, true, "the bottom tank")
-                            && joins(helper, at(1, 2), Direction.DOWN, true, "the middle tank")
-                            && joins(helper, at(1, 2), Direction.UP, true, "the middle tank")
-                            && joins(helper, at(1, 3), Direction.UP, false, "the top tank")
-                            && joins(helper, at(1, 1), Direction.WEST, false, "the bottom tank, towards the pipe");
+                    level(helper, at(1, 1), 15, "the bottom tank");
+                    level(helper, at(1, 2), 7, "the middle tank");
+                    level(helper, at(1, 3), 0, "the top tank");
+                    joins(helper, at(1, 1), Direction.UP, true, "the bottom tank");
+                    joins(helper, at(1, 2), Direction.DOWN, true, "the middle tank");
+                    joins(helper, at(1, 2), Direction.UP, true, "the middle tank");
+                    joins(helper, at(1, 3), Direction.UP, false, "the top tank");
+                    joins(helper, at(1, 1), Direction.WEST, false, "the bottom tank, towards the pipe");
                 }).thenSucceed();
     }
 
@@ -110,14 +106,11 @@ final class TankGroupTests {
                 .thenExecute(() -> {
                     for (int x = 1; x <= 2; x++) {
                         for (int z = Z; z <= Z + 1; z++) {
-                            if (!level(helper, new BlockPos(x, 1, z), 15, "a floor tank")) {
-                                return;
-                            }
+                            level(helper, new BlockPos(x, 1, z), 15, "a floor tank");
                         }
                     }
-                    if (level(helper, at(1, 2), 0, "the tank on the floor")) {
-                        water(helper, at(0, 1), 2_000);
-                    }
+                    level(helper, at(1, 2), 0, "the tank on the floor");
+                    water(helper, at(0, 1), 2_000);
                 }).thenIdle(SETTLES).thenExecute(() -> level(helper, at(1, 2), 1, "the tank on the floor, with 2,000 mB more"))
                 .thenSucceed();
     }
@@ -131,13 +124,14 @@ final class TankGroupTests {
         tank(helper, 3, 2);
         helper.startSequence().thenIdle(SETTLES).thenExecute(() -> water(helper, at(2, 1), 50_050)).thenIdle(SETTLES)
                 .thenExecute(() -> {
-                    boolean shown = level(helper, at(1, 1), 15, "the west column's bottom")
-                            && level(helper, at(1, 2), 0, "the west column's top")
-                            && level(helper, at(3, 1), 15, "the east column's bottom")
-                            && level(helper, at(3, 2), 0, "the east column's top");
+                    level(helper, at(1, 1), 15, "the west column's bottom");
+                    level(helper, at(1, 2), 0, "the west column's top");
+                    level(helper, at(3, 1), 15, "the east column's bottom");
+                    level(helper, at(3, 2), 0, "the east column's top");
                 }).thenSucceed();
     }
 
+    /** A millibucket in a column of three: step 1 in the bottom tank, none above it. */
     private static void aDrop(GameTestHelper helper) {
         pipe(helper, 0, 1);
         for (int y = 1; y <= 3; y++) {
@@ -145,9 +139,9 @@ final class TankGroupTests {
         }
         helper.startSequence().thenIdle(SETTLES).thenExecute(() -> water(helper, at(0, 1), 1)).thenIdle(SETTLES)
                 .thenExecute(() -> {
-                    boolean shown = level(helper, at(1, 1), 1, "the bottom tank")
-                            && level(helper, at(1, 2), 0, "the middle tank")
-                            && level(helper, at(1, 3), 0, "the top tank");
+                    level(helper, at(1, 1), 1, "the bottom tank");
+                    level(helper, at(1, 2), 0, "the middle tank");
+                    level(helper, at(1, 3), 0, "the top tank");
                 }).thenSucceed();
     }
 
@@ -160,23 +154,22 @@ final class TankGroupTests {
         fill(helper, at(3, 1), FluidResource.of(Fluids.LAVA), 50);
         tank(helper, 2, 1);
         helper.startSequence().thenIdle(SETTLES).thenExecute(() -> {
-            boolean shown = joins(helper, at(1, 1), Direction.EAST, false, "the water tank")
-                    && joins(helper, at(2, 1), Direction.WEST, false, "the waiting tank")
-                    && level(helper, at(2, 1), 0, "the waiting tank");
+            joins(helper, at(1, 1), Direction.EAST, false, "the water tank");
+            joins(helper, at(2, 1), Direction.WEST, false, "the waiting tank");
+            level(helper, at(2, 1), 0, "the waiting tank");
         }).thenSucceed();
     }
 
+    /** A tank set on another joins it, both ways, and the bottom one parts once the top is broken. */
     private static void placedAndBroken(GameTestHelper helper) {
         tank(helper, 1, 1);
         helper.startSequence().thenIdle(SETTLES).thenExecute(() -> {
-            if (joins(helper, at(1, 1), Direction.UP, false, "a tank alone")) {
-                tank(helper, 1, 2);
-            }
+            joins(helper, at(1, 1), Direction.UP, false, "a tank alone");
+            tank(helper, 1, 2);
         }).thenIdle(SETTLES).thenExecute(() -> {
-            if (joins(helper, at(1, 1), Direction.UP, true, "the bottom tank, a tank set on it")
-                    && joins(helper, at(1, 2), Direction.DOWN, true, "the tank set on it")) {
-                helper.setBlock(at(1, 2), Blocks.AIR.defaultBlockState());
-            }
+            joins(helper, at(1, 1), Direction.UP, true, "the bottom tank, a tank set on it");
+            joins(helper, at(1, 2), Direction.DOWN, true, "the tank set on it");
+            helper.setBlock(at(1, 2), Blocks.AIR.defaultBlockState());
         }).thenIdle(SETTLES).thenExecute(() -> joins(helper, at(1, 1), Direction.UP, false, "the bottom tank, the top broken"))
                 .thenSucceed();
     }

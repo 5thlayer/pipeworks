@@ -39,7 +39,8 @@ FILL_TEXEL = (19, 19)
 def texel_uv(texel):
     x, y = texel
     scale = 16 / TEXTURE_SIZE
-    return [num((x + 0.25) * scale), num((y + 0.25) * scale), num((x + 0.75) * scale), num((y + 0.75) * scale)]
+    return [num((x + 0.25) * scale), num((y + 0.25) * scale),
+            num((x + 0.75) * scale), num((y + 0.75) * scale)]
 
 
 # The glass: one pane a face, at the glass box's face, from 1 to 15 across and 2 to 14 up, drawn
@@ -50,8 +51,8 @@ def texel_uv(texel):
 # nothing, strips included: an inside corner, where a tank joins two sides, stays open a pixel
 # wide, which the fluid keeps out of, rather than a full layer showing glass at its middle.
 PLANE = {"north": ("z", 1), "south": ("z", 15), "west": ("x", 1), "east": ("x", 15)}
-ACROSS = {"north": ("x", "west", "east"), "south": ("x", "west", "east"),
-          "west": ("z", "north", "south"), "east": ("z", "north", "south")}
+ACROSS = {"north": ("west", "east"), "south": ("west", "east"), "west": ("north", "south"),
+          "east": ("north", "south")}
 
 
 def glass_uv(face, a1, a2, y1, y2):
@@ -124,10 +125,14 @@ def part(model, when):
 # joins both sides at a corner, the 8 pixels there draw a quarter of the centre at twice its size,
 # the quarter facing that corner, so four tanks meeting there draw one centre twice as wide across
 # their seams, in proportion to the group as a lone tank's is to it. Everywhere else is a plain
-# fill of the ring's grey. A
-# cell's outer face is drawn only on a side the tank does not join.
-EDGE = 4
+# fill of the ring's grey. A cell's outer face is drawn only on a side the tank does not join.
 CELLS = [(0, 4), (4, 8), (8, 12), (12, 16)]
+# Where a lone tank draws an edge the texture's ring is the same on all four sides: east and west
+# both draw the east edge and north and south the north edge, mirrored on the west and the south.
+EAST_EDGE, NORTH_EDGE = (12, 16), (0, 4)
+# A joined edge cell carries the rim and ring on along the seam from the 4 pixels of the edge's
+# middle beside it.
+JOINED_LOW, JOINED_HIGH = (4, 8), (8, 12)
 
 
 def lerp(uv_lo, uv_hi, a):
@@ -137,27 +142,31 @@ def lerp(uv_lo, uv_hi, a):
 def flat_uv(uv, face, xs, zs):
     u0, v0, u1, v1 = uv
     if face == "up":
-        return [lerp(u0, u1, xs[0]), lerp(v0, v1, zs[0]), lerp(u0, u1, xs[1]), lerp(v0, v1, zs[1])]
-    return [lerp(u0, u1, xs[0]), lerp(v0, v1, 16 - zs[1]), lerp(u0, u1, xs[1]), lerp(v0, v1, 16 - zs[0])]
+        return [lerp(u0, u1, xs[0]), lerp(v0, v1, zs[0]),
+                lerp(u0, u1, xs[1]), lerp(v0, v1, zs[1])]
+    return [lerp(u0, u1, xs[0]), lerp(v0, v1, 16 - zs[1]),
+            lerp(u0, u1, xs[1]), lerp(v0, v1, 16 - zs[0])]
 
 
 def side_uv(uv, side, xs, zs):
     u0, v0, u1, v1 = uv
-    a, b = {"north": (16 - xs[1], 16 - xs[0]), "south": xs, "east": (16 - zs[1], 16 - zs[0]), "west": zs}[side]
+    a, b = {"north": (16 - xs[1], 16 - xs[0]), "south": xs,
+            "east": (16 - zs[1], 16 - zs[0]), "west": zs}[side]
     return [lerp(u0, u1, a), v0, lerp(u0, u1, b), v1]
 
 
-def axis(cell, low, high, joins, canonical, mirrored):
+def axis(cell, low, high, joins, edge_sample, mirrored):
     """One axis of a cell: (the side whose half it lies in, the unjoined rim it is on or None,
-    where it samples as a rim or middle, where it samples in a quarter of the centre)."""
+    where it samples as a rim or middle, where it samples in a quarter of the centre). An unjoined
+    rim samples edge_sample, reversed on the side named mirrored."""
     lo, hi = cell
     half = low if hi <= 8 else high
     edge = low if lo == 0 else high if hi == 16 else None
-    rim = edge if edge and not joins[edge] else None
+    rim = edge if edge and joins[edge] == "false" else None
     if rim:
-        sample = (canonical[1], canonical[0]) if rim == mirrored else canonical
+        sample = (edge_sample[1], edge_sample[0]) if rim == mirrored else edge_sample
     elif edge:
-        sample = (EDGE, 2 * EDGE) if edge == low else (16 - 2 * EDGE, 16 - EDGE)
+        sample = JOINED_LOW if edge == low else JOINED_HIGH
     else:
         sample = cell
     # The quarter's other half lies across the seam on this side, so the 8 pixels here are the
@@ -168,25 +177,27 @@ def axis(cell, low, high, joins, canonical, mirrored):
 
 def cap_cell(cap, xs, zs, joins):
     """The faces of one cell of a cap, for one set of joins, or None for the plain fill."""
-    xhalf, xrim, xsample, xquarter = axis(xs, "west", "east", joins, (12, 16), "west")
-    zhalf, zrim, zsample, zquarter = axis(zs, "north", "south", joins, (0, 4), "south")
-    if joins[xhalf] and joins[zhalf]:
+    xhalf, xrim, xsample, xquarter = axis(xs, "west", "east", joins, EAST_EDGE, "west")
+    zhalf, zrim, zsample, zquarter = axis(zs, "north", "south", joins, NORTH_EDGE, "south")
+    if joins[xhalf] == joins[zhalf] == "true":
         sx, sz, rims = xquarter, zquarter, []
     elif xrim or zrim:
         sx, sz, rims = xsample, zsample, [r for r in (xrim, zrim) if r]
-    elif not any(joins.values()):
+    elif "true" not in joins.values():
         sx, sz, rims = xsample, zsample, []
     else:
         return None
-    faces = {f: {"uv": flat_uv(cap["faces"][f]["uv"], f, sx, sz), "texture": "#0"} for f in ("up", "down")}
+    faces = {f: {"uv": flat_uv(cap["faces"][f]["uv"], f, sx, sz), "texture": "#0"}
+             for f in ("up", "down")}
     for side in rims:
         faces[side] = {"uv": side_uv(cap["faces"][side]["uv"], side, sx, sz), "texture": "#0"}
     return faces
 
 
 def every_join():
+    """Every set of horizontal joins, as the blockstate's values."""
     for bits in range(16):
-        yield {side: bool(bits >> i & 1) for i, side in enumerate(SIDES)}
+        yield {side: "true" if bits >> i & 1 else "false" for i, side in enumerate(SIDES)}
 
 
 for cap, which, vertical in ((cap_bottom, "bottom", "down"), (cap_top, "top", "up")):
@@ -197,20 +208,21 @@ for cap, which, vertical in ((cap_bottom, "bottom", "down"), (cap_top, "top", "u
             for joins in every_join():
                 faces = cap_cell(cap, xs, zs, joins)
                 if faces is None:
-                    faces = {f: {"uv": texel_uv(FILL_TEXEL), "texture": "#0"} for f in ("up", "down")}
+                    faces = {f: {"uv": texel_uv(FILL_TEXEL), "texture": "#0"}
+                             for f in ("up", "down")}
                 looks.setdefault(json.dumps(faces, sort_keys=True), []).append(joins)
             for n, (key, cases) in enumerate(looks.items()):
                 name = f"storage_tank_cap_{which}_{xs[0]}_{zs[0]}_{n}"
-                element = {"from": [xs[0], y1, zs[0]], "to": [xs[1], y2, zs[1]], "faces": json.loads(key)}
+                element = {"from": [xs[0], y1, zs[0]], "to": [xs[1], y2, zs[1]],
+                           "faces": json.loads(key)}
                 write(name, {"textures": TEXTURES, "elements": [element]})
                 if len(cases) == 16:
                     part(name, {vertical: "false"})
                 else:
-                    part(name, {"AND": [{vertical: "false"}, {"OR": [
-                        {side: str(j).lower() for side, j in case.items()} for case in cases]}]})
+                    part(name, {"AND": [{vertical: "false"}, {"OR": cases}]})
 
 for face in SIDES:
-    _, low_side, high_side = ACROSS[face]
+    low_side, high_side = ACROSS[face]
     for across, arange, asample, awhen in across_cells(low_side, high_side):
         for up, yrange, ysample, ywhen in UP_CELLS:
             name = f"storage_tank_glass_{face}_{across}_{up}"
@@ -230,13 +242,15 @@ for face in SIDES:
 # stand outside the tank. It runs from the bottom glass up to the tank's step. A tank
 # that joins the one below has a full one there, so its fluid also fills the cap's height beneath,
 # and a full tank joined above fills the cap's height above.
-HORIZONTAL = {None: (FLUID_INSET, 16 - FLUID_INSET), "low": (0, FLUID_INSET), "high": (16 - FLUID_INSET, 16)}
+HORIZONTAL = {None: (FLUID_INSET, 16 - FLUID_INSET), "low": (0, FLUID_INSET),
+              "high": (16 - FLUID_INSET, 16)}
 
 
 def fluid(xs, ys, zs):
     face = {"uv": [0, 0, 16, 16], "texture": "#fluid", "tintindex": 0}
     return {
-        "textures": {"fluid": "minecraft:block/white_concrete", "particle": "minecraft:block/white_concrete"},
+        "textures": {"fluid": "minecraft:block/white_concrete",
+                     "particle": "minecraft:block/white_concrete"},
         "elements": [{
             "from": [num(xs[0]), num(ys[0]), num(zs[0])],
             "to": [num(xs[1]), num(ys[1]), num(zs[1])],
@@ -272,4 +286,5 @@ for suffix, xs, zs, joins in columns():
     write(name, fluid(xs, (GLASS_TOP, 16), zs))
     part(name, {"level": str(STEPS), "up": "true", **joins})
 
-(ASSETS / "blockstates/storage_tank.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+(ASSETS / "blockstates/storage_tank.json").write_text(
+    json.dumps({"multipart": parts}, indent=2) + "\n")

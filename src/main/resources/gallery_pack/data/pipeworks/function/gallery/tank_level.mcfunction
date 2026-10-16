@@ -1,4 +1,5 @@
-# A Pump on a water source filling a column of three storage tanks, whose glass rises step by step.
+# A Pump on a water source filling a column of three storage tanks, which touch and so hold one segment
+# between them: their glass rises together, step by step.
 # Jade, which the gallery may not need, adds the segment's amount and capacity.
 function pipeworks:gallery/clear
 execute positioned ~12 ~ ~-6 run function pipeworks:gallery/pool {fluid:"water"}

@@ -1,5 +1,6 @@
-# A Pump on a water source filling a long run with a storage tank at each end, and a pickaxe in a chest.
-# A pipe broken splits the run: the far tank keeps its share and stops rising while the near one fills.
+# A Pump on a water source filling a long run, a storage tank near it and one at the far end, and a
+# pickaxe in a chest.
+# A pipe broken between the tanks splits the run: the far tank keeps its share and stops rising while the near one fills.
 function pipeworks:gallery/clear
 execute positioned ~5 ~ ~-6 run function pipeworks:gallery/pool {fluid:"water"}
 setblock ~6 ~ ~-6 pipeworks:pump[facing=east]

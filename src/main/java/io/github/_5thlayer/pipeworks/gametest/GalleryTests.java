@@ -40,7 +40,7 @@ final class GalleryTests {
 
     private static final String PACK = GalleryPack.id(Pipeworks.MOD_ID);
 
-    /** How many scenes a row holds, and how far north each row is of the last. */
+    /** How many scenes a row holds, and how far north each row is of the last, as {@code gallery/build} lays them. */
     private static final int ROW = 3;
     private static final int ROW_DEPTH = 16;
 
@@ -48,6 +48,8 @@ final class GalleryTests {
     private static final BlockPos ORIGIN = new BlockPos(0, 1, 8);
     /** Where a scene's sign stands, from where the scene is run. */
     private static final BlockPos SIGN = new BlockPos(14, 0, 0);
+    /** Where the Outlet scene's outlet stands, from where the scene is run. */
+    private static final BlockPos OUTLET = new BlockPos(15, 0, -6);
     /** Where the Outlet scene's outlet sets its water down, from where the scene is run. */
     private static final BlockPos OUTLET_FRONT = new BlockPos(16, 0, -6);
 
@@ -60,13 +62,13 @@ final class GalleryTests {
         var pump = PipeworksRegistries.PUMP.get();
         return List.of(
                 new Scene("pipes", new BlockPos(18, 0, -6), tank),
-                new Scene("buckets", new BlockPos(18, 1, -6), tank),
+                new Scene("buckets", new BlockPos(18, 0, -6), tank),
                 new Scene("one_fluid", new BlockPos(20, 0, -6), pump),
                 new Scene("breaking", new BlockPos(20, 0, -6), tank),
                 new Scene("tank_level", new BlockPos(14, 2, -6), tank),
                 new Scene("creative_pipe", new BlockPos(8, 0, -6), PipeworksRegistries.CREATIVE_PIPE.get()),
                 new Scene("pump", new BlockPos(21, 0, -6), pump),
-                new Scene("outlet", new BlockPos(15, 0, -6), PipeworksRegistries.OUTLET.get()),
+                new Scene("outlet", OUTLET, PipeworksRegistries.OUTLET.get()),
                 new Scene("dismantle", new BlockPos(6, 0, -6), PipeworksRegistries.PIPE.get()));
     }
 
@@ -89,7 +91,8 @@ final class GalleryTests {
                 GalleryCheck.assertKeyBlocks(helper, rowOrigin(helper, row),
                         scenes.subList(row * ROW, Math.min(scenes.size(), (row + 1) * ROW)));
             }
-        }, null);
+        }, () -> {
+        });
     }
 
     /** The Outlet scene: its Pump fills the run, and the Outlet sets a water source down in its basin. */
@@ -104,7 +107,7 @@ final class GalleryTests {
 
     /** A scene's sign, clicked, builds the scene again where it stands, leaving nothing loose: here the Outlet, taken away. */
     private static void signReplays(GameTestHelper helper) {
-        var outlet = helper.absolutePos(ORIGIN).offset(15, 0, -6);
+        var outlet = helper.absolutePos(ORIGIN).offset(OUTLET);
         var sign = helper.absolutePos(ORIGIN).offset(SIGN);
         withPack(helper, 1, source -> {
             GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "outlet"));
@@ -118,12 +121,13 @@ final class GalleryTests {
             var loose = helper.getLevel().getEntitiesOfClass(ItemEntity.class, AABB.of(plot));
             helper.assertTrue(loose.isEmpty(), "building the scene again left items loose: " + loose.stream().map(ItemEntity::getItem).toList());
             helper.assertTrue(helper.getLevel().getBlockState(sign).is(Blocks.OAK_SIGN), "building the scene again left no sign");
-        }, null);
+        }, () -> {
+        });
     }
 
     /**
      * Turns the pack on over the loaded plots of a gallery of {@code scenes}, runs {@code body} as an
-     * operator player standing where it is run, waits for {@code until} if any, then clears the plots
+     * operator player standing where it is run, waits until {@code until} passes, then clears the plots
      * and turns the pack off, passing or failing.
      */
     private static void withPack(GameTestHelper helper, int scenes, Consumer<CommandSourceStack> body, Runnable until) {
@@ -140,11 +144,7 @@ final class GalleryTests {
                 .thenWaitUntil(() -> helper.assertTrue(area.intersectingChunks().allMatch(chunk -> helper.getLevel().hasChunk(chunk.x(), chunk.z())),
                         "the gallery's plots are not loaded yet"))
                 .thenExecute(() -> body.accept(source))
-                .thenWaitUntil(() -> {
-                    if (until != null) {
-                        until.run();
-                    }
-                })
+                .thenWaitUntil(until)
                 .thenExecute(() -> off.set(clearAway(helper, area)))
                 .thenWaitUntil(() -> helper.assertTrue(off.get() != null && off.get().isDone(), PACK + " is not off yet"))
                 .thenSucceed();

@@ -49,9 +49,12 @@ public final class PipeworksRegistries {
     /** Has a crafting recipe from pipes and vanilla items; a pack may replace it. */
     public static final DeferredBlock<PumpBlock> PUMP = BLOCKS.registerBlock("pump", PumpBlock::new,
             props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
-    /** Has a crafting recipe from pipes and vanilla items; a pack may replace it. */
+    /**
+     * Has a crafting recipe from pipes and vanilla items; a pack may replace it. It narrows in steps to a
+     * nozzle, so it occludes nothing, though its hitbox is the whole block.
+     */
     public static final DeferredBlock<OutletBlock> OUTLET = BLOCKS.registerBlock("outlet", OutletBlock::new,
-            props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+            props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
 
     public static final DeferredItem<?> PIPE_ITEM = ITEMS.registerSimpleBlockItem("pipe", PIPE);
     public static final DeferredItem<?> STORAGE_TANK_ITEM = ITEMS.registerSimpleBlockItem("storage_tank", STORAGE_TANK);

@@ -1,9 +1,112 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/block",
   "textures": {
-    "front": "minecraft:block/dropper_front",
-    "side": "minecraft:block/furnace_side",
-    "top": "minecraft:block/furnace_top",
-    "particle": "minecraft:block/furnace_side"
-  }
+    "side": "pipeworks:block/machine_side",
+    "casing": "pipeworks:block/outlet_casing",
+    "step": "pipeworks:block/outlet_step",
+    "nozzle": "pipeworks:block/outlet_nozzle",
+    "mouth": "pipeworks:block/outlet_mouth",
+    "particle": "pipeworks:block/machine_side"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [
+        0,
+        0,
+        6
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#casing"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#side",
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "name": "step",
+      "from": [
+        2,
+        2,
+        3
+      ],
+      "to": [
+        14,
+        14,
+        6
+      ],
+      "faces": {
+        "north": {
+          "texture": "#step"
+        },
+        "east": {
+          "texture": "#step"
+        },
+        "west": {
+          "texture": "#step"
+        },
+        "up": {
+          "texture": "#step"
+        },
+        "down": {
+          "texture": "#step"
+        }
+      }
+    },
+    {
+      "name": "nozzle",
+      "from": [
+        4,
+        4,
+        0
+      ],
+      "to": [
+        12,
+        12,
+        3
+      ],
+      "faces": {
+        "east": {
+          "texture": "#nozzle"
+        },
+        "west": {
+          "texture": "#nozzle"
+        },
+        "up": {
+          "texture": "#nozzle"
+        },
+        "down": {
+          "texture": "#nozzle"
+        },
+        "north": {
+          "texture": "#mouth",
+          "cullface": "north"
+        }
+      }
+    }
+  ]
 }

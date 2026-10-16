@@ -61,29 +61,39 @@ path = ["publish/*.png"]
 SPDX-FileCopyrightText = ["Mojang AB", "Rearth", "2026 5thlayer"]
 SPDX-License-Identifier = "LicenseRef-Mojang AND CC0-1.0 AND MIT"
 
-# The machine textures prototype (#31): tiles copied unchanged from malcolmriley/unused-textures
-# at 8b85ad73 (https://github.com/malcolmriley/unused-textures), CC BY 4.0, and from Oritech
-# v1.2.12, CC0 1.0. Tooling only; nothing here ships.
+# The Pump's and the Outlet's textures (#31), written by tools/machine_textures.py from the tiles in
+# tools/textures, which are copied unchanged: Malcolm Riley's unused-textures at 8b85ad73
+# (https://github.com/malcolmriley/unused-textures), CC BY 4.0, retinted by 5thlayer, and Oritech
+# v1.2.12's fluid duct, CC0 1.0, whose ring is laid over the faces that join pipes.
 [[annotations]]
-path = ["tools/prototype/machine_textures/ut/blocks/*.png"]
+path = ["tools/textures/unused-textures/*.png"]
 precedence = "override"
 SPDX-FileCopyrightText = "Malcolm Riley"
 SPDX-License-Identifier = "CC-BY-4.0"
 
 [[annotations]]
-path = ["tools/prototype/machine_textures/oritech_candidates/*.png"]
+path = ["tools/textures/oritech/*.png"]
 precedence = "override"
 SPDX-FileCopyrightText = "Rearth"
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
-path = ["tools/prototype/machine_textures/README.md", "tools/prototype/machine_textures/.gitignore"]
-SPDX-FileCopyrightText = "2026 5thlayer"
-SPDX-License-Identifier = "MIT"
+path = [
+    "src/main/resources/assets/pipeworks/textures/block/pump_front.png",
+    "src/main/resources/assets/pipeworks/textures/block/pump_top.png",
+    "src/main/resources/assets/pipeworks/textures/block/outlet_casing.png",
+    "src/main/resources/assets/pipeworks/textures/block/outlet_step.png",
+    "src/main/resources/assets/pipeworks/textures/block/outlet_nozzle.png",
+]
+precedence = "override"
+SPDX-FileCopyrightText = ["Malcolm Riley", "2026 5thlayer"]
+SPDX-License-Identifier = "CC-BY-4.0"
 
-# What the prototype writes, ignored by git, drawn from the tiles above.
 [[annotations]]
-path = ["tools/prototype/machine_textures/proto/*.png"]
+path = [
+    "src/main/resources/assets/pipeworks/textures/block/machine_side.png",
+    "src/main/resources/assets/pipeworks/textures/block/outlet_mouth.png",
+]
 precedence = "override"
 SPDX-FileCopyrightText = ["Malcolm Riley", "Rearth", "2026 5thlayer"]
 SPDX-License-Identifier = "CC-BY-4.0 AND CC0-1.0"

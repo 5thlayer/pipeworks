@@ -6,10 +6,15 @@ file listed here is NOT covered by the licence this repository states for its ow
 licence governs it. Which licence covers which file is REUSE.toml's to say; this list is the
 credits for what was copied in.
 
-tools/prototype/machine_textures/ut/blocks/*.png
+tools/textures/unused-textures/*.png
     By Malcolm Riley, from https://github.com/malcolmriley/unused-textures at commit 8b85ad73,
     unchanged. CC BY 4.0 (LICENSES/CC-BY-4.0.txt).
 
-tools/prototype/machine_textures/oritech_candidates/fluid_pipe_duct_block.png
+tools/textures/oritech/fluid_pipe_duct_block.png
     By Rearth, from https://github.com/Rearth/Oritech at v1.2.12, unchanged. CC0 1.0
     (LICENSES/CC0-1.0.txt).
+
+src/main/resources/assets/pipeworks/textures/block/{pump_*,outlet_*,machine_side}.png
+    Written by tools/machine_textures.py from the two above: Malcolm Riley's tiles retinted to
+    slate and iron grey by 5thlayer, and Oritech's duct ring, its copper turned to iron grey, laid
+    over the faces that join pipes. CC BY 4.0, and CC0 1.0 for the ring.

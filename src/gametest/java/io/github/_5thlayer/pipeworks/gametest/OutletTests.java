@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -46,6 +47,7 @@ final class OutletTests {
         tests.test("an_outlet_waits_until_its_segment_holds_a_bucket", 20, OutletTests::waitsForBucket);
         tests.test("an_outlet_ignores_a_fluid_with_no_block", 20, OutletTests::ignoresBlockless);
         tests.test("an_outlet_never_draws_fluid_from_the_world", 20, OutletTests::neverDraws);
+        tests.test("an_outlet_is_a_full_block_that_hides_no_face_beside_it", 20, OutletTests::fullButHidesNoFace);
     }
 
     private static void outletAndTank(GameTestHelper helper) {
@@ -77,6 +79,24 @@ final class OutletTests {
         if ((contents == null ? 0 : contents.amount()) != amount) {
             helper.fail("the tank holds " + contents + ", not " + what, TANK);
         }
+    }
+
+    /**
+     * It narrows in steps to a nozzle, so the face of the block in front of it must still draw,
+     * whichever way it faces; its hitbox stays the whole block.
+     */
+    private static void fullButHidesNoFace(GameTestHelper helper) {
+        for (Direction facing : Direction.values()) {
+            BlockState state = PipeworksRegistries.OUTLET.get().defaultBlockState().setValue(OutletBlock.FACING, facing);
+            helper.setBlock(OUTLET, state);
+            if (state.canOcclude()) {
+                helper.fail("an outlet facing " + facing + " hides the faces of the blocks beside it", OUTLET);
+            }
+            if (!state.isCollisionShapeFullBlock(helper.getLevel(), helper.absolutePos(OUTLET))) {
+                helper.fail("an outlet facing " + facing + " has a hitbox smaller than the block", OUTLET);
+            }
+        }
+        helper.succeed();
     }
 
     private static void placesWater(GameTestHelper helper) {

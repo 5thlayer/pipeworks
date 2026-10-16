@@ -4,6 +4,7 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- The Pump and the Outlet have textures of their own in the pipe and tank's slate and iron grey, where they had the furnace's, the dispenser's and the dropper's. The Outlet narrows in steps to a nozzle instead of filling the block, though its hitbox is still the whole block; it no longer hides the faces of the blocks beside it, and lets light through as a hopper does; the model `pipeworks:block/outlet_vertical` is gone, the blockstate turns `pipeworks:block/outlet` to each facing (#31).
 - The pipe and the storage tank are iron grey where they were Oritech's orange copper, to sit with the Pump and the Outlet; the creative pipe stays purple (#30).
 - The jar nests libworks-runtime 0.1.11, and `neoforge.mods.toml` requires `libworks` from 0.1.11 to the next minor. Pipeworks' gallery game tests use libworks' `GalleryCheck` row layout and pack frame instead of copies of their own (5thlayer/libworks#31).
 - Pipeworks' game-test code and structures no longer ship in its jar (libworks ADR 0011): a Consumer's game tests and dev client no longer register Pipeworks' test type `pipeworks:code`, nor carry its `gametest/platform` structure. Pipeworks builds on libworks-plugin 0.4.0.

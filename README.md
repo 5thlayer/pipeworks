@@ -46,7 +46,9 @@ Pipeworks carries a gallery of its features: one working scene each, with a sign
 
 ## Art
 
-The pipe, tank and creative pipe models and textures are from [Oritech](https://github.com/Rearth/Oritech) v1.2.12 by Rearth, CC0 1.0. They are renamed and retextured to Pipeworks' ids, with the textures' copper retinted to iron grey; none is from the ArtOfTecharium or unused-textures sets Oritech credits under other licences. `REUSE.toml` records each file.
+The pipe, tank and creative pipe models and textures are from [Oritech](https://github.com/Rearth/Oritech) v1.2.12 by Rearth, CC0 1.0 by its `LICENSE.md`. They are renamed and retextured to Pipeworks' ids, with the textures' copper retinted to iron grey; none is from the ArtOfTecharium or unused-textures sets its README credits under other licences.
+
+The Pump's and the Outlet's textures are tiles from Malcolm Riley's [unused-textures](https://github.com/malcolmriley/unused-textures), CC BY 4.0, retinted to the pipe's slate and iron grey, with the ring of Oritech's fluid duct, CC0 1.0, laid over the faces that join pipes. `tools/machine_textures.py` writes them. `REUSE.toml` records each file.
 
 ## Developing
 

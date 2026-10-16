@@ -63,6 +63,9 @@ public final class PipeworksGameTests {
         // Registered rather than borrowed, since the event hands out no lookup for vanilla's.
         var environment = event.registerEnvironment(id("default"), new TestEnvironmentDefinition.AllOf(List.of()));
         var tests = new Registrar(event, environment);
+        // Turning the Gallery pack on reloads the server's data under every test in its batch (libworks ADR 0010).
+        var gallery = event.registerEnvironment(id("gallery"), new TestEnvironmentDefinition.AllOf(List.of()));
+        GalleryTests.register(new Registrar(event, gallery));
         LoadTests.register(tests);
         PlaysAloneTests.register(tests);
         SegmentTests.register(tests);

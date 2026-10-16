@@ -73,6 +73,12 @@ _Avoid_: dismantle group
 The creative tab the suite's mods share, `libworks:works`, registered by the libworks runtime the Module nests. Every Pipeworks item shows there; Pipeworks registers no tab of its own (FactoryWorks ADR-0128).
 _Avoid_: Pipeworks tab, creative tab (alone)
 
+**Gallery pack**:
+The datapack in this Module's jar, "Pipeworks Gallery", off until a player turns it on, whose
+functions build a working scene of each README feature, each with a sign naming it. Functions only
+(libworks ADR 0010).
+_Avoid_: demo pack, showcase pack, gallery datapack
+
 ### Parties
 
 **Pipeworks**:

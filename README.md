@@ -26,6 +26,10 @@ To play Pipeworks beside every other FactoryWorks mod, install the [FactoryWorks
 
 Not yet: the in-line pump and pipe-to-ground.
 
+## Gallery
+
+Pipeworks carries a gallery of its features: one working scene each, with a sign naming it, built in rows of three north and east of where you stand. It is a datapack in the jar, **Pipeworks Gallery**, off until you turn it on in a world's Data Packs screen or with `/datapack enable "mod/pipeworks:gallery_pack"`. Then `/function pipeworks:gallery/build` builds every scene, and `/function pipeworks:gallery/<scene>` one of them, such as `outlet`; clicking a scene's sign builds it again. A function needs cheats in single player (on at world creation, or Open to LAN with cheats) or operator rights on a server. Pipeworks registers no fluid, so the scenes use water and lava. The gallery clears the ground it builds on and changes nothing else; it adds no recipes, loot or worldgen.
+
 ## For pack authors
 
 - **Closing a pipe's sides.** A pipe's side can be closed, to keep two runs apart or cut a pipe off from a block holding fluid. A right-click on a pipe with an item in the item tag `pipeworks:closes_sides` toggles the side clicked. The tag ships a stick; a pack replaces the tag to name other items, or adds to it and keeps the stick. Opening a side that would mix two fluids is refused.

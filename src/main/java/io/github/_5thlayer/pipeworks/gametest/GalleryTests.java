@@ -194,7 +194,7 @@ final class GalleryTests {
         return helper.absolutePos(ORIGIN).north(ROW_DEPTH * row);
     }
 
-    /** Where plot {@code plot} of the gallery, its first 0, is run from, absolute: as {@code build} lays them. */
+    /** Where plot {@code plot} of the gallery, numbered from 0 as {@code build} lays them, is run from, absolute. */
     private static BlockPos plotOrigin(GameTestHelper helper, int plot) {
         return rowOrigin(helper, plot / ROW).east(GalleryCheck.PLOT_WIDTH * (plot % ROW));
     }

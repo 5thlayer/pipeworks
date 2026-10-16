@@ -26,7 +26,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /**
  * A machine for the tests to fill, since Pipeworks ships none: a port that opens every face, as a
  * Consumer's block does through the {@link FluidPort} API. Registered only in the Module's own
- * game test run.
+ * runs, from the {@code gametest} source set.
  */
 final class TestPort {
 

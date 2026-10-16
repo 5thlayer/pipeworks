@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- Pipeworks' game-test code and structures no longer ship in its jar (libworks ADR 0011): a Consumer's game tests and dev client no longer register Pipeworks' test type `pipeworks:code`, nor carry its `gametest/platform` structure. Pipeworks builds on libworks-plugin 0.4.0.
+
 ## 0.3.2
 
 - The Gallery pack, **Pipeworks Gallery**: a datapack in the jar, off by default, whose `/function pipeworks:gallery/build` builds a working scene of each README feature, in rows of three north-east of the player, each with a sign naming it that rebuilds the scene when clicked; `pipeworks:gallery/<scene>` builds one. It needs libworks-runtime 0.1.9, which the jar nests (libworks ADR 0010, #26).

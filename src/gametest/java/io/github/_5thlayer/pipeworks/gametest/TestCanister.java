@@ -22,7 +22,8 @@ import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
 /**
  * Another mod's portable tank, for the tests to fill and empty, since vanilla has only the bucket:
  * an item of 4,000 mB holding any part of it, exposed through {@code Capabilities.Fluid.ITEM} as a
- * Consumer's would be. Registered only in the Module's own game test run.
+ * Consumer's would be. Registered only in the Module's own runs, from
+ * the {@code gametest} source set.
  */
 final class TestCanister {
 

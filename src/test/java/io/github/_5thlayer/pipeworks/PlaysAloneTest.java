@@ -21,7 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 class PlaysAloneTest {
 
     private static final Path CODE = Path.of("src/main/java");
-    private static final Path TAG_CHECK = CODE.resolve("io/github/_5thlayer/pipeworks/gametest/PlaysAloneTests.java");
+    private static final Path TAG_CHECK = Path.of("src/gametest/java/io/github/_5thlayer/pipeworks/gametest/PlaysAloneTests.java");
 
     /** A tag the code starts reading fails here until {@code PlaysAloneTests} checks it in game. */
     @Test

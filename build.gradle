@@ -1,7 +1,7 @@
 // ModDevGradle on Java 25, the game test server that names each test, the jar's licensing, ~/.m2-only
 // publishing and the release and upload tasks come from the libworks convention plugin (libworks ADR 0003).
 plugins {
-    id 'io.github.5thlayer.libworks.module' version '0.3.0'
+    id 'io.github.5thlayer.libworks.module' version '0.4.0'
 }
 
 // What the Module requires of the other Modules, each as a range whose lower bound is a released version:
@@ -21,16 +21,6 @@ libworks {
 }
 
 repositories {
-    // Groundworks and libworks-runtime: their releases are published to the local maven repository
-    // only, and nothing else resolves from there.
-    exclusiveContent {
-        forRepository { mavenLocal() }
-        filter {
-            includeModule 'io.github.5thlayer', 'groundworks'
-            includeModule 'io.github.5thlayer', 'libworks-runtime'
-            includeModule 'io.github.5thlayer', 'libworks-gametest'
-        }
-    }
     exclusiveContent { // EMI's unofficial 26.1.2 port, which the FactoryWorks Pack runs
         forRepository { maven { url = 'https://cursemaven.com' } }
         filter { includeGroup 'curse.maven' }
@@ -47,10 +37,6 @@ neoForge {
         // production never shows.
         configureEach {
             systemProperty 'neoforge.warnings.onlyin.hide', 'true'
-        }
-        gameTestServer {
-            // Marks this run as the Module's own, which is when it registers its test port block.
-            systemProperty 'pipeworks.gametest', 'true'
         }
     }
 }

@@ -17,25 +17,24 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.gametest.GameTestHooks;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * The Module's game tests, run by the {@code gameTestServer} Gradle run: the Minecraft-integration
  * seam, with a real player on a real server. Each test stands on the {@code gametest/platform}
  * structure, a stone floor that the libworks plugin's {@code buildGametestStructures} writes, and sets up
- * what it needs itself, so the setup is in the diff.
+ * what it needs itself, so the setup is in the diff. It lives in the {@code gametest} source set, which
+ * only the Module's own runs load, and hooks itself in, so the {@code @Mod} class names no game-test
+ * code and nothing gates it (libworks ADR 0011).
  */
+@EventBusSubscriber(modid = Pipeworks.MOD_ID)
 public final class PipeworksGameTests {
 
     private static final Identifier PLATFORM = id("gametest/platform");
-
-    /**
-     * Set by the Module's own {@code gameTestServer} run. A Consumer's game test server also has
-     * game tests enabled, and there the Module's test port block has no business existing.
-     */
-    private static final String OWN_RUN = "pipeworks.gametest";
 
     private static final DeferredRegister<MapCodec<? extends GameTestInstance>> TEST_TYPES =
             DeferredRegister.create(Registries.TEST_INSTANCE_TYPE, Pipeworks.MOD_ID);
@@ -47,15 +46,18 @@ public final class PipeworksGameTests {
     private PipeworksGameTests() {
     }
 
+    @SubscribeEvent
+    static void construct(FMLConstructModEvent event) {
+        register(event.getContainer().getEventBus());
+    }
+
     public static void register(IEventBus modBus) {
         TEST_TYPES.register(modBus);
-        if (!GameTestHooks.isGametestEnabled() || !Boolean.getBoolean(OWN_RUN)) {
-            return;
-        }
         TestPort.register(modBus);
         TestInventory.register(modBus);
         TestFluid.register(modBus);
         TestCanister.register(modBus);
+        // Posted only when game tests are enabled, which a production game never is.
         modBus.addListener(PipeworksGameTests::registerTests);
     }
 

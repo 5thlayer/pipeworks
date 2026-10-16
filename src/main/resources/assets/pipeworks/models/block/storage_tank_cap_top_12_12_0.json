@@ -1,0 +1,58 @@
+{
+  "textures": {
+    "0": "pipeworks:block/storage_tank",
+    "particle": "pipeworks:block/storage_tank"
+  },
+  "elements": [
+    {
+      "from": [
+        12,
+        14,
+        12
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#0",
+          "uv": [
+            5,
+            8,
+            4,
+            7
+          ]
+        },
+        "east": {
+          "texture": "#0",
+          "uv": [
+            15.5,
+            0,
+            14.5,
+            0.5
+          ]
+        },
+        "south": {
+          "texture": "#0",
+          "uv": [
+            14.5,
+            0.5,
+            15.5,
+            1
+          ]
+        },
+        "up": {
+          "texture": "#0",
+          "uv": [
+            5,
+            3,
+            4,
+            4
+          ]
+        }
+      }
+    }
+  ]
+}

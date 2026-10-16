@@ -1,6 +1,7 @@
 {
   "textures": {
-    "fluid": "minecraft:block/white_concrete"
+    "fluid": "minecraft:block/white_concrete",
+    "particle": "minecraft:block/white_concrete"
   },
   "elements": [
     {

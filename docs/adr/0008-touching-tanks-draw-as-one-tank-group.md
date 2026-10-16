@@ -14,9 +14,10 @@ differ; the fluid's colour, sent as before, is unchanged.
 
 - **A tank group draws as one tank.** Storage tanks that touch through open faces, on any of the six
   sides, form a tank group (see the glossary). The frame and glass between two tanks of a group are
-  not drawn. Tanks look joined only when they share fluid: a waiting tank, linked to nothing, stays
-  apart. A stick closes only a pipe's side (ADR 0004), so two touching tanks that both joined are
-  always one group.
+  not drawn: the glass runs on with no frame between them, and the caps draw one rim round the
+  whole group, with the centre a lone tank shows drawn twice as wide where four tanks meet. Tanks
+  look joined only when they share fluid: a waiting tank, linked to nothing, stays apart. A stick
+  closes only a pipe's side (ADR 0004), so two touching tanks that both joined are always one group.
 - **The server says which faces join**, as six connection properties on the tank's blockstate, set
   the way `redraw` sets a pipe's arms. The client draws what it is told, as ADR 0003 has it.
   Considered: a model that reads its neighbours while it renders, as connected textures do; it needs
@@ -37,6 +38,10 @@ differ; the fluid's colour, sent as before, is unchanged.
 
 - What a stack shows is where the fluid would sit, not the segment's level: Jade, which reads the
   segment, gives one amount next to a stack drawn part full. That is accepted.
-- The tank's blockstate grows from 16 states to 16 × 64, with matching multipart models.
-- Tanks saved before this have no connection properties set; they are set again when their segments
-  are rebuilt on load, as pipe arms are.
+- The tank's blockstate grows from 16 states to 16 × 64, with multipart models cut from the lone
+  tank's by `tools/storage_tank_models.py`.
+- A tank cannot see its diagonal neighbours, so where a group turns a corner its models guess: an
+  L-shaped group's inside corner keeps a 1-pixel open seam in its glass and its cap a quarter of the
+  centre, a step where a tank stands on one of two keeps a 1-pixel slit between the glass and the
+  lower cap, and the fluid keeps out of every corner a tank joins on both sides, so a part-filled
+  2 × 2 shows a small pit at the middle of its surface.

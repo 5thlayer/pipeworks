@@ -29,11 +29,26 @@ def num(x):
     return int(x) if float(x).is_integer() else round(x, 4)
 
 
-# The glass: one pane a face, at the glass box's face, from 1 to 15 across and 2 to 14 up. A pane
-# reaches out by a strip to a side or a band to a cap the tank joins, textured with the pane's own
-# edge so no other part of the texture shows. A strip is drawn wherever its side joins, even on a
-# face that joins too: where a tank joins two sides at a corner, the strips of those faces close
-# the inside corner, which inside a full layer only the fluid sees.
+TEXTURE_SIZE = 64
+# A clear texel inside the glass, and one of the cap ring's grey: a cell drawn in one colour is
+# stretched from inside one texel, so no other texel bleeds into it.
+CLEAR_TEXEL = (20, 37)
+FILL_TEXEL = (19, 19)
+
+
+def texel_uv(texel):
+    x, y = texel
+    scale = 16 / TEXTURE_SIZE
+    return [num((x + 0.25) * scale), num((y + 0.25) * scale), num((x + 0.75) * scale), num((y + 0.75) * scale)]
+
+
+# The glass: one pane a face, at the glass box's face, from 1 to 15 across and 2 to 14 up, drawn
+# as a grid of cells so each edge can follow what the tank joins. The texture draws the pane's
+# frame as its outermost pixel all round: on a side the tank joins, that edge samples the clear
+# middle of the pane instead and the pane reaches on by a strip or a band to the block's edge, so
+# the glass of a group runs on with no frame between its tanks. A face the tank joins draws
+# nothing, strips included: an inside corner, where a tank joins two sides, stays open a pixel
+# wide, which the fluid keeps out of, rather than a full layer showing glass at its middle.
 PLANE = {"north": ("z", 1), "south": ("z", 15), "west": ("x", 1), "east": ("x", 15)}
 ACROSS = {"north": ("x", "west", "east"), "south": ("x", "west", "east"),
           "west": ("z", "north", "south"), "east": ("z", "north", "south")}
@@ -70,8 +85,28 @@ def pane(face, across, up):
     }
 
 
-ACROSS_PARTS = {None: ((1, 15), (1, 15)), "low": ((0, 1), (1, 2)), "high": ((15, 16), (14, 15))}
-UP_PARTS = {None: ((2, 14), (2, 14)), "down": ((0, 2), (2, 4)), "up": ((14, 16), (12, 14))}
+# The cells across and up a pane: (name, range, the range it samples, when).
+def across_cells(low, high):
+    return [
+        (f"{low}", (0, 1), (7, 8), {low: "true"}),
+        (f"{low}_rim", (1, 2), (1, 2), {low: "false"}),
+        (f"{low}_open", (1, 2), (7, 8), {low: "true"}),
+        ("mid", (2, 14), (2, 14), {}),
+        (f"{high}_open", (14, 15), (8, 9), {high: "true"}),
+        (f"{high}_rim", (14, 15), (14, 15), {high: "false"}),
+        (f"{high}", (15, 16), (8, 9), {high: "true"}),
+    ]
+
+
+UP_CELLS = [
+    ("down", (0, 2), (7, 9), {"down": "true"}),
+    ("down_rim", (2, 3), (2, 3), {"down": "false"}),
+    ("down_open", (2, 3), (7, 8), {"down": "true"}),
+    ("mid", (3, 13), (3, 13), {}),
+    ("up_open", (13, 14), (8, 9), {"up": "true"}),
+    ("up_rim", (13, 14), (13, 14), {"up": "false"}),
+    ("up", (14, 16), (7, 9), {"up": "true"}),
+]
 
 parts = []
 
@@ -83,29 +118,116 @@ def part(model, when):
     parts.append(entry)
 
 
-write("storage_tank_cap_bottom", {"textures": TEXTURES, "elements": [cap_bottom]})
-write("storage_tank_cap_top", {"textures": TEXTURES, "elements": [cap_top]})
-part("storage_tank_cap_bottom", {"down": "false"})
-part("storage_tank_cap_top", {"up": "false"})
+# The caps: each cut into a grid of four by four cells of 4 pixels. The outer cells hold the cap's
+# rim and the dark ring inside it, drawn only on a side the tank does not join, so a tank group's
+# caps draw one rim and ring round the whole group. A tank alone keeps its centre. Where a tank
+# joins both sides at a corner, the 8 pixels there draw a quarter of the centre at twice its size,
+# the quarter facing that corner, so four tanks meeting there draw one centre twice as wide across
+# their seams, in proportion to the group as a lone tank's is to it. Everywhere else is a plain
+# fill of the ring's grey. A
+# cell's outer face is drawn only on a side the tank does not join.
+EDGE = 4
+CELLS = [(0, 4), (4, 8), (8, 12), (12, 16)]
+
+
+def lerp(uv_lo, uv_hi, a):
+    return num(uv_lo + a / 16 * (uv_hi - uv_lo))
+
+
+def flat_uv(uv, face, xs, zs):
+    u0, v0, u1, v1 = uv
+    if face == "up":
+        return [lerp(u0, u1, xs[0]), lerp(v0, v1, zs[0]), lerp(u0, u1, xs[1]), lerp(v0, v1, zs[1])]
+    return [lerp(u0, u1, xs[0]), lerp(v0, v1, 16 - zs[1]), lerp(u0, u1, xs[1]), lerp(v0, v1, 16 - zs[0])]
+
+
+def side_uv(uv, side, xs, zs):
+    u0, v0, u1, v1 = uv
+    a, b = {"north": (16 - xs[1], 16 - xs[0]), "south": xs, "east": (16 - zs[1], 16 - zs[0]), "west": zs}[side]
+    return [lerp(u0, u1, a), v0, lerp(u0, u1, b), v1]
+
+
+def axis(cell, low, high, joins, canonical, mirrored):
+    """One axis of a cell: (the side whose half it lies in, the unjoined rim it is on or None,
+    where it samples as a rim or middle, where it samples in a quarter of the centre)."""
+    lo, hi = cell
+    half = low if hi <= 8 else high
+    edge = low if lo == 0 else high if hi == 16 else None
+    rim = edge if edge and not joins[edge] else None
+    if rim:
+        sample = (canonical[1], canonical[0]) if rim == mirrored else canonical
+    elif edge:
+        sample = (EDGE, 2 * EDGE) if edge == low else (16 - 2 * EDGE, 16 - EDGE)
+    else:
+        sample = cell
+    # The quarter's other half lies across the seam on this side, so the 8 pixels here are the
+    # far half of the centre, from 4 to 8 or 8 to 12, at half the scale.
+    quarter = (8 + lo / 2, 8 + hi / 2) if half == low else (4 + (lo - 8) / 2, 4 + (hi - 8) / 2)
+    return half, rim, sample, quarter
+
+
+def cap_cell(cap, xs, zs, joins):
+    """The faces of one cell of a cap, for one set of joins, or None for the plain fill."""
+    xhalf, xrim, xsample, xquarter = axis(xs, "west", "east", joins, (12, 16), "west")
+    zhalf, zrim, zsample, zquarter = axis(zs, "north", "south", joins, (0, 4), "south")
+    if joins[xhalf] and joins[zhalf]:
+        sx, sz, rims = xquarter, zquarter, []
+    elif xrim or zrim:
+        sx, sz, rims = xsample, zsample, [r for r in (xrim, zrim) if r]
+    elif not any(joins.values()):
+        sx, sz, rims = xsample, zsample, []
+    else:
+        return None
+    faces = {f: {"uv": flat_uv(cap["faces"][f]["uv"], f, sx, sz), "texture": "#0"} for f in ("up", "down")}
+    for side in rims:
+        faces[side] = {"uv": side_uv(cap["faces"][side]["uv"], side, sx, sz), "texture": "#0"}
+    return faces
+
+
+def every_join():
+    for bits in range(16):
+        yield {side: bool(bits >> i & 1) for i, side in enumerate(SIDES)}
+
+
+for cap, which, vertical in ((cap_bottom, "bottom", "down"), (cap_top, "top", "up")):
+    y1, y2 = cap["from"][1], cap["to"][1]
+    for xs in CELLS:
+        for zs in CELLS:
+            looks = {}
+            for joins in every_join():
+                faces = cap_cell(cap, xs, zs, joins)
+                if faces is None:
+                    faces = {f: {"uv": texel_uv(FILL_TEXEL), "texture": "#0"} for f in ("up", "down")}
+                looks.setdefault(json.dumps(faces, sort_keys=True), []).append(joins)
+            for n, (key, cases) in enumerate(looks.items()):
+                name = f"storage_tank_cap_{which}_{xs[0]}_{zs[0]}_{n}"
+                element = {"from": [xs[0], y1, zs[0]], "to": [xs[1], y2, zs[1]], "faces": json.loads(key)}
+                write(name, {"textures": TEXTURES, "elements": [element]})
+                if len(cases) == 16:
+                    part(name, {vertical: "false"})
+                else:
+                    part(name, {"AND": [{vertical: "false"}, {"OR": [
+                        {side: str(j).lower() for side, j in case.items()} for case in cases]}]})
 
 for face in SIDES:
     _, low_side, high_side = ACROSS[face]
-    for across, (arange, asample) in ACROSS_PARTS.items():
-        for up, (yrange, ysample) in UP_PARTS.items():
-            name = "_".join(["storage_tank_glass", face]
-                            + ([{"low": low_side, "high": high_side}[across]] if across else [])
-                            + ([up] if up else []))
-            write(name, {"textures": TEXTURES, "elements": [pane(face, (arange, asample), (yrange, ysample))]})
-            when = {} if across else {face: "false"}
-            if across:
-                when[{"low": low_side, "high": high_side}[across]] = "true"
-            if up:
-                when[up] = "true"
-            part(name, when)
+    for across, arange, asample, awhen in across_cells(low_side, high_side):
+        for up, yrange, ysample, ywhen in UP_CELLS:
+            name = f"storage_tank_glass_{face}_{across}_{up}"
+            element = pane(face, (arange, asample), (yrange, ysample))
+            # Past a seam the pane's middle has stray highlights in every row and column on some
+            # faces, so a cell there that does not carry on the frame is clear glass.
+            joined = "true" in awhen.values() or "true" in ywhen.values()
+            on_frame = across.endswith("_rim") or up.endswith("_rim")
+            if joined and not on_frame:
+                element["faces"][face]["uv"] = texel_uv(CLEAR_TEXEL)
+            write(name, {"textures": TEXTURES, "elements": [element]})
+            part(name, {face: "false", **awhen, **ywhen})
 
 # The fluid: a white box tinted the fluid's colour, inset 1.5 from the sides it does not join and
-# out to the block's edge on those it does, though never into a corner, where the glass may close
-# an inside corner, from the bottom glass up to the tank's step. A tank
+# out to the block's edge on those it does, though never into a corner: a tank cannot see its
+# diagonal neighbour, and an L-shaped group's inside corner has no glass, so fluid there would
+# stand outside the tank. It runs from the bottom glass up to the tank's step. A tank
 # that joins the one below has a full one there, so its fluid also fills the cap's height beneath,
 # and a full tank joined above fills the cap's height above.
 HORIZONTAL = {None: (FLUID_INSET, 16 - FLUID_INSET), "low": (0, FLUID_INSET), "high": (16 - FLUID_INSET, 16)}
@@ -114,7 +236,7 @@ HORIZONTAL = {None: (FLUID_INSET, 16 - FLUID_INSET), "low": (0, FLUID_INSET), "h
 def fluid(xs, ys, zs):
     face = {"uv": [0, 0, 16, 16], "texture": "#fluid", "tintindex": 0}
     return {
-        "textures": {"fluid": "minecraft:block/white_concrete"},
+        "textures": {"fluid": "minecraft:block/white_concrete", "particle": "minecraft:block/white_concrete"},
         "elements": [{
             "from": [num(xs[0]), num(ys[0]), num(zs[0])],
             "to": [num(xs[1]), num(ys[1]), num(zs[1])],

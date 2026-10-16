@@ -63,9 +63,7 @@ public final class PipeworksGameTests {
         // Registered rather than borrowed, since the event hands out no lookup for vanilla's.
         var environment = event.registerEnvironment(id("default"), new TestEnvironmentDefinition.AllOf(List.of()));
         var tests = new Registrar(event, environment);
-        // Turning the Gallery pack on reloads the server's data under every test in its batch (libworks ADR 0010).
-        var gallery = event.registerEnvironment(id("gallery"), new TestEnvironmentDefinition.AllOf(List.of()));
-        GalleryTests.register(new Registrar(event, gallery));
+        GalleryTests.register(tests);
         LoadTests.register(tests);
         PlaysAloneTests.register(tests);
         SegmentTests.register(tests);
@@ -95,6 +93,17 @@ public final class PipeworksGameTests {
             var id = id(name);
             CodeGameTest.define(id, body);
             event.registerTest(id, new CodeGameTest(id, new TestData<>(environment, PLATFORM, maxTicks, 0, true, Rotation.NONE)));
+        }
+
+        /**
+         * As {@link #test}, in a batch of its own: one that turns a pack on, which reloads the server's
+         * data under every test in its batch, or builds where another test would (libworks ADR 0010).
+         */
+        void testOnItsOwn(String name, int maxTicks, Consumer<GameTestHelper> body) {
+            var id = id(name);
+            var own = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf(List.of()));
+            CodeGameTest.define(id, body);
+            event.registerTest(id, new CodeGameTest(id, new TestData<>(own, PLATFORM, maxTicks, 0, true, Rotation.NONE)));
         }
     }
 }

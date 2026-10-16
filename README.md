@@ -14,7 +14,7 @@ To play Pipeworks beside every other FactoryWorks mod, install the [FactoryWorks
 
 ## Features
 
-- **Pipes and a storage tank.** A pipe holds 100 mB and a tank 25,000 mB by default, Factorio's volumes; `pipeworks-server.toml` sets both, for the pipes and tanks placed afterwards. Pipes draw an arm toward each pipe, tank or port they link to, and toward any block beside them that holds fluid.
+- **Pipes and a storage tank.** A pipe holds 100 mB and a tank 25,000 mB by default, Factorio's volumes; `pipeworks-server.toml` sets both, for the pipes and tanks placed afterwards. Pipes draw an arm toward each pipe, tank or port they link to, and toward any block beside them that holds fluid. Tanks that touch share their contents as one tank, their capacities added, as pipes do.
 - **Buckets.** A bucket, or any mod's item that holds fluid, used on a pipe or tank fills or empties its segment. A full one empties only if the segment has room for all of it and holds that fluid or none; an empty or part-full one fills from the segment. In creative the item is left as it is.
 - **One fluid per segment.** A pipe or tank that would join two segments holding different fluids is refused, with a message saying so.
 - **Breaking splits fairly.** Breaking a pipe, tank or port splits its segment by capacity, and the broken block takes its share of the fluid. Segments are saved with the world and keep their fluid while their chunks are unloaded.

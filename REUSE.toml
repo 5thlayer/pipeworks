@@ -18,6 +18,7 @@ path = [
     "src/gametest/resources/**/*.nbt",
     "src/main/resources/gallery_pack/**",
     "LICENSE",
+    "NOTICE",
     "publish/summary.txt",
     ".github/**",
 ]

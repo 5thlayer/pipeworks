@@ -14,10 +14,11 @@ differ; the fluid's colour, sent as before, is unchanged.
 
 - **A tank group draws as one tank.** Storage tanks that touch through open faces, on any of the six
   sides, form a tank group (see the glossary). The frame and glass between two tanks of a group are
-  not drawn. A face closed with a stick (ADR 0004) keeps its frame, so tanks look joined only when
-  they share fluid.
+  not drawn. Tanks look joined only when they share fluid: a waiting tank, linked to nothing, stays
+  apart. A stick closes only a pipe's side (ADR 0004), so two touching tanks that both joined are
+  always one group.
 - **The server says which faces join**, as six connection properties on the tank's blockstate, set
-  the way `redraw` sets a pipe's arms. The client draws what it is told, as ADR 0003 has it. 
+  the way `redraw` sets a pipe's arms. The client draws what it is told, as ADR 0003 has it.
   Considered: a model that reads its neighbours while it renders, as connected textures do; it needs
   a custom model loader, and the client would guess at closed faces it cannot see.
 - **A group shows the segment's fill fraction over its own volume, from the bottom up.** A segment

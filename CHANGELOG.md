@@ -7,6 +7,7 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 - The pipe and the storage tank are iron grey where they were Oritech's orange copper, to sit with the Pump and the Outlet; the creative pipe stays purple (#30).
 - The jar nests libworks-runtime 0.1.11, and `neoforge.mods.toml` requires `libworks` from 0.1.11 to the next minor. Pipeworks' gallery game tests use libworks' `GalleryCheck` row layout and pack frame instead of copies of their own (5thlayer/libworks#31).
 - Pipeworks' game-test code and structures no longer ship in its jar (libworks ADR 0011): a Consumer's game tests and dev client no longer register Pipeworks' test type `pipeworks:code`, nor carry its `gametest/platform` structure. Pipeworks builds on libworks-plugin 0.4.0.
+- Storage tanks that touch draw as one tank: the caps and glass between them are gone, and the fluid fills the group from its bottom tank up instead of every tank showing its segment's level (ADR 0008, #27). Each tank's `level` blockstate is now its own share of its group's fill, and the tank has six new blockstate properties, `north` to `down`, for the tanks of its group beside it.
 
 ## 0.3.2
 

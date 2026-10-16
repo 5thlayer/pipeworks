@@ -62,7 +62,7 @@ final class GalleryTests {
     /** Where the Outlet scene's outlet sets its water down, from where the scene is run. */
     private static final BlockPos OUTLET_FRONT = new BlockPos(16, 0, -6);
 
-    /** How many plots a test of one scene loads: the first, where the scene is run from where the gallery is. */
+    /** How many plots a test of one scene loads: a scene run alone, from where the gallery is run, fills only the first. */
     private static final int ONE_SCENE = 1;
 
     private GalleryTests() {
@@ -167,19 +167,19 @@ final class GalleryTests {
     private static void withPack(GameTestHelper helper, int plots, Consumer<CommandSourceStack> body, Runnable until) {
         var server = helper.getLevel().getServer();
         GalleryCheck.assertOfferedAndOff(helper, PACK);
-        var area = area(helper, plots);
+        var run = new Run(helper, plots, GalleryCheck.operator(helper, helper.absolutePos(ORIGIN)));
+        var area = run.area();
         area.intersectingChunks().forEach(chunk -> helper.getLevel().setChunkForced(chunk.x(), chunk.z(), true));
-        var source = GalleryCheck.operator(helper, helper.absolutePos(ORIGIN));
         var on = GalleryCheck.select(server, PACK, true);
-        helper.testInfo.addListener(new ClearAwayIfFailed(helper, plots, source, area, on));
+        helper.testInfo.addListener(new ClearAwayIfFailed(run, on));
         var off = new AtomicReference<CompletableFuture<Void>>();
         helper.startSequence()
                 .thenWaitUntil(() -> helper.assertTrue(on.isDone(), PACK + " is not on yet"))
                 .thenWaitUntil(() -> helper.assertTrue(area.intersectingChunks().allMatch(chunk -> helper.getLevel().hasChunk(chunk.x(), chunk.z())),
                         "the gallery's plots are not loaded yet"))
-                .thenExecute(() -> body.accept(source))
+                .thenExecute(() -> body.accept(run.source()))
                 .thenWaitUntil(until)
-                .thenExecute(() -> off.set(clearAway(helper, plots, source, area)))
+                .thenExecute(() -> off.set(run.clearAway()))
                 .thenWaitUntil(() -> helper.assertTrue(off.get() != null && off.get().isDone(), PACK + " is not off yet"))
                 .thenSucceed();
     }
@@ -194,31 +194,39 @@ final class GalleryTests {
         return helper.absolutePos(ORIGIN).north(ROW_DEPTH * row);
     }
 
-    /** The first {@code plots} plots of the gallery, their floors included. */
-    private static BoundingBox area(GameTestHelper helper, int plots) {
-        int rows = Math.ceilDiv(plots, ROW);
-        return BoundingBox.encapsulatingBoxes(List.of(
-                GalleryCheck.plot(helper.absolutePos(ORIGIN)),
-                GalleryCheck.strip(rowOrigin(helper, rows - 1), Math.min(plots, ROW)))).orElseThrow();
+    /** Where plot {@code plot} of the gallery, its first 0, is run from, absolute: as {@code build} lays them. */
+    private static BlockPos plotOrigin(GameTestHelper helper, int plot) {
+        return rowOrigin(helper, plot / ROW).east(GalleryCheck.PLOT_WIDTH * (plot % ROW));
     }
 
-    /** Air where the plots stood, their entities gone, and the pack off. The runner releases the forced chunks once the batch ends. */
-    private static CompletableFuture<Void> clearAway(GameTestHelper helper, int plots, CommandSourceStack source, BoundingBox area) {
-        // The pack's own clear first, which removes each pipe, tank and port as a player's world would:
-        // the runner's clear sets blocks with no removal, which leaves their nodes in the saved segments
-        // for the next test's scene to join.
-        var commands = helper.getLevel().getServer().getCommands();
-        for (int plot = 0; plot < plots; plot++) {
-            var from = Vec3.atBottomCenterOf(rowOrigin(helper, plot / ROW).east(GalleryCheck.PLOT_WIDTH * (plot % ROW)));
-            commands.performPrefixedCommand(source.withPosition(from), "function " + Pipeworks.MOD_ID + ":gallery/clear");
+    /** A test's run of the gallery: its first {@code plots} plots, built by {@code source}, standing where the gallery is run. */
+    private record Run(GameTestHelper helper, int plots, CommandSourceStack source) {
+
+        /** The plots, their floors included. */
+        BoundingBox area() {
+            int rows = Math.ceilDiv(plots, ROW);
+            return BoundingBox.encapsulatingBoxes(List.of(
+                    GalleryCheck.plot(helper.absolutePos(ORIGIN)),
+                    GalleryCheck.strip(rowOrigin(helper, rows - 1), Math.min(plots, ROW)))).orElseThrow();
         }
-        StructureUtils.clearSpaceForStructure(area, helper.getLevel());
-        return GalleryCheck.select(helper.getLevel().getServer(), PACK, false);
+
+        /** Air where the plots stood, their entities gone, and the pack off. The runner releases the forced chunks once the batch ends. */
+        CompletableFuture<Void> clearAway() {
+            // The pack's own clear first, which removes each pipe, tank and port as a player's world would:
+            // the runner's clear sets blocks with no removal, which leaves their nodes in the saved segments
+            // for the next test's scene to join.
+            var commands = helper.getLevel().getServer().getCommands();
+            for (int plot = 0; plot < plots; plot++) {
+                var from = Vec3.atBottomCenterOf(plotOrigin(helper, plot));
+                commands.performPrefixedCommand(source.withPosition(from), "function " + Pipeworks.MOD_ID + ":gallery/clear");
+            }
+            StructureUtils.clearSpaceForStructure(area(), helper.getLevel());
+            return GalleryCheck.select(helper.getLevel().getServer(), PACK, false);
+        }
     }
 
-    /** A failed test skips its own last steps, which would leave the pack on; it turns it off once turning it on is done. */
-    private record ClearAwayIfFailed(GameTestHelper helper, int plots, CommandSourceStack source, BoundingBox area,
-            CompletableFuture<Void> on) implements GameTestListener {
+    /** A failed test skips its own last steps, which would leave the pack on; it clears away once turning it on is done. */
+    private record ClearAwayIfFailed(Run run, CompletableFuture<Void> on) implements GameTestListener {
 
         @Override
         public void testStructureLoaded(GameTestInfo testInfo) {
@@ -230,8 +238,8 @@ final class GalleryTests {
 
         @Override
         public void testFailed(GameTestInfo testInfo, GameTestRunner runner) {
-            var server = helper.getLevel().getServer();
-            on.whenComplete((done, failed) -> server.execute(() -> clearAway(helper, plots, source, area)));
+            var server = run.helper().getLevel().getServer();
+            on.whenComplete((done, failed) -> server.execute(run::clearAway));
         }
 
         @Override

@@ -4,6 +4,7 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- The jar nests libworks-runtime 0.1.10, and `neoforge.mods.toml` requires `libworks` from 0.1.10 to the next minor. Pipeworks' gallery game tests use libworks' `GalleryCheck` row layout and pack frame instead of copies of their own (5thlayer/libworks#31).
 - Pipeworks' game-test code and structures no longer ship in its jar (libworks ADR 0011): a Consumer's game tests and dev client no longer register Pipeworks' test type `pipeworks:code`, nor carry its `gametest/platform` structure. Pipeworks builds on libworks-plugin 0.4.0.
 
 ## 0.3.2

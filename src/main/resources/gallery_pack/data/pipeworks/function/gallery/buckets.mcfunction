@@ -1,5 +1,6 @@
 # An empty run of pipes and a storage tank, whose glass rises a step for about each two buckets, and a
-# chest of buckets to fill and empty it with.
+# chest of buckets to fill and empty it with. Its one lava bucket goes in only while the run is empty,
+# as the segment holds one fluid.
 function pipeworks:gallery/clear
 setblock ~8 ~ ~-6 pipeworks:pipe
 setblock ~9 ~ ~-6 pipeworks:pipe

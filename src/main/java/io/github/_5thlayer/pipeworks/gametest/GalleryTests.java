@@ -32,9 +32,10 @@ import net.minecraft.world.phys.AABB;
  * build running every command without failing, and each scene's key block where it stands. The scenes
  * stand in rows of three, each row 16 blocks north of the last, which keeps them near enough to where
  * the gallery is run for their pumps to tick; {@link GalleryCheck#builds} lays one long row, so the
- * test runs its parts a row at a time. Beyond the build, the Outlet scene sets its water down, and a
- * scene's sign, clicked, builds it again. Each test turns the pack on, which reloads the server's
- * data, and off again, passing or failing, so they run in a batch of their own.
+ * test runs its parts a row at a time. Beyond the build, the Pump scene leaves its water and takes
+ * its lava, the Outlet scene sets its water down, and a scene's sign, clicked, builds it again. Each test turns the pack on, which reloads the server's
+ * data, and off again, passing or failing, and each builds where the others do, so each runs in a
+ * batch of its own.
  */
 final class GalleryTests {
 
@@ -48,6 +49,9 @@ final class GalleryTests {
     private static final BlockPos ORIGIN = new BlockPos(0, 1, 8);
     /** Where a scene's sign stands, from where the scene is run. */
     private static final BlockPos SIGN = new BlockPos(14, 0, 0);
+    /** Where the Pump scene's water and lava sources stand, from where the scene is run. */
+    private static final BlockPos PUMP_WATER = new BlockPos(6, 0, -6);
+    private static final BlockPos PUMP_LAVA = new BlockPos(22, 0, -6);
     /** Where the Outlet scene's outlet stands, from where the scene is run. */
     private static final BlockPos OUTLET = new BlockPos(15, 0, -6);
     /** Where the Outlet scene's outlet sets its water down, from where the scene is run. */
@@ -56,7 +60,7 @@ final class GalleryTests {
     private GalleryTests() {
     }
 
-    /** The scenes in the order {@code build} lays them, each with a block it places. */
+    /** The scenes in the order {@code build} lays them, each with a block it places, where its function places it. */
     private static List<Scene> scenes() {
         var tank = PipeworksRegistries.STORAGE_TANK.get();
         var pump = PipeworksRegistries.PUMP.get();
@@ -73,17 +77,19 @@ final class GalleryTests {
     }
 
     static void register(PipeworksGameTests.Registrar tests) {
-        tests.test("gallery_builds_a_scene_of_each_feature", GalleryCheck.TICKS, GalleryTests::builds);
-        tests.test("gallery_outlet_scene_sets_its_water_down", GalleryCheck.TICKS, GalleryTests::outletSetsWater);
-        tests.test("gallery_scenes_sign_clicked_builds_the_scene_again", GalleryCheck.TICKS, GalleryTests::signReplays);
+        tests.testOnItsOwn("gallery_builds_a_scene_of_each_feature", GalleryCheck.TICKS, GalleryTests::builds);
+        tests.testOnItsOwn("gallery_pump_scene_leaves_its_water_and_takes_its_lava", GalleryCheck.TICKS, GalleryTests::pumpTakesLava);
+        tests.testOnItsOwn("gallery_outlet_scene_sets_its_water_down", GalleryCheck.TICKS, GalleryTests::outletSetsWater);
+        tests.testOnItsOwn("gallery_scenes_sign_clicked_builds_the_scene_again", GalleryCheck.TICKS, GalleryTests::signReplays);
     }
 
     private static void builds(GameTestHelper helper) {
         var scenes = scenes();
+        var functions = helper.getLevel().getServer().getFunctions();
         withPack(helper, scenes.size(), source -> {
             GalleryCheck.assertLoads(helper, source, Pipeworks.MOD_ID);
             for (var scene : scenes) {
-                helper.assertTrue(helper.getLevel().getServer().getFunctions().get(GalleryPack.scene(Pipeworks.MOD_ID, scene.name())).isPresent(),
+                helper.assertTrue(functions.get(GalleryPack.scene(Pipeworks.MOD_ID, scene.name())).isPresent(),
                         "there is no scene function " + scene.name());
             }
             GalleryCheck.assertRuns(helper, source, GalleryPack.build(Pipeworks.MOD_ID));
@@ -91,8 +97,19 @@ final class GalleryTests {
                 GalleryCheck.assertKeyBlocks(helper, rowOrigin(helper, row),
                         scenes.subList(row * ROW, Math.min(scenes.size(), (row + 1) * ROW)));
             }
-        }, () -> {
         });
+    }
+
+    /** The Pump scene: one Pump leaves its water source in place, the other takes its lava source whole. */
+    private static void pumpTakesLava(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var water = helper.absolutePos(ORIGIN).offset(PUMP_WATER);
+        var lava = helper.absolutePos(ORIGIN).offset(PUMP_LAVA);
+        withPack(helper, 1, source -> GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "pump")),
+                () -> {
+                    helper.assertTrue(level.getFluidState(lava).isEmpty(), "the Pump has not taken its lava source yet");
+                    helper.assertTrue(level.getFluidState(water).isSourceOfType(Fluids.WATER), "the Pump took its water source");
+                });
     }
 
     /** The Outlet scene: its Pump fills the run, and the Outlet sets a water source down in its basin. */
@@ -121,19 +138,25 @@ final class GalleryTests {
             var loose = helper.getLevel().getEntitiesOfClass(ItemEntity.class, AABB.of(plot));
             helper.assertTrue(loose.isEmpty(), "building the scene again left items loose: " + loose.stream().map(ItemEntity::getItem).toList());
             helper.assertTrue(helper.getLevel().getBlockState(sign).is(Blocks.OAK_SIGN), "building the scene again left no sign");
-        }, () -> {
+        });
+    }
+
+    /** As {@link #withPack(GameTestHelper, int, Consumer, Runnable)}, waiting for nothing after {@code body}. */
+    private static void withPack(GameTestHelper helper, int plots, Consumer<CommandSourceStack> body) {
+        withPack(helper, plots, body, () -> {
         });
     }
 
     /**
-     * Turns the pack on over the loaded plots of a gallery of {@code scenes}, runs {@code body} as an
-     * operator player standing where it is run, waits until {@code until} passes, then clears the plots
-     * and turns the pack off, passing or failing.
+     * Turns the pack on over the first {@code plots} plots, as {@code build} lays them, loaded; runs
+     * {@code body} as an operator player standing where the gallery is run; waits until {@code until}
+     * passes; then clears the plots and turns the pack off, passing or failing. A single scene run
+     * from where the gallery is run stands on the first plot.
      */
-    private static void withPack(GameTestHelper helper, int scenes, Consumer<CommandSourceStack> body, Runnable until) {
+    private static void withPack(GameTestHelper helper, int plots, Consumer<CommandSourceStack> body, Runnable until) {
         var server = helper.getLevel().getServer();
         GalleryCheck.assertOfferedAndOff(helper, PACK);
-        var area = area(helper, scenes);
+        var area = area(helper, plots);
         area.intersectingChunks().forEach(chunk -> helper.getLevel().setChunkForced(chunk.x(), chunk.z(), true));
         var source = GalleryCheck.operator(helper, helper.absolutePos(ORIGIN));
         var on = GalleryCheck.select(server, PACK, true);
@@ -155,12 +178,12 @@ final class GalleryTests {
         return helper.absolutePos(ORIGIN).north(ROW_DEPTH * row);
     }
 
-    /** Every plot of a gallery's first {@code scenes} scenes, their floors included. */
-    private static BoundingBox area(GameTestHelper helper, int scenes) {
-        int rows = Math.ceilDiv(scenes, ROW);
+    /** The first {@code plots} plots of the gallery, their floors included. */
+    private static BoundingBox area(GameTestHelper helper, int plots) {
+        int rows = Math.ceilDiv(plots, ROW);
         return BoundingBox.encapsulatingBoxes(List.of(
                 GalleryCheck.plot(helper.absolutePos(ORIGIN)),
-                GalleryCheck.strip(rowOrigin(helper, rows - 1), Math.min(scenes, ROW)))).orElseThrow();
+                GalleryCheck.strip(rowOrigin(helper, rows - 1), Math.min(plots, ROW)))).orElseThrow();
     }
 
     /** Air where the plots stood, their entities gone, and the pack off. The runner releases the forced chunks once the batch ends. */

@@ -90,9 +90,7 @@ public final class PipeworksGameTests {
     record Registrar(RegisterGameTestsEvent event, Holder<TestEnvironmentDefinition<?>> environment) {
 
         void test(String name, int maxTicks, Consumer<GameTestHelper> body) {
-            var id = id(name);
-            CodeGameTest.define(id, body);
-            event.registerTest(id, new CodeGameTest(id, new TestData<>(environment, PLATFORM, maxTicks, 0, true, Rotation.NONE)));
+            register(id(name), environment, maxTicks, body);
         }
 
         /**
@@ -101,9 +99,12 @@ public final class PipeworksGameTests {
          */
         void testOnItsOwn(String name, int maxTicks, Consumer<GameTestHelper> body) {
             var id = id(name);
-            var own = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf(List.of()));
+            register(id, event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf(List.of())), maxTicks, body);
+        }
+
+        private void register(Identifier id, Holder<TestEnvironmentDefinition<?>> in, int maxTicks, Consumer<GameTestHelper> body) {
             CodeGameTest.define(id, body);
-            event.registerTest(id, new CodeGameTest(id, new TestData<>(own, PLATFORM, maxTicks, 0, true, Rotation.NONE)));
+            event.registerTest(id, new CodeGameTest(id, new TestData<>(in, PLATFORM, maxTicks, 0, true, Rotation.NONE)));
         }
     }
 }

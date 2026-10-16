@@ -13,6 +13,7 @@ import io.github._5thlayer.libworks.testkit.GalleryCheck;
 import io.github._5thlayer.libworks.testkit.GalleryCheck.Scene;
 import io.github._5thlayer.pipeworks.Pipeworks;
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
+import io.github._5thlayer.pipeworks.api.FluidPorts;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -26,16 +27,17 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The Gallery pack (libworks ADR 0010), through libworks' {@link GalleryCheck}: offered and off, its
  * build running every command without failing, and each scene's key block where it stands. The scenes
  * stand in rows of three, each row 16 blocks north of the last, which keeps them near enough to where
  * the gallery is run for their pumps to tick; {@link GalleryCheck#builds} lays one long row, so the
- * test runs its parts a row at a time. Beyond the build, the Pump scene leaves its water and takes
- * its lava, the Outlet scene sets its water down, and a scene's sign, clicked, builds it again. Each test turns the pack on, which reloads the server's
- * data, and off again, passing or failing, and each builds where the others do, so each runs in a
- * batch of its own.
+ * test runs its parts a row at a time. Beyond the build, the Pump scene fills its tank and leaves
+ * its water while taking its lava, the Outlet scene sets its water down, and a scene's sign, clicked,
+ * builds it again. Each test turns the pack on, which reloads the server's data, and off again,
+ * passing or failing, and each builds where the others do, so each runs in a batch of its own.
  */
 final class GalleryTests {
 
@@ -49,18 +51,24 @@ final class GalleryTests {
     private static final BlockPos ORIGIN = new BlockPos(0, 1, 8);
     /** Where a scene's sign stands, from where the scene is run. */
     private static final BlockPos SIGN = new BlockPos(14, 0, 0);
-    /** Where the Pump scene's water and lava sources stand, from where the scene is run. */
+    /** Where the Pump scene's water source stands, from where the scene is run. */
     private static final BlockPos PUMP_WATER = new BlockPos(6, 0, -6);
+    /** Where the Pump scene's water Pump fills its storage tank, from where the scene is run. */
+    private static final BlockPos PUMP_WATER_TANK = new BlockPos(11, 0, -6);
+    /** Where the Pump scene's lava source stands, from where the scene is run. */
     private static final BlockPos PUMP_LAVA = new BlockPos(22, 0, -6);
     /** Where the Outlet scene's outlet stands, from where the scene is run. */
     private static final BlockPos OUTLET = new BlockPos(15, 0, -6);
     /** Where the Outlet scene's outlet sets its water down, from where the scene is run. */
     private static final BlockPos OUTLET_FRONT = new BlockPos(16, 0, -6);
 
+    /** How many plots a test of one scene loads: the first, where the scene is run from where the gallery is. */
+    private static final int ONE_SCENE = 1;
+
     private GalleryTests() {
     }
 
-    /** The scenes in the order {@code build} lays them, each with a block it places, where its function places it. */
+    /** The scenes in the order {@code build} lays them, each with a key block and where, from where the scene is run, its function places it. */
     private static List<Scene> scenes() {
         var tank = PipeworksRegistries.STORAGE_TANK.get();
         var pump = PipeworksRegistries.PUMP.get();
@@ -100,22 +108,25 @@ final class GalleryTests {
         });
     }
 
-    /** The Pump scene: one Pump leaves its water source in place, the other takes its lava source whole. */
+    /** The Pump scene: one Pump fills its tank and leaves its water source in place, the other takes its lava source whole. */
     private static void pumpTakesLava(GameTestHelper helper) {
         var level = helper.getLevel();
-        var water = helper.absolutePos(ORIGIN).offset(PUMP_WATER);
-        var lava = helper.absolutePos(ORIGIN).offset(PUMP_LAVA);
-        withPack(helper, 1, source -> GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "pump")),
+        var water = at(helper, PUMP_WATER);
+        var tank = at(helper, PUMP_WATER_TANK);
+        var lava = at(helper, PUMP_LAVA);
+        withPack(helper, ONE_SCENE, source -> GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "pump")),
                 () -> {
                     helper.assertTrue(level.getFluidState(lava).isEmpty(), "the Pump has not taken its lava source yet");
-                    helper.assertTrue(level.getFluidState(water).isSourceOfType(Fluids.WATER), "the Pump took its water source");
+                    var drawn = FluidPorts.segment(level, tank);
+                    helper.assertTrue(drawn != null && drawn.getAmountAsLong(0) > 0, "the water Pump has drawn nothing into its tank yet");
+                    helper.assertTrue(level.getFluidState(water).isSourceOfType(Fluids.WATER), "the water Pump took its source");
                 });
     }
 
     /** The Outlet scene: its Pump fills the run, and the Outlet sets a water source down in its basin. */
     private static void outletSetsWater(GameTestHelper helper) {
-        var front = helper.absolutePos(ORIGIN).offset(OUTLET_FRONT);
-        withPack(helper, 1, source -> GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "outlet")),
+        var front = at(helper, OUTLET_FRONT);
+        withPack(helper, ONE_SCENE, source -> GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "outlet")),
                 () -> {
                     var fluid = helper.getLevel().getFluidState(front);
                     helper.assertTrue(fluid.isSource() && fluid.is(Fluids.WATER), "the Outlet has set no water down in its basin yet");
@@ -124,9 +135,9 @@ final class GalleryTests {
 
     /** A scene's sign, clicked, builds the scene again where it stands, leaving nothing loose: here the Outlet, taken away. */
     private static void signReplays(GameTestHelper helper) {
-        var outlet = helper.absolutePos(ORIGIN).offset(OUTLET);
-        var sign = helper.absolutePos(ORIGIN).offset(SIGN);
-        withPack(helper, 1, source -> {
+        var outlet = at(helper, OUTLET);
+        var sign = at(helper, SIGN);
+        withPack(helper, ONE_SCENE, source -> {
             GalleryCheck.assertRuns(helper, source, GalleryPack.scene(Pipeworks.MOD_ID, "outlet"));
             helper.getLevel().removeBlock(outlet, false);
             helper.assertTrue(helper.getLevel().getBlockEntity(sign) instanceof SignBlockEntity entity
@@ -160,7 +171,7 @@ final class GalleryTests {
         area.intersectingChunks().forEach(chunk -> helper.getLevel().setChunkForced(chunk.x(), chunk.z(), true));
         var source = GalleryCheck.operator(helper, helper.absolutePos(ORIGIN));
         var on = GalleryCheck.select(server, PACK, true);
-        helper.testInfo.addListener(new ClearAwayIfFailed(helper, area, on));
+        helper.testInfo.addListener(new ClearAwayIfFailed(helper, plots, source, area, on));
         var off = new AtomicReference<CompletableFuture<Void>>();
         helper.startSequence()
                 .thenWaitUntil(() -> helper.assertTrue(on.isDone(), PACK + " is not on yet"))
@@ -168,9 +179,14 @@ final class GalleryTests {
                         "the gallery's plots are not loaded yet"))
                 .thenExecute(() -> body.accept(source))
                 .thenWaitUntil(until)
-                .thenExecute(() -> off.set(clearAway(helper, area)))
+                .thenExecute(() -> off.set(clearAway(helper, plots, source, area)))
                 .thenWaitUntil(() -> helper.assertTrue(off.get() != null && off.get().isDone(), PACK + " is not off yet"))
                 .thenSucceed();
+    }
+
+    /** {@code offset}, from where the gallery is run, absolute. */
+    private static BlockPos at(GameTestHelper helper, BlockPos offset) {
+        return helper.absolutePos(ORIGIN).offset(offset);
     }
 
     /** Where row {@code row} of the gallery is run from, absolute. */
@@ -187,13 +203,22 @@ final class GalleryTests {
     }
 
     /** Air where the plots stood, their entities gone, and the pack off. The runner releases the forced chunks once the batch ends. */
-    private static CompletableFuture<Void> clearAway(GameTestHelper helper, BoundingBox area) {
+    private static CompletableFuture<Void> clearAway(GameTestHelper helper, int plots, CommandSourceStack source, BoundingBox area) {
+        // The pack's own clear first, which removes each pipe, tank and port as a player's world would:
+        // the runner's clear sets blocks with no removal, which leaves their nodes in the saved segments
+        // for the next test's scene to join.
+        var commands = helper.getLevel().getServer().getCommands();
+        for (int plot = 0; plot < plots; plot++) {
+            var from = Vec3.atBottomCenterOf(rowOrigin(helper, plot / ROW).east(GalleryCheck.PLOT_WIDTH * (plot % ROW)));
+            commands.performPrefixedCommand(source.withPosition(from), "function " + Pipeworks.MOD_ID + ":gallery/clear");
+        }
         StructureUtils.clearSpaceForStructure(area, helper.getLevel());
         return GalleryCheck.select(helper.getLevel().getServer(), PACK, false);
     }
 
     /** A failed test skips its own last steps, which would leave the pack on; it turns it off once turning it on is done. */
-    private record ClearAwayIfFailed(GameTestHelper helper, BoundingBox area, CompletableFuture<Void> on) implements GameTestListener {
+    private record ClearAwayIfFailed(GameTestHelper helper, int plots, CommandSourceStack source, BoundingBox area,
+            CompletableFuture<Void> on) implements GameTestListener {
 
         @Override
         public void testStructureLoaded(GameTestInfo testInfo) {
@@ -206,7 +231,7 @@ final class GalleryTests {
         @Override
         public void testFailed(GameTestInfo testInfo, GameTestRunner runner) {
             var server = helper.getLevel().getServer();
-            on.whenComplete((done, failed) -> server.execute(() -> clearAway(helper, area)));
+            on.whenComplete((done, failed) -> server.execute(() -> clearAway(helper, plots, source, area)));
         }
 
         @Override

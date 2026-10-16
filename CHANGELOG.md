@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.3.2
+
 - The Gallery pack, **Pipeworks Gallery**: a datapack in the jar, off by default, whose `/function pipeworks:gallery/build` builds a working scene of each README feature, in rows of three north-east of the player, each with a sign naming it that rebuilds the scene when clicked; `pipeworks:gallery/<scene>` builds one. It needs libworks-runtime 0.1.9, which the jar nests (libworks ADR 0010, #26).
 
 ## 0.3.1

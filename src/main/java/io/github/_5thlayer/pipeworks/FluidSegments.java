@@ -230,7 +230,7 @@ public final class FluidSegments extends SavedData {
         }
     }
 
-    /** A client was just sent a chunk: tell it the fluid of the tanks in it, and set any that fell behind. */
+    /** A client was just sent a chunk: tell it the fluid of the tanks in it. */
     static void onChunkSent(ChunkWatchEvent.Sent event) {
         ServerLevel level = event.getLevel();
         FluidSegments segments = level.getDataStorage().get(TYPE);
@@ -249,7 +249,10 @@ public final class FluidSegments extends SavedData {
         /** The millibuckets this block adds to its segment when it joins, read then and kept after. */
         long capacity();
 
-        /** Whether this block draws an arm towards each side where fluid can move, as a pipe does. */
+        /**
+         * Whether this block draws arms, which the server sets: a pipe's towards each side where fluid
+         * can move, a storage tank's, its joins, towards the tanks of its group (ADR 0008).
+         */
         default boolean hasArms() {
             return false;
         }
@@ -272,13 +275,12 @@ public final class FluidSegments extends SavedData {
             return false;
         }
 
-        /** Whether this block, linked to the node in {@code beside}, draws an arm towards it. */
-        default boolean armTowards(BlockState beside) {
-            return true;
-        }
-
-        /** Whether this block draws an arm towards a fluid inventory beside it. */
-        default boolean armsToInventories() {
+        /**
+         * Whether this block draws an arm towards a side where fluid can move: towards the node it is
+         * linked to there, in the state {@code node}, or with a null {@code node} towards a fluid
+         * inventory.
+         */
+        default boolean drawsArmTowards(@Nullable BlockState node) {
             return true;
         }
     }
@@ -713,8 +715,8 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
-     * Redraws the arms of the pipe at {@code pos} on the sides in {@code sides}, a mask. The rest
-     * stay as they are.
+     * Redraws the arms of the pipe or the tank at {@code pos} on the sides in {@code sides}, a mask.
+     * The rest stay as they are.
      */
     private void redraw(ServerLevel level, BlockPos pos, int sides) {
         if (!level.isLoaded(pos)) {
@@ -732,12 +734,12 @@ public final class FluidSegments extends SavedData {
     }
 
     /**
-     * Whether the pipe at {@code pos} draws an arm on {@code face}: it is linked to the node there,
-     * or the block there is a fluid inventory. A waiting pipe draws none, nor does a closed side
-     * toward an inventory, and a neighbour that is a node is judged only by the link. Where the
-     * neighbour is not loaded its handler is unknown, so the arm stays {@code current}. A block may
-     * draw arms towards only some of the nodes it is linked to, and towards no inventory: a storage
-     * tank draws them only towards the tanks of its group (ADR 0008).
+     * Whether the pipe or tank at {@code pos} draws an arm on {@code face}: it is linked to the node
+     * there, or the block there is a fluid inventory, and {@code block} draws towards that one. A
+     * waiting node draws none, nor does a closed side toward an inventory, and a neighbour that is a
+     * node is judged only by the link. Where the neighbour is not loaded its block and handler are
+     * unknown, so the arm stays {@code current}: the side is checked again once it loads. A storage
+     * tank draws arms, its joins, only towards the tanks of its group (ADR 0008).
      */
     private boolean drawsArm(ServerLevel level, BlockPos pos, SegmentBlock block, Direction face, boolean current) {
         long node = pos.asLong();
@@ -745,10 +747,10 @@ public final class FluidSegments extends SavedData {
         boolean loaded = level.isLoaded(beside);
         if (graph.linked(node, beside.asLong())) {
             uncache(node, face);
-            return loaded ? block.armTowards(level.getBlockState(beside)) : current;
+            return loaded ? block.drawsArmTowards(level.getBlockState(beside)) : current;
         }
         Spec spec = specs.get(node);
-        if (!block.armsToInventories() || spec == null || (spec.mask() & bit(face)) == 0 || waiting.contains(node)
+        if (!block.drawsArmTowards(null) || spec == null || (spec.mask() & bit(face)) == 0 || waiting.contains(node)
                 || loaded && isNode(level, beside)) {
             uncache(node, face);
             return false;

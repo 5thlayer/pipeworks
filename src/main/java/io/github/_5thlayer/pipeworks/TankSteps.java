@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,17 +36,22 @@ import org.jspecify.annotations.Nullable;
  */
 final class TankSteps {
 
-    /** A tank group: its tanks, and the height of each. */
-    private record Group(long[] tanks, int[] heights) {
+    /** A tank group: the nodes of its tanks. */
+    private record Group(List<Long> tanks) {
+
+        int[] heights() {
+            return tanks.stream().mapToInt(tank -> BlockPos.of(tank).getY()).toArray();
+        }
     }
 
-    /** What a segment was last shown as: each group's {@link TankGroupFill#fineStep}, and its fluid. */
-    private record Shown(List<Integer> fineSteps, @Nullable String fluid) {
+    /** What a segment was last shown as: the {@link TankGroupFill#fifteenths} of each group, and its fluid. */
+    private record Shown(Map<Group, Integer> fifteenths, @Nullable String fluid) {
 
         static Shown of(SegmentGraph.Contents contents, List<Group> groups) {
-            List<Integer> fine = groups.stream()
-                    .map(g -> TankGroupFill.fineStep(contents.amount(), contents.capacity(), g.tanks().length))
-                    .toList();
+            Map<Group, Integer> fine = new LinkedHashMap<>();
+            for (Group group : groups) {
+                fine.put(group, TankGroupFill.fifteenths(contents.amount(), contents.capacity(), group.tanks().size()));
+            }
             return new Shown(fine, contents.amount() > 0 ? contents.fluid() : null);
         }
     }
@@ -68,11 +74,16 @@ final class TankSteps {
 
     /**
      * A chunk holding some of the segment's nodes loaded, so tanks its groups were found without may
-     * be there now: they are found again, and shown on the next tick.
+     * be there now, their steps saved with the chunk: they are found again, and every tank of the
+     * segment is shown on the next tick. Its fluid is kept, so it is not sent again to clients that
+     * have it; a client sent the chunk is told it then.
      */
     void reshape(int segment) {
         groups.remove(segment);
-        shown.remove(segment);
+        Shown before = shown.get(segment);
+        if (before != null) {
+            shown.put(segment, new Shown(Map.of(), before.fluid()));
+        }
         touched.add(segment);
     }
 
@@ -94,13 +105,12 @@ final class TankSteps {
                 continue;
             }
             boolean fluidChanged = before == null || !Objects.equals(before.fluid(), now.fluid());
-            for (int g = 0; g < found.size(); g++) {
-                Group group = found.get(g);
-                int[] steps = TankGroupFill.steps(group.heights(), now.fineSteps().get(g));
-                for (int t = 0; t < group.tanks().length; t++) {
-                    show(level, BlockPos.of(group.tanks()[t]), steps[t], now.fluid(), fluidChanged);
+            now.fifteenths().forEach((group, fill) -> {
+                int[] steps = TankGroupFill.steps(group.heights(), fill);
+                for (int t = 0; t < steps.length; t++) {
+                    show(level, BlockPos.of(group.tanks().get(t)), steps[t], now.fluid(), fluidChanged);
                 }
-            }
+            });
         }
         touched.clear();
     }
@@ -151,8 +161,7 @@ final class TankSteps {
                     }
                 }
             }
-            found.add(new Group(members.stream().mapToLong(Long::longValue).toArray(),
-                    members.stream().mapToInt(m -> BlockPos.of(m).getY()).toArray()));
+            found.add(new Group(List.copyOf(members)));
         }
         return found;
     }

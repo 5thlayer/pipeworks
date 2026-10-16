@@ -4,6 +4,8 @@
 package io.github._5thlayer.pipeworks.segment;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -24,24 +26,24 @@ public final class TankGroupFill {
      * so never 0 while the segment holds any. Every tank's step follows from it alone, so a fill that
      * leaves it unchanged leaves every tank as it was.
      */
-    public static int fineStep(long amount, long capacity, int tanks) {
+    public static int fifteenths(long amount, long capacity, int tanks) {
         return SegmentGraph.step(amount, capacity, STEPS * tanks);
     }
 
     /**
      * The step of each tank of a group, by the height of each in {@code heights}, for a group filled
-     * to {@code fineStep}.
+     * to {@code fifteenths}.
      */
-    public static int[] steps(int[] heights, int fineStep) {
+    public static int[] steps(int[] heights, int fifteenths) {
         TreeMap<Integer, Integer> layers = new TreeMap<>();
         for (int height : heights) {
             layers.merge(height, 1, Integer::sum);
         }
-        TreeMap<Integer, Integer> stepOfLayer = new TreeMap<>();
+        Map<Integer, Integer> stepOfLayer = new HashMap<>();
         int below = 0;
         for (var layer : layers.entrySet()) {
             int tanks = layer.getValue();
-            int left = fineStep - STEPS * below;
+            int left = fifteenths - STEPS * below;
             int step = left <= 0 ? 0 : left >= STEPS * tanks ? STEPS : Math.max(1, left / tanks);
             stepOfLayer.put(layer.getKey(), step);
             below += tanks;

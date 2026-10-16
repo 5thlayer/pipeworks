@@ -4,13 +4,19 @@
 package io.github._5thlayer.pipeworks.gametest;
 
 import io.github._5thlayer.pipeworks.PipeworksRegistries;
+import io.github._5thlayer.pipeworks.api.FluidPipes;
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -30,14 +36,20 @@ final class TankGroupTests {
     static void register(PipeworksGameTests.Registrar tests) {
         tests.test("tank_group_a_half_full_column_fills_from_the_bottom", 20, TankGroupTests::column);
         tests.test("tank_group_a_wide_layer_fills_before_the_tank_on_it", 20, TankGroupTests::wideLayer);
-        tests.test("tank_group_two_columns_on_a_pipe_show_the_same_fraction", 20, TankGroupTests::twoColumns);
+        tests.test("tank_group_each_group_fills_to_the_fraction_of_its_own_volume", 20, TankGroupTests::ownVolume);
         tests.test("tank_group_a_drop_shows_in_the_bottom_tank_only", 20, TankGroupTests::aDrop);
         tests.test("tank_group_a_waiting_tank_stays_apart", 20, TankGroupTests::waitingApart);
         tests.test("tank_group_joins_follow_a_tank_placed_and_broken", 20, TankGroupTests::placedAndBroken);
+        tests.test("tank_group_a_closed_face_keeps_two_tanks_apart", 20, TankGroupTests::closedFace);
+        tests.test("tank_group_tanks_saved_without_joins_join_when_their_chunk_loads", 20, TankGroupTests::savedWithoutJoins);
     }
 
     private static BlockPos at(int x, int y) {
         return new BlockPos(x, y, Z);
+    }
+
+    private static void tank(GameTestHelper helper, BlockPos pos) {
+        helper.setBlock(pos, PipeworksRegistries.STORAGE_TANK.get().defaultBlockState());
     }
 
     private static void pipe(GameTestHelper helper, int x, int y) {
@@ -45,7 +57,7 @@ final class TankGroupTests {
     }
 
     private static void tank(GameTestHelper helper, int x, int y) {
-        helper.setBlock(at(x, y), PipeworksRegistries.STORAGE_TANK.get().defaultBlockState());
+        tank(helper, at(x, y));
     }
 
     private static void fill(GameTestHelper helper, BlockPos pos, FluidResource fluid, int amount) {
@@ -98,7 +110,7 @@ final class TankGroupTests {
         pipe(helper, 0, 1);
         for (int x = 1; x <= 2; x++) {
             for (int z = Z; z <= Z + 1; z++) {
-                helper.setBlock(new BlockPos(x, 1, z), PipeworksRegistries.STORAGE_TANK.get().defaultBlockState());
+                tank(helper, new BlockPos(x, 1, z));
             }
         }
         tank(helper, 1, 2);
@@ -115,19 +127,21 @@ final class TankGroupTests {
                 .thenSucceed();
     }
 
-    /** Two columns of two either side of a pipe, 50,050 of 100,100 mB: each its bottom tank full. */
-    private static void twoColumns(GameTestHelper helper) {
+    /**
+     * A column of two and a tank alone either side of a pipe, 37,550 of 75,100 mB: the column its
+     * bottom tank full, the tank alone half full. Shared out over all three tanks as one group, the
+     * column would show 11 and the tank alone 11 too.
+     */
+    private static void ownVolume(GameTestHelper helper) {
         tank(helper, 1, 1);
         tank(helper, 1, 2);
         pipe(helper, 2, 1);
         tank(helper, 3, 1);
-        tank(helper, 3, 2);
-        helper.startSequence().thenIdle(SETTLES).thenExecute(() -> water(helper, at(2, 1), 50_050)).thenIdle(SETTLES)
+        helper.startSequence().thenIdle(SETTLES).thenExecute(() -> water(helper, at(2, 1), 37_550)).thenIdle(SETTLES)
                 .thenExecute(() -> {
-                    level(helper, at(1, 1), 15, "the west column's bottom");
-                    level(helper, at(1, 2), 0, "the west column's top");
-                    level(helper, at(3, 1), 15, "the east column's bottom");
-                    level(helper, at(3, 2), 0, "the east column's top");
+                    level(helper, at(1, 1), 15, "the column's bottom");
+                    level(helper, at(1, 2), 0, "the column's top");
+                    level(helper, at(3, 1), 7, "the tank alone");
                 }).thenSucceed();
     }
 
@@ -172,5 +186,53 @@ final class TankGroupTests {
             helper.setBlock(at(1, 2), Blocks.AIR.defaultBlockState());
         }).thenIdle(SETTLES).thenExecute(() -> joins(helper, at(1, 1), Direction.UP, false, "the bottom tank, the top broken"))
                 .thenSucceed();
+    }
+
+    /**
+     * A pipe's closed side closes the tank's face beside it too, and the face stays closed once the
+     * pipe is broken (ADR 0004): a tank set there touches the first but does not join it, and the
+     * two show their own segments.
+     */
+    private static void closedFace(GameTestHelper helper) {
+        tank(helper, 1, 1);
+        pipe(helper, 2, 1);
+        helper.startSequence().thenIdle(SETTLES).thenExecute(() -> {
+            if (!FluidPipes.close(helper.getLevel(), helper.absolutePos(at(2, 1)), Direction.WEST)) {
+                helper.fail("the pipe's west side did not close", at(2, 1));
+            }
+            helper.setBlock(at(2, 1), Blocks.AIR.defaultBlockState());
+            tank(helper, 2, 1);
+        }).thenIdle(SETTLES).thenExecute(() -> water(helper, at(1, 1), 12_500)).thenIdle(SETTLES).thenExecute(() -> {
+            joins(helper, at(1, 1), Direction.EAST, false, "the first tank");
+            joins(helper, at(2, 1), Direction.WEST, false, "the tank set beside it");
+            level(helper, at(1, 1), 7, "the first tank");
+            level(helper, at(2, 1), 0, "the tank set beside it");
+        }).thenSucceed();
+    }
+
+    /**
+     * Two stacked tanks set back to no joins, as a tank saved before tank groups loads, join again
+     * once their chunk loads. The chunk is already loaded, so its load is posted as the game does.
+     */
+    private static void savedWithoutJoins(GameTestHelper helper) {
+        tank(helper, 1, 1);
+        tank(helper, 1, 2);
+        helper.startSequence().thenIdle(SETTLES).thenExecute(() -> {
+            for (int y = 1; y <= 2; y++) {
+                BlockPos pos = helper.absolutePos(at(1, y));
+                BlockState state = helper.getLevel().getBlockState(pos);
+                for (BooleanProperty join : StorageTankBlock.JOINS.values()) {
+                    state = state.setValue(join, false);
+                }
+                // The same block, so the tank stays in its segment: only its state changes.
+                helper.getLevel().setBlock(pos, state, Block.UPDATE_CLIENTS);
+            }
+            joins(helper, at(1, 1), Direction.UP, false, "the bottom tank, set back");
+            BlockPos chunk = helper.absolutePos(at(1, 1));
+            NeoForge.EVENT_BUS.post(new ChunkEvent.Load(helper.getLevel().getChunkAt(chunk), false));
+        }).thenIdle(SETTLES).thenExecute(() -> {
+            joins(helper, at(1, 1), Direction.UP, true, "the bottom tank, its chunk loaded");
+            joins(helper, at(1, 2), Direction.DOWN, true, "the top tank, its chunk loaded");
+        }).thenSucceed();
     }
 }

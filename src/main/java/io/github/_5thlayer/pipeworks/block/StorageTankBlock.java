@@ -89,15 +89,10 @@ public class StorageTankBlock extends Block implements FluidSegments.SegmentBloc
         return state;
     }
 
-    /** Joined only to the tanks it is linked to: a pipe or a port beside it stays apart. */
+    /** Joined only to the tanks it is linked to: a pipe, a port or a fluid inventory beside it stays apart. */
     @Override
-    public boolean armTowards(BlockState beside) {
-        return beside.getBlock() instanceof StorageTankBlock;
-    }
-
-    @Override
-    public boolean armsToInventories() {
-        return false;
+    public boolean drawsArmTowards(@Nullable BlockState node) {
+        return node != null && node.getBlock() instanceof StorageTankBlock;
     }
 
     @Override

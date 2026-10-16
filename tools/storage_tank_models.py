@@ -7,11 +7,15 @@
 # from the repo root with Python 3: python3 tools/storage_tank_models.py
 
 import json
+from collections import namedtuple
 from pathlib import Path
 
 ASSETS = Path("src/main/resources/assets/pipeworks")
 MODELS = ASSETS / "models/block"
+# The steps a tank's fill is drawn in: TankGroupFill.STEPS, the level property's maximum.
 STEPS = 15
+# The glass box: from 1 to 15 across, inset as the caps are not, and from 2 to 14 up.
+GLASS_INSET = 1
 GLASS_BOTTOM, GLASS_TOP = 2, 14
 FLUID_INSET = 1.5
 SIDES = ["north", "east", "south", "west"]
@@ -65,9 +69,9 @@ def glass_uv(face, a1, a2, y1, y2):
         ua, ub = a1, a2
     va, vb = 16 - y2, 16 - y1
     def u(a):
-        return u0 + (a - 1) / 14 * (u1 - u0)
+        return u0 + (a - GLASS_INSET) / (16 - 2 * GLASS_INSET) * (u1 - u0)
     def v(b):
-        return v0 + (b - 2) / 12 * (v1 - v0)
+        return v0 + (b - (16 - GLASS_TOP)) / (GLASS_TOP - GLASS_BOTTOM) * (v1 - v0)
     return [num(u(ua)), num(v(va)), num(u(ub)), num(v(vb))]
 
 
@@ -155,10 +159,13 @@ def side_uv(uv, side, xs, zs):
     return [lerp(u0, u1, a), v0, lerp(u0, u1, b), v1]
 
 
+# One axis of a cap cell: the side whose half it lies in, the unjoined rim it is on or None, where
+# it samples as a rim or middle, and where it samples in a quarter of the centre.
+Axis = namedtuple("Axis", "half rim sample quarter")
+
+
 def axis(cell, low, high, joins, edge_sample, mirrored):
-    """One axis of a cell: (the side whose half it lies in, the unjoined rim it is on or None,
-    where it samples as a rim or middle, where it samples in a quarter of the centre). An unjoined
-    rim samples edge_sample, reversed on the side named mirrored."""
+    """One axis of a cell. An unjoined rim samples edge_sample, reversed on the side mirrored."""
     lo, hi = cell
     half = low if hi <= 8 else high
     edge = low if lo == 0 else high if hi == 16 else None
@@ -172,19 +179,19 @@ def axis(cell, low, high, joins, edge_sample, mirrored):
     # The quarter's other half lies across the seam on this side, so the 8 pixels here are the
     # far half of the centre, from 4 to 8 or 8 to 12, at half the scale.
     quarter = (8 + lo / 2, 8 + hi / 2) if half == low else (4 + (lo - 8) / 2, 4 + (hi - 8) / 2)
-    return half, rim, sample, quarter
+    return Axis(half, rim, sample, quarter)
 
 
 def cap_cell(cap, xs, zs, joins):
     """The faces of one cell of a cap, for one set of joins, or None for the plain fill."""
-    xhalf, xrim, xsample, xquarter = axis(xs, "west", "east", joins, EAST_EDGE, "west")
-    zhalf, zrim, zsample, zquarter = axis(zs, "north", "south", joins, NORTH_EDGE, "south")
-    if joins[xhalf] == joins[zhalf] == "true":
-        sx, sz, rims = xquarter, zquarter, []
-    elif xrim or zrim:
-        sx, sz, rims = xsample, zsample, [r for r in (xrim, zrim) if r]
+    x = axis(xs, "west", "east", joins, EAST_EDGE, "west")
+    z = axis(zs, "north", "south", joins, NORTH_EDGE, "south")
+    if joins[x.half] == joins[z.half] == "true":
+        sx, sz, rims = x.quarter, z.quarter, []
+    elif x.rim or z.rim:
+        sx, sz, rims = x.sample, z.sample, [r for r in (x.rim, z.rim) if r]
     elif "true" not in joins.values():
-        sx, sz, rims = xsample, zsample, []
+        sx, sz, rims = x.sample, z.sample, []
     else:
         return None
     faces = {f: {"uv": flat_uv(cap["faces"][f]["uv"], f, sx, sz), "texture": "#0"}

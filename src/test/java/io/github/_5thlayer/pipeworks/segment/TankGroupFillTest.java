@@ -13,7 +13,7 @@ class TankGroupFillTest {
     private static final long TANK = 25_000;
 
     private static int[] steps(long amount, long capacity, int... heights) {
-        return TankGroupFill.steps(heights, TankGroupFill.fineStep(amount, capacity, heights.length));
+        return TankGroupFill.steps(heights, TankGroupFill.fifteenths(amount, capacity, heights.length));
     }
 
     @Test

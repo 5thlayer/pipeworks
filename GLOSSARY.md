@@ -39,6 +39,10 @@ _Avoid_: machine (a port is often one), foreign tank, fluid face
 What a pipe draws towards a side where fluid can move: a node it is linked to, or a fluid inventory.
 _Avoid_: connection, link (a link is between two nodes in a segment; an arm is only what is drawn)
 
+**Join**:
+What a storage tank draws towards a tank of its tank group beside it: no frame or glass between the two. The server sets joins through the same methods as a pipe's arms, which is why the code calls them arms.
+_Avoid_: connection, seam (a seam is where two joined tanks meet, which a join hides)
+
 **Closed side**:
 A side of a pipe a player has shut, where it links to no node and moves no fluid with a fluid inventory. Closing the face between two nodes closes it on both. Every side starts open, and a port's sides are its own to open.
 _Avoid_: disconnected side, wrenched side, blocked side

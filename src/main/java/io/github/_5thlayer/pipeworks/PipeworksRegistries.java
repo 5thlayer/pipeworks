@@ -39,13 +39,20 @@ public final class PipeworksRegistries {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Pipeworks.MOD_ID);
     private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, Pipeworks.MOD_ID);
 
+    /**
+     * Solid, though its shape is a thin core with arms, so a flowing fluid stops at it as at a wall rather than
+     * washing it away as it would a torch (#34).
+     */
     public static final DeferredBlock<FluidPipeBlock> PIPE = BLOCKS.registerBlock("pipe", FluidPipeBlock::new,
-            props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
+            props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion().forceSolidOn());
     public static final DeferredBlock<StorageTankBlock> STORAGE_TANK = BLOCKS.registerBlock("storage_tank", StorageTankBlock::new,
             props -> props.strength(2.0F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
-    /** Has no recipe, which keeps it out of survival: it is in the Works tab and {@code /give}. */
+    /**
+     * Has no recipe, which keeps it out of survival: it is in the Works tab and {@code /give}. Solid to a flowing
+     * fluid, as the pipe is.
+     */
     public static final DeferredBlock<CreativePipeBlock> CREATIVE_PIPE = BLOCKS.registerBlock("creative_pipe", CreativePipeBlock::new,
-            props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion());
+            props -> props.strength(1.5F, 6.0F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion().forceSolidOn());
     /** Has a crafting recipe from pipes and vanilla items; a pack may replace it. */
     public static final DeferredBlock<PumpBlock> PUMP = BLOCKS.registerBlock("pump", PumpBlock::new,
             props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());

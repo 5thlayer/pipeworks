@@ -83,6 +83,7 @@ public final class PipeworksGameTests {
         FluidItemTests.register(tests);
         ConfigTests.register(tests);
         CreativeTabTests.register(tests);
+        FluidFlowTests.register(tests);
     }
 
     private static Identifier id(String path) {

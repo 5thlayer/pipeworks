@@ -56,6 +56,10 @@ final class CreativePipeTests {
         tests.test("a_creative_pipes_fluid_survives_a_save_and_load", 20, CreativePipeTests::survivesSaving);
         tests.test("breaking_a_creative_pipe_stops_it_sourcing", 20, CreativePipeTests::breakingClears);
         tests.test("a_menu_of_a_broken_creative_pipe_sets_nothing", 20, CreativePipeTests::brokenPipeSetsNothing);
+        tests.test("a_shift_click_on_a_bucket_of_water_in_the_inventory_sets_a_creative_pipe_and_keeps_the_bucket", 20, CreativePipeTests::shiftClickSets);
+        tests.test("a_shift_click_on_an_item_that_holds_no_fluid_changes_nothing", 20, CreativePipeTests::shiftClickIgnoresOtherItems);
+        tests.test("a_shift_click_on_a_bucket_of_lava_is_refused_by_a_creative_pipe_set_to_water", 20, CreativePipeTests::shiftClickRefusesLava);
+        tests.test("a_shift_click_on_the_fluid_slot_clears_a_creative_pipe", 20, CreativePipeTests::shiftClickClears);
     }
 
     private static BlockPos at(int x) {
@@ -83,6 +87,26 @@ final class CreativePipeTests {
 
     private static void click(CreativePipeMenu menu, GameTestHelper helper) {
         menu.clicked(CreativePipeMenu.FLUID_SLOT, 0, ContainerInput.PICKUP, helper.makeMockPlayer(GameType.SURVIVAL));
+    }
+
+    /** A player holding {@code held} in the first hotbar slot. */
+    private static Player holding(GameTestHelper helper, ItemStack held) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.getInventory().setItem(0, held);
+        return player;
+    }
+
+    /**
+     * A shift-click, as the screen sends it, on {@code player}'s first hotbar slot in the menu of
+     * the creative pipe at x.
+     */
+    private static void shiftClick(GameTestHelper helper, int x, Player player) {
+        CreativePipeMenu menu = new CreativePipeMenu(1, player.getInventory(), helper.absolutePos(at(x)));
+        menu.clicked(menu.findSlot(player.getInventory(), 0).orElseThrow(), 0, ContainerInput.QUICK_MOVE, player);
+    }
+
+    private static @Nullable Fluid sourceAt(GameTestHelper helper, int x) {
+        return FluidSegments.get(helper.getLevel()).sourceAt(helper.absolutePos(at(x)));
     }
 
     private static SegmentGraph.@Nullable Contents contentsAt(GameTestHelper helper, int x) {
@@ -330,6 +354,58 @@ final class CreativePipeTests {
         click(menu, helper);
         if (FluidSegments.get(helper.getLevel()).sourceAt(helper.absolutePos(at(0))) != null) {
             helper.fail("a menu opened on a creative pipe set a pipe that replaced it", at(0));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void shiftClickSets(GameTestHelper helper) {
+        creativePipe(helper);
+        ItemStack bucket = new ItemStack(Items.WATER_BUCKET);
+        Player player = holding(helper, bucket);
+        shiftClick(helper, 0, player);
+        if (sourceAt(helper, 0) != Fluids.WATER) {
+            helper.fail("a shift-clicked bucket of water set the creative pipe to " + sourceAt(helper, 0), at(0));
+            return;
+        }
+        ItemStack held = player.getInventory().getItem(0);
+        if (held != bucket || !bucket.is(Items.WATER_BUCKET) || bucket.getCount() != 1) {
+            helper.fail("the shift-click moved the bucket: the slot holds " + held, at(0));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void shiftClickIgnoresOtherItems(GameTestHelper helper) {
+        creativePipe(helper);
+        shiftClick(helper, 0, holding(helper, new ItemStack(Items.STICK)));
+        shiftClick(helper, 0, holding(helper, new ItemStack(Items.BUCKET)));
+        if (sourceAt(helper, 0) != null) {
+            helper.fail("an item with no fluid set the creative pipe to " + sourceAt(helper, 0), at(0));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void shiftClickRefusesLava(GameTestHelper helper) {
+        creativePipe(helper);
+        click(helper, 0, new ItemStack(Items.WATER_BUCKET));
+        shiftClick(helper, 0, holding(helper, new ItemStack(Items.LAVA_BUCKET)));
+        if (sourceAt(helper, 0) != Fluids.WATER) {
+            helper.fail("a shift-clicked bucket of lava set a creative pipe of water to " + sourceAt(helper, 0), at(0));
+            return;
+        }
+        helper.succeed();
+    }
+
+    private static void shiftClickClears(GameTestHelper helper) {
+        creativePipe(helper);
+        CreativePipeMenu menu = click(helper, 0, new ItemStack(Items.WATER_BUCKET));
+        menu.setCarried(new ItemStack(Items.LAVA_BUCKET));
+        menu.clicked(CreativePipeMenu.FLUID_SLOT, 0, ContainerInput.QUICK_MOVE, helper.makeMockPlayer(GameType.SURVIVAL));
+        menu.broadcastChanges();
+        if (!menu.shown().isEmpty() || sourceAt(helper, 0) != null) {
+            helper.fail("a shift-click on the fluid slot left the creative pipe set to " + sourceAt(helper, 0), at(0));
             return;
         }
         helper.succeed();

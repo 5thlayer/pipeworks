@@ -36,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  * client's screen true, including when another player changes the pipe. The client changes nothing:
  * the slot's click is read from the cursor stack the server holds, so a client cannot claim to hold
  * what it does not. {@link #setFluid} is the one way the fluid is set, for the click and for a
- * recipe viewer's drop alike.
+ * recipe viewer's drop and a shift-click alike.
  */
 public final class CreativePipeMenu extends AbstractContainerMenu {
 
@@ -130,9 +130,9 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
 
     /**
      * A click on the ghost slot sets the fluid from the stack on the cursor, or clears it with an
-     * empty cursor, and changes neither stack. A cursor stack that holds no fluid, and every other
-     * input on the slot, does nothing. The client does nothing at all: the server's answer arrives
-     * as the slot's contents.
+     * empty cursor, and changes neither stack; a shift-click on it clears the fluid whatever the
+     * cursor holds. A cursor stack that holds no fluid, and every other input on the slot, does
+     * nothing. The client does nothing at all: the server's answer arrives as the slot's contents.
      */
     @Override
     public void clicked(int slotId, int button, ContainerInput input, Player who) {
@@ -140,7 +140,14 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
             super.clicked(slotId, button, input, who);
             return;
         }
-        if (input != ContainerInput.PICKUP || (button != 0 && button != 1)) {
+        if (button != 0 && button != 1) {
+            return;
+        }
+        if (input == ContainerInput.QUICK_MOVE) {
+            setFluid(Fluids.EMPTY);
+            return;
+        }
+        if (input != ContainerInput.PICKUP) {
             return;
         }
         ItemStack carried = getCarried();
@@ -154,9 +161,16 @@ public final class CreativePipeMenu extends AbstractContainerMenu {
         }
     }
 
-    // Nothing shift-clicks into the ghost slot, and a pipe holds no items.
+    /**
+     * A shift-click on an inventory stack that holds a fluid sets the pipe to it, as a click on the
+     * ghost slot with that stack on the cursor would, and moves nothing: a pipe holds no items.
+     */
     @Override
     public ItemStack quickMoveStack(Player who, int index) {
+        Fluid fluid = fluidIn(slots.get(index).getItem());
+        if (fluid != null) {
+            setFluid(fluid);
+        }
         return ItemStack.EMPTY;
     }
 

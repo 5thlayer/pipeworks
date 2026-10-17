@@ -13,18 +13,21 @@ import net.minecraft.world.level.material.Fluids;
 
 /**
  * A pipe stands in a flowing fluid's way as a wall would, rather than being washed away and dropped
- * as a torch is (#34). Each test sets a source at x 2 in a row at z 4 with the pipe beside it at x 3,
- * or above it, and checks the fluid has spread on its open side before checking the pipe.
+ * as a torch is (#34). The beside tests set a source at x 2 in a row at z 4 with the pipe east of it
+ * at x 3; the under test sets a water source a block above a pipe at x 3. Each checks the fluid has
+ * spread on an open side before checking the pipe, then takes the source away, so the flow dries up
+ * before it runs off the platform.
  */
 final class FluidFlowTests {
 
     private static final BlockPos SOURCE = new BlockPos(2, 1, 4);
     private static final BlockPos BESIDE = SOURCE.east();
-    private static final BlockPos BELOW = SOURCE.below().east();
     private static final BlockPos OPEN = SOURCE.west();
-    /** Water spreads every 5 ticks in the Overworld, lava every 30. */
-    private static final int WATER_WAIT = 20;
-    private static final int LAVA_WAIT = 70;
+    private static final BlockPos UNDER = new BlockPos(3, 1, 4);
+    private static final BlockPos ABOVE = UNDER.above();
+    /** Water spreads every 5 ticks in the Overworld and lava every 30: each waits for two spreads at most. */
+    private static final int WATER_WAIT = 10;
+    private static final int LAVA_WAIT = 40;
 
     private FluidFlowTests() {
     }
@@ -51,22 +54,22 @@ final class FluidFlowTests {
             if (!helper.getBlockState(BESIDE).is(pipe)) {
                 helper.fail("the flowing " + fluid + " washed the pipe away", BESIDE);
             }
+            helper.setBlock(SOURCE, Blocks.AIR);
         }).thenSucceed();
     }
 
-    /** Water falls onto the pipe below a source raised a block over the floor, and spreads instead. */
+    /** The water lands on the pipe and spreads over it instead of falling through. */
     private static void under(GameTestHelper helper) {
-        BlockPos pipe = BESIDE;
-        BlockPos source = pipe.above();
-        helper.setBlock(pipe, PipeworksRegistries.PIPE.get());
-        helper.setBlock(source, Blocks.WATER);
+        helper.setBlock(UNDER, PipeworksRegistries.PIPE.get());
+        helper.setBlock(ABOVE, Blocks.WATER);
         helper.startSequence().thenIdle(WATER_WAIT).thenExecute(() -> {
-            if (!helper.getLevel().getFluidState(helper.absolutePos(source.east())).is(Fluids.FLOWING_WATER)) {
-                helper.fail("the water never spread over the pipe", source.east());
+            if (!helper.getLevel().getFluidState(helper.absolutePos(ABOVE.east())).is(Fluids.FLOWING_WATER)) {
+                helper.fail("the water never spread over the pipe", ABOVE.east());
             }
-            if (!helper.getBlockState(pipe).is(PipeworksRegistries.PIPE.get())) {
-                helper.fail("the falling water washed the pipe away", pipe);
+            if (!helper.getBlockState(UNDER).is(PipeworksRegistries.PIPE.get())) {
+                helper.fail("the falling water washed the pipe away", UNDER);
             }
+            helper.setBlock(ABOVE, Blocks.AIR);
         }).thenSucceed();
     }
 }

@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.4.0
+
 - In the creative pipe's screen, a shift-click on a bucket or other fluid item in the inventory sets the pipe's fluid, as a click on its slot with that item does, and takes nothing; a shift-click on the slot clears it (#33).
 - Flowing water and lava stop at a pipe or a creative pipe as at a wall, where they washed it away and dropped it. A pipe now counts as solid to vanilla too: a sign or a banner stands on one, a painting or an item frame hangs on one, rain stops at one, and farmland or a dirt path under one turns to dirt (#34).
 - The Pump and the Outlet have textures of their own in the pipe and tank's slate and iron grey, where they had the furnace's, the dispenser's and the dropper's. The Outlet narrows in steps to a nozzle instead of filling the block, though its hitbox is still the whole block; it no longer hides the faces of the blocks beside it, and lets light through as a hopper does; the model `pipeworks:block/outlet_vertical` is gone, the blockstate turns `pipeworks:block/outlet` to each facing (#31).

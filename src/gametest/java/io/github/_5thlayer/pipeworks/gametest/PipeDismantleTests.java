@@ -71,10 +71,12 @@ final class PipeDismantleTests {
             FluidPipes.close(helper.getLevel(), helper.absolutePos(run.get(1)), Direction.EAST);
             refused(helper, run.getFirst(), run.getLast(), ShortestPath.Refused.NOT_JOINED, "message.pipeworks.dismantle.not_joined");
         });
+        // A machine is no pipe, so the click is not the Dismantle's: it passes on, untold, and keeps the start
+        // (Groundworks ADR 0010).
         tests.test("a_pipe_dismantle_ending_on_a_machine_changes_nothing", 20, helper -> {
             helper.setBlock(START.east(3), TestPort.BLOCK.get());
             row(helper, 3);
-            refused(helper, START, START.east(3), Refusal.Dismantle.NOT_SAME_KIND, "message.groundworks.dismantle_not_same_kind");
+            passesOn(helper, START, START.east(3));
         });
         tests.test("a_creative_pipe_is_a_member_of_the_family", 20, helper -> {
             helper.setBlock(START.east(1), PipeworksRegistries.CREATIVE_PIPE.get());
@@ -160,6 +162,32 @@ final class PipeDismantleTests {
         }
         if (storedStart(player) != null) {
             helper.fail("a dismantle left its start stored", end);
+            return;
+        }
+        helper.succeed();
+    }
+
+    /** A click on a block no Dismantle family claims, with a start stored: nothing changes and nothing is told. */
+    private static void passesOn(GameTestHelper helper, BlockPos start, BlockPos end) {
+        var player = started(helper, start);
+        Map<BlockPos, BlockState> before = world(helper);
+        Map<Item, Integer> carried = inventory(player);
+        var stored = player.getMainHandItem().getComponents();
+        player.heard.clear();
+        click(helper, player, end);
+
+        Map<BlockPos, BlockState> after = world(helper);
+        List<BlockPos> changed = before.keySet().stream().filter(pos -> before.get(pos) != after.get(pos)).toList();
+        if (!changed.isEmpty()) {
+            helper.fail("a click on a machine changed " + changed.size() + " blocks, first at " + changed.getFirst(), end);
+            return;
+        }
+        if (!carried.equals(inventory(player)) || !Objects.equals(stored, player.getMainHandItem().getComponents())) {
+            helper.fail("a click on a machine changed the player's inventory or the stored start", end);
+            return;
+        }
+        if (!player.heard.isEmpty()) {
+            helper.fail("a click on a machine told the player " + player.heard, end);
             return;
         }
         helper.succeed();

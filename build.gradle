@@ -13,7 +13,7 @@ libworks {
     upstream('groundworks') {
         // Groundworks' tags are v<version>.
         tagPrefix = 'v'
-        range = '[0.5.5,0.6)'
+        range = '[0.6.0,0.7)'
     }
     // Nested by jar-in-jar, so players install nothing more; FML loads the newest nested copy in range,
     // which runs to the next minor.

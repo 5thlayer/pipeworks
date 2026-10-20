@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- Pipeworks requires Groundworks 0.6.0 or later, below 0.7. With it, Rotate and Reverse Rotate turn an Outlet placed against the side of a block, where before the press did nothing you could see (5thlayer/groundworks#72).
+
 ## 0.4.0
 
 - In the creative pipe's screen, a shift-click on a bucket or other fluid item in the inventory sets the pipe's fluid, as a click on its slot with that item does, and takes nothing; a shift-click on the slot clears it (#33).

@@ -14,11 +14,36 @@ Conventional commits: `<type>(<optional scope>): <summary>`, with the summary in
 
 ## Testing
 
-`sh ./gradlew build` runs the JUnit tests, on a plain JVM with no Minecraft. `sh ./gradlew runGameTestServer` runs the game tests headless, a real player on a real server with only Groundworks and the libworks runtime the Module nests beside it, and names each one it ran; it fails if it ran none. The `skillworks:gametest-loop` skill runs a subset, `--tests 'pipeworks:<glob>' 1`, one glob a run, so a ticket's new game tests share a name prefix that selects them all. JEI, EMI and Jade are on the dev client only. The libworks plugin's `checkPlaysAlone`, which `build` runs, fails on another Module's id, namespace or required dependency in the Module's code or resources (libworks ADR 0005), `PlaysAloneTest` on a tag the code reads that the game tests don't check, and `PlaysAloneTests` on a tag it reads or its data names that only another mod fills (FactoryWorks ADR-0127). Game-test code and test-only resources live in the `gametest` source set and never ship (libworks ADR 0011): `PipeworksGameTests` hooks itself in from `FMLConstructModEvent`, and `src/main` never names game-test code. Where shipped code must report to a test, `main` holds a hook with no test vocabulary that the game-test side fills. A new game test class is registered by a line in `PipeworksGameTests.registerTests`, and its tests stand on the `gametest/platform` structure that the libworks plugin's `sh ./gradlew buildGametestStructures` writes into `src/gametest/resources`. A test that needs a machine fills `gametest/TestPort`, a block registered only in the Module's own runs, and waits a tick after placing it, since a block entity's `onLoad` runs on the next tick. CI (`.github/workflows/ci.yml`, libworks' `module-ci.yml` at the plugin's tag) runs both on every push and never publishes. Data only the Module's own runs load lives in `src/gametest/resources`, which never ships (libworks ADR 0004): `DevPacks` switches on `gametest_pack/` in the game tests and `dev_pack/` in the dev client when the Module has one, the datapacks that stand in for what a Consumer fills; it has none today. Packs a test switches on itself, such as one per batch, go under `gametest_packs/<name>/`.
+### Running the tests
 
-Vanilla's code, with NeoForge's patches, is in `build/moddev/artifacts/minecraft-patched-*-sources.jar`; NeoForge's own classes (`net/neoforged/...`) are in `~/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/<version>/*/neoforge-<version>-sources.jar`, `<version>` being `neoforge_version` in `gradle.properties` (the cache keeps older ones). Read either with `unzip -p <jar> <path>/X.java`, and check a claim about vanilla or NeoForge behaviour there before stating it.
+- `sh ./gradlew build` runs the JUnit tests, on a plain JVM with no Minecraft.
+- `sh ./gradlew runGameTestServer` runs the game tests headless, a real player on a real server with only Groundworks and the libworks runtime the Module nests beside it, and names each one it ran; it fails if it ran none.
+- The `skillworks:gametest-loop` skill runs a subset, `--tests 'pipeworks:<glob>' 1`, one glob a run, so a ticket's new game tests share a name prefix that selects them all.
+- The libworks plugin's `checkPlaysAlone`, which `build` runs, fails on another Module's id, namespace or required dependency in the Module's code or resources (libworks ADR 0005).
+- `PlaysAloneTest` fails on a tag the code reads that the game tests don't check, and `PlaysAloneTests` on a tag it reads or its data names that only another mod fills (FactoryWorks ADR-0127).
+- CI (`.github/workflows/ci.yml`) runs both through libworks' `module-ci.yml`, at the tag of the plugin `build.gradle` applies, on every push and never publishes.
 
-The `skillworks:quicklaunch` skill opens the dev client into the most recent save in `run/saves`, one client per checkout.
+### Game-test code
+
+- Everything that exists only for the Module's own runs lives in the `gametest` source set, which never ships (libworks ADRs 0004 and 0011): its game-test code, its test-only resources and its packs.
+- `PipeworksGameTests` hooks itself in from `FMLConstructModEvent`, and `src/main` never names game-test code.
+- Where shipped code must report to a test, `main` holds a hook with no test vocabulary that the game-test side fills.
+- A new game test class is registered by a line in `PipeworksGameTests.registerTests`, and its tests stand on the `gametest/platform` structure that the plugin's `buildGametestStructures` task writes into `src/gametest/resources`.
+- A test that needs a machine fills `gametest/TestPort`, a block registered only in the Module's own runs, and waits a tick after placing it, since a block entity's `onLoad` runs on the next tick.
+- `DevPacks` switches on `gametest_pack/` in the game tests and `dev_pack/` in the dev client when the Module has one, the datapacks that stand in for what a Consumer fills; it has none today.
+- Packs a test switches on itself, such as one per batch, go under `gametest_packs/<name>/`.
+
+### The dev client
+
+- JEI, EMI and Jade are on the dev client only.
+- Neither run loads a client, so a change to a screen, a model or a texture isn't done when the tests pass: list it for the user to check in the dev client.
+- The `skillworks:quicklaunch` skill opens the dev client into the most recent save in `run/saves`, one client per checkout.
+
+### Vanilla and NeoForge sources
+
+- Vanilla's code, with NeoForge's patches, is in `build/moddev/artifacts/minecraft-patched-*-sources.jar`.
+- NeoForge's own classes (`net/neoforged/...`) are in `~/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/<version>/*/neoforge-<version>-sources.jar`, `<version>` being `neoforge_version` in `gradle.properties` (the cache keeps older ones).
+- Read either with `unzip -p <jar> <path>/X.java`, and check a claim about vanilla or NeoForge behaviour there before stating it.
 
 ## Releases
 

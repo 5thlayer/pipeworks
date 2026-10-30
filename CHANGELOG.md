@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+## 0.4.2
+
 - Pipeworks requires Groundworks 0.7.0 or later, below 0.8. With it, a sheet of paper copies, cuts and pastes a box of blocks as a Blueprint, and Next Assembly is now Next Choice, still on `V` (5thlayer/groundworks#76).
 
 ## 0.4.1

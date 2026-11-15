@@ -3,12 +3,14 @@
 
 package io.github._5thlayer.pipeworks;
 
+import io.github._5thlayer.pipeworks.inlinepump.InlinePumpRule;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * The server config, {@code pipeworks-server.toml} in the game's {@code config} directory: the pipe's and
- * the tank's capacity, which a pack sets (ADR 0003). A node takes the capacity when it joins and
- * keeps the one it was saved with, so a change reaches only the pipes and tanks placed after it.
+ * the tank's capacity, which a pack sets (ADR 0003), and the in-line pump's rate (ADR 0009). A node takes
+ * the capacity when it joins and keeps the one it was saved with, so a change reaches only the pipes and
+ * tanks placed after it; the rate is read every tick.
  */
 public final class PipeworksConfig {
 
@@ -27,6 +29,11 @@ public final class PipeworksConfig {
                     "when placed, so a change reaches only the tanks placed afterwards.")
             .defineInRange("tankCapacity", Pipeworks.TANK_CAPACITY, 1, MAX_CAPACITY);
 
+    public static final ModConfigSpec.IntValue INLINE_PUMP_RATE = BUILDER
+            .comment("The millibuckets an in-line pump moves a tick, Factorio's 60 (1,200 a second) by default. Read every",
+                    "tick, so a change reaches the pumps already placed (ADR 0009).")
+            .defineInRange("inlinePumpRate", InlinePumpRule.DEFAULT_RATE, 1, Integer.MAX_VALUE);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     private PipeworksConfig() {
@@ -40,5 +47,10 @@ public final class PipeworksConfig {
     /** The capacity a storage tank joins with, the default until the server config loads. */
     public static long tankCapacity() {
         return SPEC.isLoaded() ? TANK_CAPACITY.get() : Pipeworks.TANK_CAPACITY;
+    }
+
+    /** The millibuckets an in-line pump moves this tick, the default until the server config loads. */
+    public static int inlinePumpRate() {
+        return SPEC.isLoaded() ? INLINE_PUMP_RATE.get() : InlinePumpRule.DEFAULT_RATE;
     }
 }

@@ -61,6 +61,7 @@ final class GalleryTests {
                 new Scene("creative_pipe", new BlockPos(8, 0, -6), PipeworksRegistries.CREATIVE_PIPE.get()),
                 new Scene("pump", new BlockPos(21, 0, -6), pump),
                 new Scene("outlet", OUTLET, PipeworksRegistries.OUTLET.get()),
+                new Scene("inline_pump", new BlockPos(11, 0, -6), PipeworksRegistries.INLINE_PUMP.get()),
                 new Scene("dismantle", new BlockPos(6, 0, -6), PipeworksRegistries.PIPE.get()));
     }
 

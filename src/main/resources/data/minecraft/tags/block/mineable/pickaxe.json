@@ -4,6 +4,7 @@
     "pipeworks:storage_tank",
     "pipeworks:creative_pipe",
     "pipeworks:pump",
+    "pipeworks:inline_pump",
     "pipeworks:outlet"
   ]
 }

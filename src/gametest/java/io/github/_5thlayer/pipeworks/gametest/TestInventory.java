@@ -103,5 +103,10 @@ final class TestInventory {
         @Nullable ResourceHandler<FluidResource> handlerOn(@Nullable Direction side) {
             return side != null && side == exposedOn ? handler : null;
         }
+
+        /** Its one 1,000 mB slot, whichever face it exposes, for a test to fill and read. */
+        ResourceHandler<FluidResource> handler() {
+            return handler;
+        }
     }
 }

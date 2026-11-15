@@ -20,6 +20,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github._5thlayer.pipeworks.api.FluidPort;
+import io.github._5thlayer.pipeworks.inlinepump.InlinePumps;
 import io.github._5thlayer.pipeworks.segment.SegmentGraph;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -133,6 +134,8 @@ public final class FluidSegments extends SavedData {
      */
     private final Map<Long, Map<Direction, BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>>> caches =
             new HashMap<>();
+    /** The loaded in-line pumps, which tell the segments they are there as they load (ADR 0009). */
+    private final InlinePumps inlinePumps = new InlinePumps();
     /** The sides of each pipe to check again on the next level tick, as a mask by node. */
     private final Map<Long, Integer> dirty = new HashMap<>();
     /**
@@ -197,6 +200,7 @@ public final class FluidSegments extends SavedData {
                 segments.sweep(level);
                 segments.settle(level);
                 segments.refill();
+                segments.inlinePumps.tick(level, segments);
                 segments.redrawDirty(level);
                 segments.steps.update(level, segments.graph);
             }
@@ -283,6 +287,68 @@ public final class FluidSegments extends SavedData {
         }
     }
 
+    /**
+     * Implemented by a block that is no node and no fluid inventory, but that pipes beside it draw an
+     * arm towards on some faces, as they do towards the in-line pump's back and front (ADR 0009).
+     */
+    public interface OpensToPipes {
+        /** Whether {@code state} opens onto a pipe on {@code face}, a face of this block. */
+        boolean opensOn(BlockState state, Direction face);
+    }
+
+    /** Whether the block at {@code pos} {@linkplain OpensToPipes opens onto pipes} on {@code face}, a face of it. */
+    private static boolean opensToPipes(Level level, BlockPos pos, Direction face) {
+        BlockState state = level.getBlockState(pos);
+        return state.getBlock() instanceof OpensToPipes opening && opening.opensOn(state, face);
+    }
+
+    /** The level's in-line pumps, which their block entities add and remove as they load and go. */
+    public InlinePumps inlinePumps() {
+        return inlinePumps;
+    }
+
+    /**
+     * The id of the segment holding the node at {@code pos}, if it is joined and opens {@code face};
+     * null otherwise. Ids hold only until the segments next change.
+     */
+    public @Nullable Integer segmentOpenOn(ServerLevel level, BlockPos pos, Direction face) {
+        leaveIfGone(level, pos);
+        long node = pos.asLong();
+        return joined(node) && !closed(pos, face) ? graph.segmentOf(node) : null;
+    }
+
+    /**
+     * The fluid inventories each of {@code segments} touches: the handler beside each open side of
+     * its pipes that is linked to no node, in a fixed order, by node then side. A side towards an
+     * unloaded block, a node or a block that only opens onto pipes is none.
+     */
+    public Map<Integer, List<ResourceHandler<FluidResource>>> inventoriesOf(ServerLevel level, Set<Integer> segments) {
+        Map<Integer, List<ResourceHandler<FluidResource>>> found = new HashMap<>();
+        if (segments.isEmpty()) {
+            return found;
+        }
+        List<Long> nodes = new ArrayList<>(caches.keySet());
+        nodes.sort(null);
+        for (long node : nodes) {
+            if (!joined(node) || !segments.contains(graph.segmentOf(node))) {
+                continue;
+            }
+            Spec spec = specs.get(node);
+            for (Map.Entry<Direction, BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> side
+                    : caches.get(node).entrySet()) {
+                BlockPos beside = BlockPos.of(node).relative(side.getKey());
+                if (!spec.opens(side.getKey()) || !level.isLoaded(beside) || isNode(level, beside)) {
+                    continue;
+                }
+                ResourceHandler<FluidResource> handler = side.getValue().getCapability();
+                if (handler != null) {
+                    found.computeIfAbsent(graph.segmentOf(node), segment -> new ArrayList<>()).add(handler);
+                }
+            }
+        }
+        return found;
+    }
+
     /** Whether {@code pos} is a node in a segment. */
     public boolean contains(BlockPos pos) {
         return joined(pos.asLong());
@@ -303,12 +369,14 @@ public final class FluidSegments extends SavedData {
 
     /**
      * Whether a pipe placed at {@code pos} would draw an arm on {@code side}: it would join without
-     * mixing, and either links to the node there or has a fluid inventory there. A pipe that would
-     * wait draws none.
+     * mixing, and either links to the node there or has a fluid inventory there, or a block that
+     * opens onto pipes on that face. A pipe that would wait draws none.
      */
     public boolean wouldDrawArm(Level level, BlockPos pos, Direction side) {
-        return canJoin(pos, ALL_FACES)
-                && (neighbours(pos, bit(side)).length > 0 || isFluidInventory(level, pos.relative(side), side.getOpposite()));
+        BlockPos beside = pos.relative(side);
+        return canJoin(pos, ALL_FACES) && (neighbours(pos, bit(side)).length > 0
+                || isFluidInventory(level, beside, side.getOpposite())
+                || level.isLoaded(beside) && opensToPipes(level, beside, side.getOpposite()));
     }
 
     /**
@@ -752,6 +820,11 @@ public final class FluidSegments extends SavedData {
                 || loaded && isNode(level, beside)) {
             uncache(node, face);
             return false;
+        }
+        if (loaded && opensToPipes(level, beside, face.getOpposite())) {
+            // Drawn towards, but no fluid inventory: the in-line pump moves its fluid itself (ADR 0009).
+            uncache(node, face);
+            return true;
         }
         // Queried even where the neighbour is not loaded: a cache notifies only once queried.
         boolean handler = cache(level, node, face).getCapability() != null;

@@ -17,7 +17,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 final class CreativeTabTests {
 
     private static final List<String> WORKS_TAB_ORDER = List.of(
-            "pipe", "storage_tank", "pump", "outlet", "creative_pipe");
+            "pipe", "storage_tank", "pump", "inline_pump", "outlet", "creative_pipe");
 
     private CreativeTabTests() {
     }

@@ -22,9 +22,10 @@ To play Pipeworks beside every other FactoryWorks mod, install the [FactoryWorks
 - **The creative pipe.** `pipeworks:creative_pipe`, in the Works creative tab, keeps its segment full of the fluid its screen sets. Click its slot with a bucket, or any item holding a fluid, to set it, and with an empty cursor to clear it. With JEI or EMI installed, a fluid can be dragged onto the slot.
 - **A Pump.** `pipeworks:pump` draws a still source block beside it into its segment. A source in the fluid tag `pipeworks:infinite_sources`, water by default, is left in place and gives 1,200 mB a second; any other is taken whole, as a bucket would, once the segment has room for 1,000 mB.
 - **An Outlet.** `pipeworks:outlet` sets its segment's fluid down as a source block in the space it faces, a bucket's worth at a time, once that space is empty or replaceable. It never picks fluid up.
+- **An in-line pump.** `pipeworks:inline_pump` sits between two runs and moves fluid from the run behind it to the run in front, 1,200 mB a second by default (`inlinePumpRate` in `pipeworks-server.toml`). Through them it reaches other mods' tanks and machines that only hold fluid and never push or pull it: the run behind draws from every one it touches, and the run in front fills every one it touches, a cauldron included. A closed side keeps one out; a run between two in-line pumps only passes fluid on. It faces away from you as you place it, and a stick turns it round.
 - **Dismantle and drag-laying.** Pipes are a [Groundworks](https://github.com/5thlayer/groundworks) Dismantle Family and are laid by its Stretch: sneak-click a pipe with a pickaxe, then click another to take up the run between them; drag a line of pipes the way belts are laid.
 
-Not yet: the in-line pump and pipe-to-ground.
+Not yet: pipe-to-ground.
 
 ## Gallery
 

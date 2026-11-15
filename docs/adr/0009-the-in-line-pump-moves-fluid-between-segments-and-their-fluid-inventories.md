@@ -14,8 +14,11 @@ ADR 0004's "a connection to a fluid inventory stays passive" for the segments an
 ## Decision
 
 - **The in-line pump sits between two segments and is no node.** It moves fluid from the segment
-  behind it to the one in front, adds no capacity, never waits, and opens only its back and front.
-  Where the block behind or in front is a fluid inventory itself, it drains or fills it directly.
+  behind it to the one in front, adds no capacity, is never a waiting node, and opens only its back
+  and front.
+  Where the block behind or in front is a fluid inventory itself, it drains or fills it directly;
+  one that takes or gives only whole buckets, as a cauldron does, gets its bucket, and the pump then
+  waits it off at its rate, as ADR 0006 has the Pump wait after a block taken whole.
 - **It reaches through its segments, as Create's mechanical pump reaches through its pipes.** Each
   tick the segment behind refills from every fluid inventory it touches through an open side, as far
   as it has room; the pump moves up to its rate; the segment in front empties into every fluid

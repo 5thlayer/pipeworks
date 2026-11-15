@@ -78,6 +78,7 @@ public final class PipeworksGameTests {
         PipeDismantleTests.register(tests);
         PipeStretchTests.register(tests);
         PumpTests.register(tests);
+        InlinePumpTests.register(tests);
         RecipeTests.register(tests);
         OutletTests.register(tests);
         FluidItemTests.register(tests);

@@ -58,7 +58,8 @@ final class ConfigTests {
             helper.fail("no server config at " + file + ": " + e);
             return;
         }
-        for (String line : new String[] {"pipeCapacity = 100", "tankCapacity = 25000", "#The millibuckets a pipe", "#The millibuckets a storage tank"}) {
+        for (String line : new String[] {"pipeCapacity = 100", "tankCapacity = 25000", "inlinePumpRate = 60", "#The millibuckets a pipe", "#The millibuckets a storage tank",
+                "#The millibuckets an in-line pump"}) {
             if (!toml.contains(line)) {
                 helper.fail("the server config has no line " + line + ":\n" + toml);
                 return;

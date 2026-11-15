@@ -8,6 +8,8 @@ import io.github._5thlayer.pipeworks.block.CreativePipeBlock;
 import io.github._5thlayer.pipeworks.block.CreativePipeMenu;
 import io.github._5thlayer.pipeworks.block.FluidPipeBlock;
 import io.github._5thlayer.pipeworks.block.StorageTankBlock;
+import io.github._5thlayer.pipeworks.inlinepump.InlinePumpBlock;
+import io.github._5thlayer.pipeworks.inlinepump.InlinePumpBlockEntity;
 import io.github._5thlayer.pipeworks.outlet.OutletBlock;
 import io.github._5thlayer.pipeworks.outlet.OutletBlockEntity;
 import io.github._5thlayer.pipeworks.pump.PumpBlock;
@@ -30,7 +32,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/** The pipe, the storage tank, the Pump, the Outlet and the creative pipe, their items, the creative pipe's menu, and their place in the creative tabs. No fluid is registered here. */
+/** The pipe, the storage tank, the Pump, the in-line pump, the Outlet and the creative pipe, their items, the creative pipe's menu, and their place in the creative tabs. No fluid is registered here. */
 public final class PipeworksRegistries {
 
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Pipeworks.MOD_ID);
@@ -63,16 +65,23 @@ public final class PipeworksRegistries {
     public static final DeferredBlock<OutletBlock> OUTLET = BLOCKS.registerBlock("outlet", OutletBlock::new,
             props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
 
+    /** Has a crafting recipe from pipes and a piston; a pack may replace it. It takes no power (ADR 0009). */
+    public static final DeferredBlock<InlinePumpBlock> INLINE_PUMP = BLOCKS.registerBlock("inline_pump", InlinePumpBlock::new,
+            props -> props.strength(3.5F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     public static final DeferredItem<?> PIPE_ITEM = ITEMS.registerSimpleBlockItem("pipe", PIPE);
     public static final DeferredItem<?> STORAGE_TANK_ITEM = ITEMS.registerSimpleBlockItem("storage_tank", STORAGE_TANK);
     public static final DeferredItem<?> CREATIVE_PIPE_ITEM = ITEMS.registerSimpleBlockItem("creative_pipe", CREATIVE_PIPE);
     public static final DeferredItem<PumpItem> PUMP_ITEM = ITEMS.registerItem("pump", props -> new PumpItem(PUMP.get(), props.useBlockDescriptionPrefix()));
     public static final DeferredItem<?> OUTLET_ITEM = ITEMS.registerSimpleBlockItem("outlet", OUTLET);
+    public static final DeferredItem<?> INLINE_PUMP_ITEM = ITEMS.registerSimpleBlockItem("inline_pump", INLINE_PUMP);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpBlockEntity>> PUMP_ENTITY =
             BLOCK_ENTITIES.register("pump", () -> new BlockEntityType<>(PumpBlockEntity::new, Set.of(PUMP.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OutletBlockEntity>> OUTLET_ENTITY =
             BLOCK_ENTITIES.register("outlet", () -> new BlockEntityType<>(OutletBlockEntity::new, Set.of(OUTLET.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<InlinePumpBlockEntity>> INLINE_PUMP_ENTITY =
+            BLOCK_ENTITIES.register("inline_pump", () -> new BlockEntityType<>(InlinePumpBlockEntity::new, Set.of(INLINE_PUMP.get())));
 
     /** The extra data the server sends on opening is the creative pipe's position. */
     public static final DeferredHolder<MenuType<?>, MenuType<CreativePipeMenu>> CREATIVE_PIPE_MENU =
@@ -106,6 +115,7 @@ public final class PipeworksRegistries {
             event.accept(PIPE_ITEM.get());
             event.accept(STORAGE_TANK_ITEM.get());
             event.accept(PUMP_ITEM.get());
+            event.accept(INLINE_PUMP_ITEM.get());
             event.accept(OUTLET_ITEM.get());
             event.accept(CREATIVE_PIPE_ITEM.get());
         }

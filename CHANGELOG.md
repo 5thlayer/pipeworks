@@ -4,6 +4,8 @@ Written for Consumers: what a mod building against Pipeworks can use, or will se
 
 ## Unreleased
 
+- `pipeworks:inline_pump`, the **in-line pump**: no node, it moves fluid from the segment behind it to the one in front, at `inlinePumpRate` mB a tick (a new server config value, 60 by default, read every tick). The segment behind draws from every fluid inventory it touches through an open side, and the one in front fills every one it touches, so a Consumer's or another mod's block that only exposes a fluid handler can now be piped; a segment between two in-line pumps reaches none, and one no pump serves stays passive as before. It faces the way the player looks, turns round with an item in `pipeworks:closes_sides`, needs no power, and is crafted from a pipe, a piston and a pipe. Pipes draw an arm to its back and front. (ADR 0009, #39).
+
 ## 0.4.2
 
 - Pipeworks requires Groundworks 0.7.0 or later, below 0.8. With it, a sheet of paper copies, cuts and pastes a box of blocks as a Blueprint, and Next Assembly is now Next Choice, still on `V` (5thlayer/groundworks#76).

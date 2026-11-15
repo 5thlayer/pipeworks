@@ -10,4 +10,5 @@ execute positioned ~24 ~ ~-16 run function pipeworks:gallery/tank_level
 execute positioned ~48 ~ ~-16 run function pipeworks:gallery/creative_pipe
 execute positioned ~ ~ ~-32 run function pipeworks:gallery/pump
 execute positioned ~24 ~ ~-32 run function pipeworks:gallery/outlet
-execute positioned ~48 ~ ~-32 run function pipeworks:gallery/dismantle
+execute positioned ~48 ~ ~-32 run function pipeworks:gallery/inline_pump
+execute positioned ~ ~ ~-48 run function pipeworks:gallery/dismantle

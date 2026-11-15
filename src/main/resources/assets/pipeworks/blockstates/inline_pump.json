@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "pipeworks:block/inline_pump",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "pipeworks:block/inline_pump",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pipeworks:block/inline_pump"
+    },
+    "facing=south": {
+      "model": "pipeworks:block/inline_pump",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "pipeworks:block/inline_pump",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "pipeworks:block/inline_pump",
+      "y": 270
+    }
+  }
+}

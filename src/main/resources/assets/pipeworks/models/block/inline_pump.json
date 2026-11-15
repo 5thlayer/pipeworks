@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "pipeworks:block/pump_front",
+    "south": "pipeworks:block/pump_top",
+    "east": "pipeworks:block/machine_side",
+    "west": "pipeworks:block/machine_side",
+    "up": "pipeworks:block/machine_side",
+    "down": "pipeworks:block/machine_side",
+    "particle": "pipeworks:block/machine_side"
+  }
+}

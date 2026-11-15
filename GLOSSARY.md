@@ -32,7 +32,7 @@ A Consumer's block entity that joins a segment through the `FluidPort` API, so a
 _Avoid_: connector, fluid face (a face is NeoForge's capability on one side of a block)
 
 **Fluid inventory**:
-A block beside a node that is no node itself but exposes a fluid handler on the facing side, such as another mod's tank or machine. It moves fluid in and out of a segment through that handler and never joins it.
+A block beside a node that is no node itself but exposes a fluid handler on the facing side, such as another mod's tank or machine. Fluid crosses that handler when the block itself moves it, or when an in-line pump serves the segment; it never joins the segment.
 _Avoid_: machine (a port is often one), foreign tank, fluid face
 
 **Arm**:
@@ -63,7 +63,11 @@ _Avoid_: orphan, isolated node
 
 **Pump**:
 The machine that draws a still source block beside it into its segment. A source in the infinite-source tag, water by default, stays in place and gives a fixed rate; any other is taken whole, as a bucket would take it.
-_Avoid_: Offshore Pump, in-line pump (a pump that moves fluid along a pipe, which is not built)
+_Avoid_: Offshore Pump, in-line pump (the machine that moves fluid from one segment to another)
+
+**In-line pump**:
+The machine between two segments that moves fluid from the one behind it to the one in front, at its rate, and so from the fluid inventories the one behind touches to those the one in front touches. A segment no in-line pump serves moves no fluid with its fluid inventories.
+_Avoid_: pump (alone, which is the Pump), extractor, inserter, mechanical pump
 
 **Outlet**:
 The machine that sets its segment's fluid down as a source block in the space it faces, a bucket's worth at a time, once the segment holds one and the space is empty or replaceable. It never picks fluid up.
